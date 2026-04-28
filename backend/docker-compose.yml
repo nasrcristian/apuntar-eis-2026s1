@@ -3,7 +3,7 @@ services:
   sql_db:
     image: postgres:18
     ports:
-      - "5433:5433"
+      - "5433:5432"
     environment:
       - POSTGRES_DB=apuntar-pg
       - POSTGRES_USER=postgres
