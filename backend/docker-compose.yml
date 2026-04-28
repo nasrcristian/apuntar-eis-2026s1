@@ -1,0 +1,67 @@
+name: apuntar-api
+services:
+  sql_db:
+    image: postgres:18
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=apuntar-pg
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d apuntar-pg" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - pg_data:/var/lib/postgresql
+    restart: unless-stopped
+
+  nsql_db:
+   image: mongo:8.2.7
+   container_name: apuntar-mongo
+   environment:
+     - MONGO_INITDB_ROOT_USERNAME=root
+     - MONGO_INITDB_ROOT_PASSWORD=rootroot
+   ports:
+    - "27017:27017"
+   volumes:
+     - mongo_data:/data/db
+   restart: unless-stopped
+   healthcheck:
+     test: [ "CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })" ]
+     interval: 5s
+     timeout: 5s
+     retries: 3
+
+  app:
+    container_name: app
+    image: eclipse-temurin:21-jdk
+    working_dir: /opt/apuntar
+    volumes:
+      - .:/opt/apuntar
+      - gradle_cache:/root/.gradle
+    command: ./gradlew bootRun
+    ports:
+      - "8080:8080"
+    depends_on:
+      sql_db:
+          condition: service_healthy
+      nsql_db:
+          condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://sql_db:5432/apuntar-pg
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_DATA_MONGODB_URI=mongodb://root:rootroot@nsql_db:27017/apuntar-mongo?authSource=admin
+    tty: true
+
+volumes:
+  pg_data:
+    name: apuntar-postgres
+  mongo_data:
+    name: apuntar-mongo
+  gradle_cache:
+    name: apuntar-gradle-cache
+
