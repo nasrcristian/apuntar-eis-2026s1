@@ -1,5 +1,20 @@
 name: apuntar-api
 services:
+#  apuntar-app:
+#    build: .
+#    container_name: apuntar-backend
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://sql_db:5432/apuntar-pg
+#      - SPRING_MONGODB_URI=mongodb://root:rootroot@nsql_db:27017/apuntar-mongo?authSource=admin
+#      - TZ=America/Argentina/Buenos_Aires
+#    depends_on:
+#      sql_db:
+#        condition: service_healthy
+#      nsql_db:
+#        condition: service_healthy
+
   sql_db:
     image: postgres:18
     ports:
@@ -8,6 +23,8 @@ services:
       - POSTGRES_DB=apuntar-pg
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - TZ=America/Argentina/Buenos_Aires
+      - PGTZ=America/Argentina/Buenos_Aires
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres -d apuntar-pg" ]
       interval: 5s
