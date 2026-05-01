@@ -1,4 +1,4 @@
-package ar.edu.unq.apuntar.controller.dto
+package ar.edu.unq.apuntar.dto
 
 import ar.edu.unq.apuntar.model.material.teorico.MaterialT
 import java.time.Instant

@@ -3,15 +3,16 @@ package ar.edu.unq.apuntar.persistence.repository
 import ar.edu.unq.apuntar.exception.MaterialNotFoundException
 import ar.edu.unq.apuntar.model.material.FileMetadata
 import ar.edu.unq.apuntar.model.material.teorico.MaterialT
-import ar.edu.unq.apuntar.persistence.entity.JpaMaterialTEntity
+import ar.edu.unq.apuntar.persistence.dao.MaterialTDao
+import ar.edu.unq.apuntar.persistence.entity.MaterialTSQL
 import org.springframework.stereotype.Component
 
 @Component
-class JpaMaterialRepositoryAdapter(
-    private val springDataMaterialRepository: SpringDataMaterialRepository
-) : MaterialRepository {
+class MaterialTRepositoryImpl(
+    private val materialTDao: MaterialTDao
+) : MaterialTRepository {
     override fun save(materialT: MaterialT): MaterialT {
-        val entity = JpaMaterialTEntity(
+        val entity = MaterialTSQL(
             id = null,
             title = materialT.title,
             description = materialT.description,
@@ -23,7 +24,7 @@ class JpaMaterialRepositoryAdapter(
             size = materialT.fileMetadata.size,
             createdAt = materialT.createdAt
         )
-        val saved = springDataMaterialRepository.save(entity)
+        val saved = materialTDao.save(entity)
         val fileMetadata = FileMetadata.fromPersistence(
             saved.originalFileName,
             saved.storedFileName,
@@ -43,7 +44,7 @@ class JpaMaterialRepositoryAdapter(
     }
 
     override fun findById(id: Long): MaterialT {
-        val materialT = springDataMaterialRepository.findById(id).orElseThrow { MaterialNotFoundException("No se encontró el material") }
+        val materialT = materialTDao.findById(id).orElseThrow { MaterialNotFoundException("No se encontró el material") }
         val fileMetadata = FileMetadata.fromPersistence(
             materialT.originalFileName,
             materialT.storedFileName,
@@ -53,7 +54,7 @@ class JpaMaterialRepositoryAdapter(
         return MaterialT.toModel(id, materialT.title, materialT.description, materialT.subject, materialT.faculty, fileMetadata, materialT.createdAt)
     }
 
-    override fun findAll(): List<MaterialT> = springDataMaterialRepository.findAll().map { saved ->
+    override fun findAll(): List<MaterialT> = materialTDao.findAll().map { saved ->
         val fileMetadata = FileMetadata.fromPersistence(
             saved.originalFileName,
             saved.storedFileName,

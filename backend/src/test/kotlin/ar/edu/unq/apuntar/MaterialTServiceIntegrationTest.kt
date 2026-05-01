@@ -1,6 +1,6 @@
 package ar.edu.unq.apuntar
 
-import ar.edu.unq.apuntar.controller.dto.CreateFileDTO
+import ar.edu.unq.apuntar.dto.CreateFileDTO
 import ar.edu.unq.apuntar.exception.InvalidMaterialException
 import ar.edu.unq.apuntar.model.material.teorico.MaterialT
 import ar.edu.unq.apuntar.service.MaterialTService

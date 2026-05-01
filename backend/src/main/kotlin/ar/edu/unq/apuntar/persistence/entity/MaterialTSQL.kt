@@ -9,7 +9,7 @@ import java.time.Instant
 
 @Entity
 @Table(name = "materiales")
-data class JpaMaterialTEntity(
+data class MaterialTSQL(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long?,

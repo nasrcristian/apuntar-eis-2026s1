@@ -1,9 +1,9 @@
 package ar.edu.unq.apuntar.controller
 
-import ar.edu.unq.apuntar.controller.dto.MaterialDTO
+import ar.edu.unq.apuntar.dto.MaterialDTO
 import ar.edu.unq.apuntar.service.MaterialTService
-import ar.edu.unq.apuntar.controller.dto.CreateFileDTO
-import ar.edu.unq.apuntar.controller.dto.toDTO
+import ar.edu.unq.apuntar.dto.CreateFileDTO
+import ar.edu.unq.apuntar.dto.toDTO
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

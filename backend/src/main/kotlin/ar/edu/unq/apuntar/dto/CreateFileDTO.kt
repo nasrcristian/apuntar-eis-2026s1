@@ -1,4 +1,4 @@
-package ar.edu.unq.apuntar.controller.dto
+package ar.edu.unq.apuntar.dto
 
 import org.springframework.web.multipart.MultipartFile
 
