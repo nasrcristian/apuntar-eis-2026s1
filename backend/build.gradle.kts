@@ -66,6 +66,7 @@ allOpen {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+    jvmArgs("-Duser.timezone=America/Argentina/Buenos_Aires")
 }
 
 tasks.test {
