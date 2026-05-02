@@ -1,3 +1,11 @@
 package ar.edu.unq.apuntar.dto
 
-data class UserDto(val id: String, val name: String)
+import ar.edu.unq.apuntar.model.User
+
+data class UserDto(val name: String, val surname: String, val mail: String)
+
+fun User.toDto() = UserDto(
+    name = name,
+    surname = surname,
+    mail = mail
+)

@@ -1,9 +1,7 @@
 package ar.edu.unq.apuntar.service
 
-import ar.edu.unq.apuntar.dto.UserDto
-import org.springframework.stereotype.Service
+import ar.edu.unq.apuntar.model.User
 
-@Service
 interface UserService {
-    fun getUsers(): List<UserDto>
+    fun register(user: User): User
 }
