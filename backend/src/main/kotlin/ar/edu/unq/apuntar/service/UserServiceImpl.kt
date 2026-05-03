@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service
 @Transactional
 class UserServiceImpl(private val repository: UserRepository) : UserService {
 
-    fun register(user: User): User {
+    override fun register(user: User): User {
 
-        if (repository.findByMail(user.mail).isPresent){
+        repository.findByMail(user.mail)?.let{
             throw UserAlreadyExistsException(user.mail)
         }
 
-
+        return repository.save(user)
     }
 }

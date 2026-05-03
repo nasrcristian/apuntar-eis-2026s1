@@ -7,4 +7,6 @@ import java.util.UUID
 
 @Repository
 interface UserDao : JpaRepository<User, UUID> {
+    fun findByMail(mail: String): User?
+    fun save(user: User): User
 }

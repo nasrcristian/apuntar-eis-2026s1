@@ -6,16 +6,16 @@ import jakarta.validation.constraints.Size
 
 data class RegisterReqDto(
 
-    @field:NotBlank
+    @field:NotBlank("El nombre no puede estar vacio")
     val name: String,
 
-    @field:NotBlank
+    @field:NotBlank("El apellido no puede estar vacio")
     val surname: String,
 
-    @field:NotBlank
+    @field:NotBlank("Se debe ingresar un correo")
     val mail: String,
 
-    @field:NotBlank
+    @field:NotBlank("Se debe ingresar una contraseña")
     @field:Size(min = 8)
     val password: String,
 ){

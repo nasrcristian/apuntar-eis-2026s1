@@ -13,12 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/user")
 class UserController(private val service: UserService) {
 
-    @PostMapping("/")
+    @PostMapping
     fun register(@RequestBody user: RegisterReqDto): UserDto = service.register(user.asModel()).toDto()
-
-
-
-
-
 
 }
