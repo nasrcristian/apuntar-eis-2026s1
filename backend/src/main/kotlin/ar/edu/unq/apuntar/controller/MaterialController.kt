@@ -43,5 +43,23 @@ class MaterialController(private val materialService: MaterialService) {
         materialService.deleteById(id)
         return ResponseEntity.noContent().build()
     }
+
+    @PostMapping("/{id}/like")
+    fun likeMaterial(
+        @PathVariable id: Long,
+        @RequestParam(required = false, defaultValue = "true") isAdding: Boolean
+    ): ResponseEntity<MaterialDTO> {
+        val updated = materialService.toggleLike(id, isAdding)
+        return ResponseEntity.ok(updated.toDTO())
+    }
+
+    @PostMapping("/{id}/dislike")
+    fun dislikeMaterial(
+        @PathVariable id: Long,
+        @RequestParam(required = false, defaultValue = "true") isAdding: Boolean
+    ): ResponseEntity<MaterialDTO> {
+        val updated = materialService.toggleDislike(id, isAdding)
+        return ResponseEntity.ok(updated.toDTO())
+    }
 }
 

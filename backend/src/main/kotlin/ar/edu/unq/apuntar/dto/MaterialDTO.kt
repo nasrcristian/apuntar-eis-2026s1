@@ -19,6 +19,8 @@ data class MaterialDTO(
     val category: String,
     val topic: String,
     val files: List<FileMetadataDTO>,
+    val likes: Long,
+    val dislikes: Long,
     val createdAt: Instant
 )
 
@@ -31,6 +33,8 @@ fun Material.toDTO(): MaterialDTO = MaterialDTO(
     category = this.category.code,
     topic = this.topic,
     files = this.fileMetadatas.map { fm -> FileMetadataDTO(fm.originalFileName, fm.storedFileName, fm.contentType, fm.size) },
+    likes = this.likes,
+    dislikes = this.dislikes,
     createdAt = this.createdAt
 )
 

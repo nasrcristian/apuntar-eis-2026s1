@@ -12,19 +12,25 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
+import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.context.TestPropertySource
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.net.HttpURLConnection
+import java.net.URI
 
 @Import(TestcontainersConfiguration::class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = ["storage.path=uploads-test"])
 class MaterialServiceIntegrationTest{
 
     @Autowired
     lateinit var materialService: MaterialService
+
+    @LocalServerPort
+    var port: Int = 0
 
     private val uploadsDir: Path = Paths.get("uploads-test")
 
@@ -245,6 +251,62 @@ class MaterialServiceIntegrationTest{
     fun `delete material with unknown id throws material not found`() {
         Assertions.assertThrows(MaterialNotFoundException::class.java) {
             materialService.deleteById(Long.MAX_VALUE)
+        }
+    }
+
+    @Test
+    fun `like endpoint toggles like counter on and off`() {
+        val created = materialService.create(
+            CreateFileDTO(
+                title = "Material likes",
+                description = "Descripción suficientemente larga para likes",
+                subject = "Programación",
+                career = "Ingeniería",
+                topic = "Likes",
+                category = Category.APUNTE,
+                files = listOf(MockMultipartFile("file", "like.pdf", "application/pdf", "%PDF-1.4\nLike".toByteArray()))
+            )
+        )
+        val id = created.id ?: Assertions.fail("El ID no debe ser nulo")
+
+        Assertions.assertEquals(200, httpStatus("http://localhost:$port/materiales/$id/like?isAdding=true", "POST"))
+        Assertions.assertEquals(1, materialService.findById(id).likes)
+
+        Assertions.assertEquals(200, httpStatus("http://localhost:$port/materiales/$id/like?isAdding=false", "POST"))
+        Assertions.assertEquals(0, materialService.findById(id).likes)
+    }
+
+    @Test
+    fun `dislike endpoint toggles dislike counter on and off`() {
+        val created = materialService.create(
+            CreateFileDTO(
+                title = "Material dislikes",
+                description = "Descripción suficientemente larga para dislikes",
+                subject = "Programación",
+                career = "Ingeniería",
+                topic = "Dislikes",
+                category = Category.APUNTE,
+                files = listOf(MockMultipartFile("file", "dislike.pdf", "application/pdf", "%PDF-1.4\nDislike".toByteArray()))
+            )
+        )
+        val id = created.id ?: Assertions.fail("El ID no debe ser nulo")
+
+        Assertions.assertEquals(200, httpStatus("http://localhost:$port/materiales/$id/dislike?isAdding=true", "POST"))
+        Assertions.assertEquals(1, materialService.findById(id).dislikes)
+
+        Assertions.assertEquals(200, httpStatus("http://localhost:$port/materiales/$id/dislike?isAdding=false", "POST"))
+        Assertions.assertEquals(0, materialService.findById(id).dislikes)
+    }
+
+    private fun httpStatus(url: String, method: String): Int {
+        val connection = (URI.create(url).toURL().openConnection() as HttpURLConnection).apply {
+            requestMethod = method
+            doInput = true
+        }
+        return try {
+            connection.responseCode
+        } finally {
+            connection.disconnect()
         }
     }
 }
