@@ -52,5 +52,32 @@ class MaterialServiceImpl(
 
     @Transactional(readOnly = true)
     override fun findAll(): List<Material> = materialRepository.findAll()
+
+    @Transactional
+    override fun deleteById(id: Long) {
+        val material = materialRepository.findById(id)
+        materialRepository.deleteById(id)
+
+        // borrar los archivos asociados al material usando el StorageProvider
+        material.fileMetadatas.forEach { fileMetadata ->
+            storageProvider.delete(fileMetadata.storedFileName)
+        }
+    }
+
+    @Transactional
+    override fun toggleLike(id: Long, isAdding: Boolean): Material {
+        val material = materialRepository.findById(id)
+        material.applyVote(ar.edu.unq.apuntar.model.material.VoteType.LIKE, isAdding)
+        materialRepository.toggleLike(id, isAdding)
+        return materialRepository.findById(id)
+    }
+
+    @Transactional
+    override fun toggleDislike(id: Long, isAdding: Boolean): Material {
+        val material = materialRepository.findById(id)
+        material.applyVote(ar.edu.unq.apuntar.model.material.VoteType.DISLIKE, isAdding)
+        materialRepository.toggleDislike(id, isAdding)
+        return materialRepository.findById(id)
+    }
 }
 

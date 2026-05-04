@@ -2,6 +2,7 @@ package ar.edu.unq.apuntar
 
 import ar.edu.unq.apuntar.dto.CreateFileDTO
 import ar.edu.unq.apuntar.exception.InvalidMaterialException
+import ar.edu.unq.apuntar.exception.MaterialNotFoundException
 import ar.edu.unq.apuntar.model.material.Material
 import ar.edu.unq.apuntar.service.MaterialService
 import ar.edu.unq.apuntar.model.material.Category
@@ -11,19 +12,25 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
+import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.context.TestPropertySource
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.net.HttpURLConnection
+import java.net.URI
 
 @Import(TestcontainersConfiguration::class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = ["storage.path=uploads-test"])
 class MaterialServiceIntegrationTest{
 
     @Autowired
     lateinit var materialService: MaterialService
+
+    @LocalServerPort
+    var port: Int = 0
 
     private val uploadsDir: Path = Paths.get("uploads-test")
 
@@ -201,6 +208,105 @@ class MaterialServiceIntegrationTest{
                 val fileCount = stream.count()
                 Assertions.assertEquals(0, fileCount, "No debería haberse guardado ningún archivo cuando uno de los múltiples es inválido")
             }
+        }
+    }
+
+    @Test
+    fun `delete material removes db record and all files from filesystem`() {
+        val content1 = "%PDF-1.4\nDelete me 1".toByteArray()
+        val content2 = "%PDF-1.4\nDelete me 2".toByteArray()
+        val file1 = MockMultipartFile("files", "delete-1.pdf", "application/pdf", content1)
+        val file2 = MockMultipartFile("files", "delete-2.pdf", "application/pdf", content2)
+
+        val fileData = CreateFileDTO(
+            title = "Material a borrar",
+            description = "Descripción suficientemente larga para poder borrar",
+            subject = "Programación",
+            career = "Ingeniería",
+            topic = "Borrado",
+            category = Category.APUNTE,
+            files = listOf(file1, file2)
+        )
+
+        val created = materialService.create(fileData)
+        val id = created.id ?: Assertions.fail("El ID del material creado no debe ser nulo")
+
+        val storedNames = created.fileMetadatas.map { it.storedFileName }
+        storedNames.forEach { name ->
+            Assertions.assertTrue(Files.exists(uploadsDir.resolve(name)), "El archivo debería existir antes de borrar: $name")
+        }
+
+        materialService.deleteById(id)
+
+        Assertions.assertThrows(MaterialNotFoundException::class.java) {
+            materialService.findById(id)
+        }
+
+        storedNames.forEach { name ->
+            Assertions.assertFalse(Files.exists(uploadsDir.resolve(name)), "El archivo no debería existir después de borrar: $name")
+        }
+    }
+
+    @Test
+    fun `delete material with unknown id throws material not found`() {
+        Assertions.assertThrows(MaterialNotFoundException::class.java) {
+            materialService.deleteById(Long.MAX_VALUE)
+        }
+    }
+
+    @Test
+    fun `like endpoint toggles like counter on and off`() {
+        val created = materialService.create(
+            CreateFileDTO(
+                title = "Material likes",
+                description = "Descripción suficientemente larga para likes",
+                subject = "Programación",
+                career = "Ingeniería",
+                topic = "Likes",
+                category = Category.APUNTE,
+                files = listOf(MockMultipartFile("file", "like.pdf", "application/pdf", "%PDF-1.4\nLike".toByteArray()))
+            )
+        )
+        val id = created.id ?: Assertions.fail("El ID no debe ser nulo")
+
+        Assertions.assertEquals(200, httpStatus("http://localhost:$port/materiales/$id/like?isAdding=true", "POST"))
+        Assertions.assertEquals(1, materialService.findById(id).likes)
+
+        Assertions.assertEquals(200, httpStatus("http://localhost:$port/materiales/$id/like?isAdding=false", "POST"))
+        Assertions.assertEquals(0, materialService.findById(id).likes)
+    }
+
+    @Test
+    fun `dislike endpoint toggles dislike counter on and off`() {
+        val created = materialService.create(
+            CreateFileDTO(
+                title = "Material dislikes",
+                description = "Descripción suficientemente larga para dislikes",
+                subject = "Programación",
+                career = "Ingeniería",
+                topic = "Dislikes",
+                category = Category.APUNTE,
+                files = listOf(MockMultipartFile("file", "dislike.pdf", "application/pdf", "%PDF-1.4\nDislike".toByteArray()))
+            )
+        )
+        val id = created.id ?: Assertions.fail("El ID no debe ser nulo")
+
+        Assertions.assertEquals(200, httpStatus("http://localhost:$port/materiales/$id/dislike?isAdding=true", "POST"))
+        Assertions.assertEquals(1, materialService.findById(id).dislikes)
+
+        Assertions.assertEquals(200, httpStatus("http://localhost:$port/materiales/$id/dislike?isAdding=false", "POST"))
+        Assertions.assertEquals(0, materialService.findById(id).dislikes)
+    }
+
+    private fun httpStatus(url: String, method: String): Int {
+        val connection = (URI.create(url).toURL().openConnection() as HttpURLConnection).apply {
+            requestMethod = method
+            doInput = true
+        }
+        return try {
+            connection.responseCode
+        } finally {
+            connection.disconnect()
         }
     }
 }

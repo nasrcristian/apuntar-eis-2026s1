@@ -14,7 +14,7 @@ class MaterialRepositoryImpl(
 ) : MaterialRepository {
     override fun save(material: Material): Material {
         val entity = MaterialSQL(
-            id = null,
+            id = material.id,
             title = material.title,
             description = material.description,
             subject = material.subject,
@@ -57,21 +57,36 @@ class MaterialRepositoryImpl(
             saved.category,
             saved.topic,
             fileMetadatas,
+            saved.likes,
+            saved.dislikes,
             saved.createdAt
         )
     }
 
     override fun findById(id: Long): Material {
         val materialEntity = materialDao.findById(id).orElseThrow { MaterialNotFoundException("No se encontró el material") }
-        val fileMetadatas = materialEntity.files.map { f ->
-            FileMetadata.fromPersistence(f.originalFileName, f.storedFileName, f.contentType, f.size)
-        }
-        return Material.toModel(id, materialEntity.title, materialEntity.description, materialEntity.subject, materialEntity.career, materialEntity.category, materialEntity.topic, fileMetadatas, materialEntity.createdAt)
+        val fileMetadatas = materialEntity.files.map { f -> FileMetadata.fromPersistence(f.originalFileName, f.storedFileName, f.contentType, f.size) }
+        return Material.toModel(id, materialEntity.title, materialEntity.description, materialEntity.subject, materialEntity.career, materialEntity.category, materialEntity.topic, fileMetadatas, materialEntity.likes, materialEntity.dislikes, materialEntity.createdAt)
     }
 
     override fun findAll(): List<Material> = materialDao.findAll().map { saved ->
         val fileMetadatas = saved.files.map { f -> FileMetadata.fromPersistence(f.originalFileName, f.storedFileName, f.contentType, f.size) }
-        Material.toModel(saved.id ?: throw IllegalStateException("Material sin id"), saved.title, saved.description, saved.subject, saved.career, saved.category, saved.topic, fileMetadatas, saved.createdAt)
+        Material.toModel(saved.id ?: throw IllegalStateException("Material sin id"), saved.title, saved.description, saved.subject, saved.career, saved.category, saved.topic, fileMetadatas, saved.likes, saved.dislikes, saved.createdAt)
+    }
+
+    override fun deleteById(id: Long) {
+        if (!materialDao.existsById(id)) throw MaterialNotFoundException("No se encontró el material")
+        materialDao.deleteById(id)
+    }
+
+    override fun toggleLike(id: Long, isAdding: Boolean) {
+        val updated = materialDao.toggleLike(id, isAdding)
+        if (updated == 0) throw MaterialNotFoundException("No se encontró el material")
+    }
+
+    override fun toggleDislike(id: Long, isAdding: Boolean) {
+        val updated = materialDao.toggleDislike(id, isAdding)
+        if (updated == 0) throw MaterialNotFoundException("No se encontró el material")
     }
 }
 
