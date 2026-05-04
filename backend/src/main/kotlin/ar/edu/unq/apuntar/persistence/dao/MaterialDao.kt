@@ -1,8 +1,8 @@
 package ar.edu.unq.apuntar.persistence.dao
 
-import ar.edu.unq.apuntar.persistence.entity.MaterialTSQL
+import ar.edu.unq.apuntar.persistence.entity.MaterialSQL
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface MaterialTDao : JpaRepository<MaterialTSQL, Long>
+interface MaterialDao : JpaRepository<MaterialSQL, Long>

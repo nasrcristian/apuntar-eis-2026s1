@@ -1,6 +1,6 @@
 package ar.edu.unq.apuntar.dto
 
-import ar.edu.unq.apuntar.model.material.teorico.MaterialT
+import ar.edu.unq.apuntar.model.material.Material
 import java.time.Instant
 
 data class FileMetadataDTO(
@@ -15,18 +15,22 @@ data class MaterialDTO(
     val title: String,
     val description: String,
     val subject: String,
-    val faculty: String,
-    val fileMetadata: FileMetadataDTO,
+    val career: String,
+    val category: String,
+    val topic: String,
+    val files: List<FileMetadataDTO>,
     val createdAt: Instant
 )
 
-fun MaterialT.toDTO(): MaterialDTO = MaterialDTO(
+fun Material.toDTO(): MaterialDTO = MaterialDTO(
     id = this.id ?: throw IllegalStateException("Material sin id"),
     title = this.title,
     description = this.description,
     subject = this.subject,
-    faculty = this.faculty,
-    fileMetadata = FileMetadataDTO(this.fileMetadata.originalFileName, this.fileMetadata.storedFileName, this.fileMetadata.contentType, this.fileMetadata.size),
+    career = this.career,
+    category = this.category.code,
+    topic = this.topic,
+    files = this.fileMetadatas.map { fm -> FileMetadataDTO(fm.originalFileName, fm.storedFileName, fm.contentType, fm.size) },
     createdAt = this.createdAt
 )
 
