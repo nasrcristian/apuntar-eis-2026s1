@@ -39,6 +39,15 @@ const post = <T, R>(url: string, data: T): Promise<ResolvedResponse<R>> =>(axios
             throw handleErrorResponse(error)
         }))
 
+const get = <R>(url: string): Promise<ResolvedResponse<R>> => (axios.get<R>(url))
+                .then((response) => handleResolvedResponse(response))
+                .catch((error) => {
+                    throw handleErrorResponse(error)
+                })
+
         
 export const postRegister = (data: RegisterReqDto): Promise<ResolvedResponse<UserDto>> =>
     post<RegisterReqDto, UserDto>(`${urlApi}user`, data)
+
+export const getMaterial = (id: String): Promise<ResolvedResponse<MaterialDTO>> => 
+    get<MaterialDTO>(`${urlApi}/materiales/${id}`)
