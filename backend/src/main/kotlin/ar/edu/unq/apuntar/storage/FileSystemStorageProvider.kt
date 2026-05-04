@@ -28,5 +28,10 @@ class FileSystemStorageProvider(
         }
         return StorageProvider.StoredFile(storedFileName, file.contentType, file.size)
     }
+
+    override fun delete(storedFileName: String) {
+        val target = storagePath.resolve(storedFileName)
+        Files.deleteIfExists(target)
+    }
 }
 

@@ -52,5 +52,15 @@ class MaterialServiceImpl(
 
     @Transactional(readOnly = true)
     override fun findAll(): List<Material> = materialRepository.findAll()
+
+    override fun deleteById(id: Long) {
+        val material = materialRepository.findById(id)
+        materialRepository.deleteById(id)
+
+        // borrar los archivos asociados al material usando el StorageProvider
+        material.fileMetadatas.forEach { fileMetadata ->
+            storageProvider.delete(fileMetadata.storedFileName)
+        }
+    }
 }
 

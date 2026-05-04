@@ -73,5 +73,10 @@ class MaterialRepositoryImpl(
         val fileMetadatas = saved.files.map { f -> FileMetadata.fromPersistence(f.originalFileName, f.storedFileName, f.contentType, f.size) }
         Material.toModel(saved.id ?: throw IllegalStateException("Material sin id"), saved.title, saved.description, saved.subject, saved.career, saved.category, saved.topic, fileMetadatas, saved.createdAt)
     }
+
+    override fun deleteById(id: Long) {
+        if (!materialDao.existsById(id)) throw MaterialNotFoundException("No se encontró el material")
+        materialDao.deleteById(id)
+    }
 }
 

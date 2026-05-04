@@ -6,5 +6,6 @@ interface MaterialRepository {
     fun save(material: Material): Material
     fun findById(id: Long): Material
     fun findAll(): List<Material>
+    fun deleteById(id: Long)
 }
 

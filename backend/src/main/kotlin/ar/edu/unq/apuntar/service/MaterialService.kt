@@ -7,4 +7,5 @@ interface MaterialService {
     fun create(fileData:CreateFileDTO): Material
     fun findById(id: Long): Material
     fun findAll(): List<Material>
+    fun deleteById(id: Long)
 }

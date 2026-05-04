@@ -2,6 +2,7 @@ package ar.edu.unq.apuntar
 
 import ar.edu.unq.apuntar.dto.CreateFileDTO
 import ar.edu.unq.apuntar.exception.InvalidMaterialException
+import ar.edu.unq.apuntar.exception.MaterialNotFoundException
 import ar.edu.unq.apuntar.model.material.Material
 import ar.edu.unq.apuntar.service.MaterialService
 import ar.edu.unq.apuntar.model.material.Category
@@ -201,6 +202,49 @@ class MaterialServiceIntegrationTest{
                 val fileCount = stream.count()
                 Assertions.assertEquals(0, fileCount, "No debería haberse guardado ningún archivo cuando uno de los múltiples es inválido")
             }
+        }
+    }
+
+    @Test
+    fun `delete material removes db record and all files from filesystem`() {
+        val content1 = "%PDF-1.4\nDelete me 1".toByteArray()
+        val content2 = "%PDF-1.4\nDelete me 2".toByteArray()
+        val file1 = MockMultipartFile("files", "delete-1.pdf", "application/pdf", content1)
+        val file2 = MockMultipartFile("files", "delete-2.pdf", "application/pdf", content2)
+
+        val fileData = CreateFileDTO(
+            title = "Material a borrar",
+            description = "Descripción suficientemente larga para poder borrar",
+            subject = "Programación",
+            career = "Ingeniería",
+            topic = "Borrado",
+            category = Category.APUNTE,
+            files = listOf(file1, file2)
+        )
+
+        val created = materialService.create(fileData)
+        val id = created.id ?: Assertions.fail("El ID del material creado no debe ser nulo")
+
+        val storedNames = created.fileMetadatas.map { it.storedFileName }
+        storedNames.forEach { name ->
+            Assertions.assertTrue(Files.exists(uploadsDir.resolve(name)), "El archivo debería existir antes de borrar: $name")
+        }
+
+        materialService.deleteById(id)
+
+        Assertions.assertThrows(MaterialNotFoundException::class.java) {
+            materialService.findById(id)
+        }
+
+        storedNames.forEach { name ->
+            Assertions.assertFalse(Files.exists(uploadsDir.resolve(name)), "El archivo no debería existir después de borrar: $name")
+        }
+    }
+
+    @Test
+    fun `delete material with unknown id throws material not found`() {
+        Assertions.assertThrows(MaterialNotFoundException::class.java) {
+            materialService.deleteById(Long.MAX_VALUE)
         }
     }
 }
