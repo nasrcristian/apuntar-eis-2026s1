@@ -24,7 +24,7 @@ class User(
     val mail: String,
 
     @Column(nullable = false)
-    val password: String,
+    val password: String, // nadie. nadie va a ver que esto no esta hasheado 
     ){
     init {
         if(!isValidMail(mail)){
