@@ -12,6 +12,8 @@ class Material private constructor(
     val category: Category,
     val topic: String,
     val fileMetadatas: List<FileMetadata>,
+    var likes: Long,
+    var dislikes: Long,
     val createdAt: Instant
 ) {
     companion object {
@@ -37,6 +39,8 @@ class Material private constructor(
                 category,
                 topic.trim(),
                 fileMetadatas,
+                0,
+                0,
                 Instant.now()
             )
         }
@@ -51,7 +55,20 @@ class Material private constructor(
             category: Category,
             topic: String,
             fileMetadatas: List<FileMetadata>,
+            likes: Long,
+            dislikes: Long,
             createdAt: Instant
-        ): Material = Material(id, title, description, subject, career, category, topic, fileMetadatas, createdAt)
+        ): Material = Material(id, title, description, subject, career, category, topic, fileMetadatas, likes, dislikes, createdAt)
+    }
+
+    fun applyVote(type: VoteType, isAdding: Boolean) {
+        when (type) {
+            VoteType.LIKE -> {
+                likes = if (isAdding) likes + 1 else (likes - 1).coerceAtLeast(0)
+            }
+            VoteType.DISLIKE -> {
+                dislikes = if (isAdding) dislikes + 1 else (dislikes - 1).coerceAtLeast(0)
+            }
+        }
     }
 }

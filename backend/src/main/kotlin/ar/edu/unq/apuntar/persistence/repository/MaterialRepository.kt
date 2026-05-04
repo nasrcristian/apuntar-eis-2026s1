@@ -7,5 +7,7 @@ interface MaterialRepository {
     fun findById(id: Long): Material
     fun findAll(): List<Material>
     fun deleteById(id: Long)
+    fun toggleLike(id: Long, isAdding: Boolean)
+    fun toggleDislike(id: Long, isAdding: Boolean)
 }
 
