@@ -9,5 +9,6 @@ interface StorageProvider {
         val size: Long
     )
     fun store(file: MultipartFile): StoredFile
+    fun delete(storedFileName: String)
 }
 
