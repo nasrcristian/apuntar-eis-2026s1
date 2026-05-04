@@ -1,0 +1,34 @@
+.pdf-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 400px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pdf-preview--has-file {
+  min-height: 600px;
+  gap: 16px;
+}
+
+.pdf-preview__icon--empty {
+  font-size: 48px;
+  color: #bdbdbd;
+}
+
+.pdf-preview__icon--file {
+  font-size: 64px;
+  color: #bdbdbd;
+}
+
+.pdf-preview__text {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.pdf-preview__filename {
+  color: rgba(0, 0, 0, 0.38);
+}

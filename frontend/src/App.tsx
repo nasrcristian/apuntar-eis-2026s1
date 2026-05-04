@@ -3,6 +3,7 @@ import { CssBaseline } from '@mui/material'
 import './App.css'
 
 import UploadPage from './pages/UploadPage'
+import MaterialPage from './pages/MaterialPage/MaterialPage'
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <CssBaseline />
       <Routes>
         <Route path="/create" element={<UploadPage />} />
+        <Route path="/material/:id" element={<MaterialPage />}/>
       </Routes>
     </BrowserRouter>
   )

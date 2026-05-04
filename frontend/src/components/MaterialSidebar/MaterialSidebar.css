@@ -1,0 +1,95 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebar__field {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.sidebar__field-icon {
+  color: rgba(0, 0, 0, 0.6);
+  margin-top: 2px;
+}
+
+.sidebar__field-label {
+  color: rgba(0, 0, 0, 0.6);
+  display: block;
+  font-size: 0.75rem;
+}
+
+.sidebar__field-value {
+  font-size: 0.875rem;
+}
+
+.sidebar__reactions {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.sidebar__reactions-icon {
+  color: rgba(0, 0, 0, 0.6);
+  margin-top: 2px;
+}
+
+.sidebar__reactions-label {
+  color: rgba(0, 0, 0, 0.6);
+  display: block;
+  font-size: 0.75rem;
+}
+
+.sidebar__reactions-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.sidebar__reaction-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  user-select: none;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.sidebar__reaction-btn:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.sidebar__reaction-count {
+  font-size: 0.875rem;
+}
+
+.sidebar__divider {
+  margin: 4px 0;
+}
+
+.sidebar__description {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.sidebar__description-icon {
+  color: rgba(0, 0, 0, 0.6);
+  margin-top: 2px;
+}
+
+.sidebar__description-label {
+  color: rgba(0, 0, 0, 0.6);
+  display: block;
+  font-size: 0.75rem;
+}
+
+.sidebar__description-text {
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+  flex: 1;
+  min-width: 0;
+}
