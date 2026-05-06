@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { CssBaseline } from '@mui/material'
 import './App.css'
 
@@ -6,6 +6,11 @@ import UploadPage from './pages/UploadPage'
 import MaterialPage from './pages/MaterialPage/MaterialPage'
 import MaterialListPage from './pages/MaterialListPage'
 import Register from './components/Register/Register'
+import LoginPage from './pages/LoginPage'
+
+function HomePage() {
+    return <h1> Bienvenido a ApuntAr </h1>  // provisorio para testear redireccionamiento del login
+}
 
 function App() {
   return (
@@ -16,6 +21,9 @@ function App() {
         <Route path="/create" element={<UploadPage />} />
         <Route path="/material/:id" element={<MaterialPage />}/>
         <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="*" element={<Navigate to="/login" replace />} /> {/* se podria sacar */}
       </Routes>
     </>
   )
