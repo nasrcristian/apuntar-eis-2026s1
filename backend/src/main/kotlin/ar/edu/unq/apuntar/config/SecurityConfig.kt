@@ -1,33 +1,31 @@
 package ar.edu.unq.apuntar.config
 
+import ar.edu.unq.apuntar.security.JwtAuthFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
-@Configuration //reemplace el cors config porque no funcionaba con cookies
-@EnableWebSecurity
-class SecurityConfig { //seguridad y CORS
-
-    @Bean
-    fun passwordEncoder(): BCryptPasswordEncoder = BCryptPasswordEncoder()
+@Configuration
+@EnableWebSecurity //Seguridad y CORS
+class SecurityConfig(private val jwtAuthFilter: JwtAuthFilter) {
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
-        val config = CorsConfiguration().apply {
-            allowedOrigins = listOf("http://localhost:5173")
-            allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
-            allowedHeaders = listOf("*")
-        }
-        return UrlBasedCorsConfigurationSource().apply {
-            registerCorsConfiguration("/**", config)
-        }
+        val configuration = CorsConfiguration()
+        configuration.allowedOrigins = listOf("http://localhost:5173") // El puerto de tu Frontend
+        configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+        configuration.allowedHeaders = listOf("Authorization", "Content-Type")
+        configuration.allowCredentials = true
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", configuration)
+        return source
     }
 
     @Bean
@@ -37,10 +35,20 @@ class SecurityConfig { //seguridad y CORS
             .csrf { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { auth ->
-                auth.requestMatchers("/api/auth/**").permitAll()
-                auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                auth.requestMatchers("/auth/").permitAll()
+                auth.requestMatchers("/swagger-ui/", "/v3/api-docs/").permitAll()
+                // Home y listado público — sin login
+                auth.requestMatchers("GET", "/materiales").permitAll()
+                auth.requestMatchers("GET", "/materiales/{id}").permitAll()
+                // Subir material requiere login
+                auth.requestMatchers("POST", "/materiales").authenticated()
+                auth.requestMatchers("DELETE", "/materiales/{id}").authenticated()
+                auth.requestMatchers("POST", "/materiales/{id}/like").authenticated()
+                auth.requestMatchers("POST", "/materiales/{id}/dislike").authenticated()
+                auth.requestMatchers("/user/**").authenticated()
                 auth.anyRequest().authenticated()
             }
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
         return http.build()
     }
 }
