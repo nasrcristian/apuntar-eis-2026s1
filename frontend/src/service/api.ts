@@ -1,5 +1,6 @@
 import axios, { type AxiosResponse } from "axios"
 import type { RegisterReqDto, UserDto } from "../types/dto"
+import type { MaterialDTO } from "../types/material"
 
 const urlApi = "http://localhost:8080/"
 

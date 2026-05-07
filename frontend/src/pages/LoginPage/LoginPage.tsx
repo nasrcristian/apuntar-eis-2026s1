@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import './loginPage.css'
+import './LoginPage.css'
 
 export default function LoginPage() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState<String | null>(null)
     const [loading, setLoading] = useState(false)
+    const navigate = useNavigate()
 
     const validate = (): boolean => {
         if(!email.trim() || !password.trim()) {
@@ -31,7 +32,7 @@ export default function LoginPage() {
 
             if(response.ok) {
                 localStorage.setItem('jwt', data.token)
-                window.location.href = '/'
+                navigate('/home')
             } else {
                 setError(data.error ?? 'Los datos ingresados son incorrectos')
             }

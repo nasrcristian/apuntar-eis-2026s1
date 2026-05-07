@@ -3,6 +3,7 @@ package ar.edu.unq.apuntar.config
 import ar.edu.unq.apuntar.security.JwtAuthFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -35,16 +36,16 @@ class SecurityConfig(private val jwtAuthFilter: JwtAuthFilter) {
             .csrf { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { auth ->
-                auth.requestMatchers("/auth/").permitAll()
+                auth.requestMatchers("/api/auth/**").permitAll()
                 auth.requestMatchers("/swagger-ui/", "/v3/api-docs/").permitAll()
                 // Home y listado público — sin login
-                auth.requestMatchers("GET", "/materiales").permitAll()
-                auth.requestMatchers("GET", "/materiales/{id}").permitAll()
+                auth.requestMatchers(HttpMethod.GET, "/materiales").permitAll()
+                auth.requestMatchers(HttpMethod.GET, "/materiales/{id}").permitAll()
                 // Subir material requiere login
-                auth.requestMatchers("POST", "/materiales").authenticated()
-                auth.requestMatchers("DELETE", "/materiales/{id}").authenticated()
-                auth.requestMatchers("POST", "/materiales/{id}/like").authenticated()
-                auth.requestMatchers("POST", "/materiales/{id}/dislike").authenticated()
+                auth.requestMatchers(HttpMethod.POST, "/materiales").authenticated()
+                auth.requestMatchers(HttpMethod.DELETE, "/materiales/{id}").authenticated()
+                auth.requestMatchers(HttpMethod.POST, "/materiales/{id}/like").authenticated()
+                auth.requestMatchers(HttpMethod.POST, "/materiales/{id}/dislike").authenticated()
                 auth.requestMatchers("/user/**").authenticated()
                 auth.anyRequest().authenticated()
             }

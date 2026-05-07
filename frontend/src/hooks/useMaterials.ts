@@ -5,12 +5,18 @@ export const useMaterials = () => {
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const token = localStorage.getItem('jwt')
 
   const fetchAllMaterials = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`http://localhost:8080/materiales`);
+      const response = await fetch(`http://localhost:8080/materiales/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+      })
       if (!response.ok) throw new Error('Error al cargar materiales');
       
       const data = await response.json();
