@@ -7,6 +7,8 @@ import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.crypto.password.NoOpPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
@@ -14,16 +16,19 @@ import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
-@EnableWebSecurity //Seguridad y CORS
+@EnableWebSecurity
 class SecurityConfig(private val jwtAuthFilter: JwtAuthFilter) {
+
+    @Bean
+    @Suppress("DEPRECATION")
+    fun passwordEncoder(): PasswordEncoder = NoOpPasswordEncoder.getInstance()
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("http://localhost:5173") // El puerto de tu Frontend
+        configuration.allowedOrigins = listOf("http://localhost:5173")
         configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
         configuration.allowedHeaders = listOf("Authorization", "Content-Type")
-        configuration.allowCredentials = true
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source
@@ -37,11 +42,16 @@ class SecurityConfig(private val jwtAuthFilter: JwtAuthFilter) {
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { auth ->
                 auth.requestMatchers("/api/auth/**").permitAll()
-                auth.requestMatchers("/swagger-ui/", "/v3/api-docs/").permitAll()
-                // Home y listado público — sin login
+                auth.requestMatchers(
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/v3/api-docs/**"
+                ).permitAll()
+                // Listado y detalle de materiales son públicos
                 auth.requestMatchers(HttpMethod.GET, "/materiales").permitAll()
                 auth.requestMatchers(HttpMethod.GET, "/materiales/{id}").permitAll()
-                // Subir material requiere login
+                auth.requestMatchers(HttpMethod.POST, "/user").permitAll()
+                // Acciones que requieren login
                 auth.requestMatchers(HttpMethod.POST, "/materiales").authenticated()
                 auth.requestMatchers(HttpMethod.DELETE, "/materiales/{id}").authenticated()
                 auth.requestMatchers(HttpMethod.POST, "/materiales/{id}/like").authenticated()

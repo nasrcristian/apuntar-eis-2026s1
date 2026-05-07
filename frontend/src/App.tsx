@@ -6,11 +6,10 @@ import UploadPage from './pages/UploadPage'
 import MaterialPage from './pages/MaterialPage/MaterialPage'
 import MaterialListPage from './pages/MaterialListPage'
 import Register from './components/Register/Register'
-import LoginPage from './pages/LoginPage/LoginPage'
-
-function HomePage() {
-    return <h1> Bienvenido a ApuntAr </h1>  // provisorio para testear redireccionamiento del login
-}
+import LoginPage from './pages/auth/LoginPage'
+import HomePage from './pages/HomePage'
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
+import ResetPasswordPage from './pages/auth/ResetPasswordPage'
 
 function App() {
   return (
@@ -19,10 +18,12 @@ function App() {
       <Routes>
         <Route path="/" element={<MaterialListPage />} />
         <Route path="/create" element={<UploadPage />} />
-        <Route path="/material/:id" element={<MaterialPage />}/>
+        <Route path="/material/:id" element={<MaterialPage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/home" element={<HomePage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
       </Routes>
     </>
   )

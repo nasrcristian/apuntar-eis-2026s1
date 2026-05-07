@@ -1,4 +1,4 @@
-package ar.edu.unq.apuntar.dto
+package ar.edu.unq.apuntar.dto.auth
 
 import jakarta.validation.constraints.NotBlank
 

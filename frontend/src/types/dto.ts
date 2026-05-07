@@ -23,3 +23,21 @@ export interface ApiErrorDto {
     timestamp: string
     validationErrors?: ValidationError[]
 }
+
+export interface ForgotPasswordReqDto {
+    mail: string
+}
+
+export interface ForgotPasswordResDto {
+    message: string
+    token: string | null
+}
+
+export interface ResetPasswordReqDto {
+    token: string
+    newPassword: string
+}
+
+export interface ResetPasswordResDto {
+    message: string
+}
