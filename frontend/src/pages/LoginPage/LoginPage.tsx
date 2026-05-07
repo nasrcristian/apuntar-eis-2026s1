@@ -13,7 +13,6 @@ export function LoginPage() {
             return false
         }
         return true
-
     }
 
     const handleLogin = async () => {
@@ -22,17 +21,18 @@ export function LoginPage() {
 
         setLoading(true)
         try {
-            const response = await fetch('http://localhost:8080/api/auth/login'), {
+            const response = await fetch('http://localhost:8080/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include'
-                body: JSON.stringify({ identifier: mail, password }),
+                body: JSON.stringify({ mail: email, password }),
             })
 
+            const data = await response.json()
+
             if(response.ok) {
-                window.location.href = '/home'
+                localStorage.setItem('jwt', data.token)
+                window.location.href = '/'
             } else {
-                const data = await response.json()
                 setError(data.error ?? 'Los datos ingresados son incorrectos')
             }
         } catch {

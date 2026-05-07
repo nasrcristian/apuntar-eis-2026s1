@@ -7,14 +7,10 @@ import org.springframework.stereotype.Component
 import java.util.Date
 
 @Component
-public class JwtUtil {
-
-    @Value("\${jwt.secret")
-    private lateinit var secret: String
-
-    @Value("\${jwt.expiration}")
-    private var expiration: Long = 86400000
-
+class JwtUtil(
+    @Value("\${jwt.secret}") private val secret: String,
+    @Value("\${jwt.expiration}") private val expiration: Long
+) {
     private val key get() = Keys.hmacShaKeyFor(secret.toByteArray())
 
     fun generateToken(email: String): String =

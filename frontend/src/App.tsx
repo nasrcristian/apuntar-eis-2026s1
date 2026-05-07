@@ -23,7 +23,6 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/home" element={<HomePage />} />
-        <Route path="*" element={<Navigate to="/login" replace />} /> {/* se podria sacar */}
       </Routes>
     </>
   )

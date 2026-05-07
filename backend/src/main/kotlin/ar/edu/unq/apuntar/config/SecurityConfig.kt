@@ -24,10 +24,9 @@ class SecurityConfig { //seguridad y CORS
             allowedOrigins = listOf("http://localhost:5173")
             allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
             allowedHeaders = listOf("*")
-            allowCredentials = true  // necesario para que el browser mande la cookie
         }
         return UrlBasedCorsConfigurationSource().apply {
-            registerCorsConfiguration("/", config)
+            registerCorsConfiguration("/**", config)
         }
     }
 
@@ -38,8 +37,8 @@ class SecurityConfig { //seguridad y CORS
             .csrf { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { auth ->
-                auth.requestMatchers("/api/auth/").permitAll()
-                auth.requestMatchers("/swagger-ui/", "/v3/api-docs/").permitAll()
+                auth.requestMatchers("/api/auth/**").permitAll()
+                auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 auth.anyRequest().authenticated()
             }
         return http.build()
