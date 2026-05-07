@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import './loginPage.css'
 
-export function LoginPage() {
+export default function LoginPage() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState<String | null>(null)
     const [loading, setLoading] = useState(false)
 
-    const validate() = (): boolean => {
+    const validate = (): boolean => {
         if(!email.trim() || !password.trim()) {
             setError('Los datos ingresados son incorrectos')
             return false

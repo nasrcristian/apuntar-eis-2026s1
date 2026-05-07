@@ -6,7 +6,7 @@ import UploadPage from './pages/UploadPage'
 import MaterialPage from './pages/MaterialPage/MaterialPage'
 import MaterialListPage from './pages/MaterialListPage'
 import Register from './components/Register/Register'
-import LoginPage from './pages/LoginPage'
+import LoginPage from './pages/LoginPage/LoginPage'
 
 function HomePage() {
     return <h1> Bienvenido a ApuntAr </h1>  // provisorio para testear redireccionamiento del login
