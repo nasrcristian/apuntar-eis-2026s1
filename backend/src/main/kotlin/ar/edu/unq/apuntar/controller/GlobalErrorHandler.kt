@@ -14,10 +14,23 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+import org.springframework.web.server.ResponseStatusException
 
 
 @RestControllerAdvice
 class GlobalErrorHandler {
+
+    @ExceptionHandler(ResponseStatusException::class)
+    fun handleResponseStatusException(
+        ex: ResponseStatusException,
+        request: HttpServletRequest
+    ): ResponseEntity<ApiErrorDto> {
+        return buildStandardResponse(
+            HttpStatus.valueOf(ex.statusCode.value()),
+            request.requestURI,
+            ex.reason ?: "Error"
+        )
+    }
 
     @ExceptionHandler(InvalidMaterialException::class)
     fun handleInvalidMaterialException(ex: InvalidMaterialException): ResponseEntity<String> =

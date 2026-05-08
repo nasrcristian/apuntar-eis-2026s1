@@ -20,22 +20,50 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.net.HttpURLConnection
 import java.net.URI
+import ar.edu.unq.apuntar.model.User
+import ar.edu.unq.apuntar.persistence.dao.UserDao
+import ar.edu.unq.apuntar.security.JwtUtil
+import org.junit.jupiter.api.BeforeEach
 
 @Import(TestcontainersConfiguration::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = ["storage.path=uploads-test"])
+@TestPropertySource(properties = [
+    "storage.path=uploads-test",
+    "jwt.secret=RBCj+ZLbXkK8ifj1ApAJ8gUwUdvZdL0kE3zRYyxm/f9NfbJwWhTnQJayYLX3mdfF",
+    "jwt.expiration=86400000"
+])
 class MaterialServiceIntegrationTest{
 
     @Autowired
     lateinit var materialService: MaterialService
+
+    @Autowired
+    lateinit var jwtUtil: JwtUtil
+
+    @Autowired
+    lateinit var userDao: UserDao
+
+    private lateinit var authToken: String
 
     @LocalServerPort
     var port: Int = 0
 
     private val uploadsDir: Path = Paths.get("uploads-test")
 
+    @BeforeEach
+    fun setupUser() {
+        userDao.save(User(
+            name = "Test",
+            surname = "User",
+            mail = "test@test.com",
+            password = "123456"
+        ))
+        authToken = jwtUtil.generateToken("test@test.com")
+    }
+
     @AfterEach
     fun cleanup() {
+        userDao.deleteAll()
         if (Files.exists(uploadsDir) && Files.isDirectory(uploadsDir)) {
             Files.list(uploadsDir).use { stream ->
                 stream.forEach { p -> Files.deleteIfExists(p) }
@@ -269,10 +297,10 @@ class MaterialServiceIntegrationTest{
         )
         val id = created.id ?: Assertions.fail("El ID no debe ser nulo")
 
-        Assertions.assertEquals(200, httpStatus("http://localhost:$port/materiales/$id/like?isAdding=true", "POST"))
+        Assertions.assertEquals(200, httpStatus("http://localhost:$port/materiales/$id/like?isAdding=true", "POST", authToken))
         Assertions.assertEquals(1, materialService.findById(id).likes)
 
-        Assertions.assertEquals(200, httpStatus("http://localhost:$port/materiales/$id/like?isAdding=false", "POST"))
+        Assertions.assertEquals(200, httpStatus("http://localhost:$port/materiales/$id/like?isAdding=false", "POST", authToken))
         Assertions.assertEquals(0, materialService.findById(id).likes)
     }
 
@@ -291,17 +319,20 @@ class MaterialServiceIntegrationTest{
         )
         val id = created.id ?: Assertions.fail("El ID no debe ser nulo")
 
-        Assertions.assertEquals(200, httpStatus("http://localhost:$port/materiales/$id/dislike?isAdding=true", "POST"))
+        Assertions.assertEquals(200, httpStatus("http://localhost:$port/materiales/$id/dislike?isAdding=true", "POST", authToken))
         Assertions.assertEquals(1, materialService.findById(id).dislikes)
 
-        Assertions.assertEquals(200, httpStatus("http://localhost:$port/materiales/$id/dislike?isAdding=false", "POST"))
+        Assertions.assertEquals(200, httpStatus("http://localhost:$port/materiales/$id/dislike?isAdding=false", "POST", authToken))
         Assertions.assertEquals(0, materialService.findById(id).dislikes)
     }
 
-    private fun httpStatus(url: String, method: String): Int {
+    private fun httpStatus(url: String, method: String, token: String? = null): Int {
         val connection = (URI.create(url).toURL().openConnection() as HttpURLConnection).apply {
             requestMethod = method
             doInput = true
+            if (token != null) {
+                setRequestProperty("Authorization", "Bearer $token")
+            }
         }
         return try {
             connection.responseCode

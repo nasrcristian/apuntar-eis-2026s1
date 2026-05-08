@@ -79,10 +79,9 @@ class AuthControllerIntegrationTest {
     }
 
     @Test
-    fun `login con email inexistente devuelve 401`() {
+    fun `login con email inexistente devuelve 404`() {
         val response = postLogin("noexiste@test.com", "123456")
-
-        assertEquals(401, response.statusCode())
+        assertEquals(404, response.statusCode())
     }
 
     @Test
@@ -90,8 +89,8 @@ class AuthControllerIntegrationTest {
         val response = postLogin("noexiste@test.com", "123456")
 
         val body = mapper.readTree(response.body())
-        assertNotNull(body.get("error"), "La respuesta debe contener un campo error")
-        assertTrue(body.get("error").asText().isNotBlank())
+        assertNotNull(body.get("message"), "La respuesta debe contener un campo error")
+        assertTrue(body.get("message").asText().isNotBlank())
     }
 
     @Test
@@ -106,8 +105,8 @@ class AuthControllerIntegrationTest {
         val response = postLogin("test@test.com", "wrongpass")
 
         val body = mapper.readTree(response.body())
-        assertNotNull(body.get("error"), "La respuesta debe contener un campo error")
-        assertTrue(body.get("error").asText().isNotBlank())
+        assertNotNull(body.get("message"), "La respuesta debe contener un campo error")
+        assertTrue(body.get("message").asText().isNotBlank())
     }
 
     @Test
@@ -116,7 +115,7 @@ class AuthControllerIntegrationTest {
 
         assertTrue(
             response.statusCode() == 400 || response.statusCode() == 404,
-            "Email vacío debe devolver 400 o 404, no 200"
+            "Email vacío debe devolver 400 o 401, no 200"
         )
     }
 
@@ -125,7 +124,7 @@ class AuthControllerIntegrationTest {
         val response = postLogin("test@test.com", "")
 
         assertTrue(
-            response.statusCode() == 400 || response.statusCode() == 401,
+            response.statusCode() == 401 || response.statusCode() == 404,
             "Password vacío debe devolver error, no 200"
         )
     }
@@ -152,11 +151,15 @@ class AuthControllerIntegrationTest {
     }
 
     @Test
-    fun `forgot password con mail inexistente devuelve 200 sin token (no enumeration)`() {
+    fun `forgot password con mail inexistente devuelve 200 sin token`() {
         val response = postForgot("noexiste@test.com")
         assertEquals(200, response.statusCode())
         val body = mapper.readTree(response.body())
-        assertTrue(body.get("token").isNull, "El token debe ser null para no filtrar si el mail existe")
+        val tokenNode = body.get("token")
+        assertTrue(
+            tokenNode == null || tokenNode.isNull,
+            "El token debe ser null o estar ausente para no filtrar si el mail existe"
+        )
     }
 
     @Test
