@@ -5,6 +5,17 @@ export interface FileMetadataDTO {
   size: number
 }
 
+export interface VideoMetadataDTO {
+  originalFileName: string
+  storedFileName: string
+  contentType: string
+  size: number
+  duracion: string | null
+  bitrate: number | null
+  resolucion: string | null
+  codec: string | null
+}
+
 export interface MaterialDTO {
   id: number
   title: string
@@ -19,5 +30,6 @@ export interface MaterialDTO {
     dislikes: number
   }
   files: FileMetadataDTO[]
+  videos: VideoMetadataDTO[]
   createdAt: string
 }
