@@ -23,17 +23,23 @@ export const categorias = [
   { value: 'otro', label: 'Otro' },
 ]
 
-export const ALLOWED_FILE_TYPES = [
+export const ALLOWED_DOCUMENT_TYPES = [
   'application/pdf',
   'application/msword',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'video/mp4',
-  'video/mkv',
-  'video/mov'
 ]
 
+export const ALLOWED_VIDEO_TYPES = [
+  'video/mp4', 
+  'video/x-matroska', 
+  'video/quicktime'
+]
+
+export const ALLOWED_FILE_TYPES = [...ALLOWED_DOCUMENT_TYPES, ...ALLOWED_VIDEO_TYPES]
 export const ALLOWED_EXTENSIONS = '.pdf,.doc,.docx,.mp4,.mkv,.mov'
-export const MAX_FILE_SIZE = 20 * 1024 * 1024 // 20 MB
+
+export const MAX_DOCUMENT_SIZE = 20 * 1024 * 1024 // 20 MB
+export const MAX_VIDEO_SIZE = 300 * 1024 * 1024 // 300 MB
 export const MAX_FILES = 10
 
 export function formatFileSize(bytes: number): string {
@@ -46,8 +52,12 @@ export function isValidFile(file: File): { valid: boolean; error?: string } {
   if (!ALLOWED_FILE_TYPES.includes(file.type)) {
     return { valid: false, error: `Tipo no permitido: ${file.type}` }
   }
-  if (file.size > MAX_FILE_SIZE) {
-    return { valid: false, error: `${file.name} supera los 20 MB` }
+
+  const maxSize = ALLOWED_VIDEO_TYPES.includes(file.type) ? MAX_VIDEO_SIZE : MAX_DOCUMENT_SIZE
+  const maxSizeMB = maxSize / 1024 / 1024
+
+  if (file.size > maxSize) {
+    return {valid: false, error: `${file.name} supera los ${maxSizeMB} MB permitidos para ${file.type.includes('video') ? 'videos' : 'documentos'}`}
   }
   return { valid: true }
 }
