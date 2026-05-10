@@ -27,9 +27,12 @@ export const ALLOWED_FILE_TYPES = [
   'application/pdf',
   'application/msword',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'video/mp4',
+  'video/mkv',
+  'video/mov'
 ]
 
-export const ALLOWED_EXTENSIONS = '.pdf,.doc,.docx'
+export const ALLOWED_EXTENSIONS = '.pdf,.doc,.docx,.mp4,.mkv,.mov'
 export const MAX_FILE_SIZE = 20 * 1024 * 1024 // 20 MB
 export const MAX_FILES = 10
 
@@ -41,7 +44,7 @@ export function formatFileSize(bytes: number): string {
 
 export function isValidFile(file: File): { valid: boolean; error?: string } {
   if (!ALLOWED_FILE_TYPES.includes(file.type)) {
-    return { valid: false, error: `Tipo no permitido: ${file.name}` }
+    return { valid: false, error: `Tipo no permitido: ${file.type}` }
   }
   if (file.size > MAX_FILE_SIZE) {
     return { valid: false, error: `${file.name} supera los 20 MB` }

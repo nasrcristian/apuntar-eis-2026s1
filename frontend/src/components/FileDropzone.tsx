@@ -106,7 +106,9 @@ export default function FileDropzone({ files, onFilesChange }: Props) {
           {canAddMore ? 'Arrastrá archivos o hacé click para seleccionar' : `Límite de ${MAX_FILES} archivos alcanzado`}
         </Typography>
         <Typography variant="caption" color="text.secondary">
-          PDF, DOC, DOCX · Máx 20 MB por archivo · Hasta {MAX_FILES} archivos
+          PDF, DOC, DOCX · (Máx 20 MB por archivo) <br />
+          MP4, MKV, MOV · (Max 300 MB por archivo) <br />
+          Hasta {MAX_FILES} archivos
         </Typography>
       </Paper>
 
