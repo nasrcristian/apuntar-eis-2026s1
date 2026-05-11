@@ -39,7 +39,7 @@ export const ALLOWED_FILE_TYPES = [...ALLOWED_DOCUMENT_TYPES, ...ALLOWED_VIDEO_T
 export const ALLOWED_EXTENSIONS = '.pdf,.doc,.docx,.mp4,.mkv,.mov'
 
 export const MAX_DOCUMENT_SIZE = 20 * 1024 * 1024 // 20 MB
-export const MAX_VIDEO_SIZE = 300 * 1024 * 1024 // 300 MB
+export const MAX_VIDEO_SIZE = 350 * 1024 * 1024 // 350 MB
 export const MAX_FILES = 10
 
 export function formatFileSize(bytes: number): string {

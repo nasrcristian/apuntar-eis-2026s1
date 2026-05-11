@@ -118,7 +118,7 @@ export default function FileDropzone({ files, onFilesChange }: Props) {
         </Typography>
         <Typography variant="caption" color="text.secondary">
           PDF, DOC, DOCX · (Máx 20 MB por archivo) <br />
-          MP4, MKV, MOV · (Max 300 MB por archivo) <br />
+          MP4, MKV, MOV · (Max 350 MB por archivo) <br />
           Hasta {MAX_FILES} archivos
         </Typography>
       </Paper>

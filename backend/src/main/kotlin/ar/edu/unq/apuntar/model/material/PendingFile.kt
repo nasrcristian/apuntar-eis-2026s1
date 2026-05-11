@@ -14,7 +14,7 @@ data class PendingFile(
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
         private const val MAX_DOCUMENT_BYTES = 10L * 1024L * 1024L
-        private const val MAX_VIDEO_BYTES = 300L * 1024L * 1024L
+        private const val MAX_VIDEO_BYTES = 350L * 1024L * 1024L
     }
 
     val isVideo: Boolean
