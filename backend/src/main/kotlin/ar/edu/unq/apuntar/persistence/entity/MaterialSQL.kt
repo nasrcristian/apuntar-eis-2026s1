@@ -19,6 +19,8 @@ class MaterialSQL(
     var topic: String,
     @OneToMany(mappedBy = "material", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
     var files: MutableList<MaterialFileSQL> = mutableListOf(),
+    @OneToMany(mappedBy = "material", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
+    var videos: MutableList<MaterialVideoSQL> = mutableListOf(),
     var likes: Long = 0,
     var dislikes: Long = 0,
     var createdAt: Instant = Instant.now()

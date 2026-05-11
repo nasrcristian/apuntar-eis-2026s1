@@ -2,6 +2,7 @@ package ar.edu.unq.apuntar.service
 
 import ar.edu.unq.apuntar.model.material.FileMetadata
 import ar.edu.unq.apuntar.model.material.Material
+import ar.edu.unq.apuntar.model.material.VideoMetadata
 import ar.edu.unq.apuntar.persistence.repository.MaterialRepository
 import ar.edu.unq.apuntar.storage.StorageProvider
 import org.springframework.stereotype.Service
@@ -14,12 +15,12 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class MaterialServiceImpl(
     private val storageProvider: StorageProvider,
-    private val materialRepository: MaterialRepository
+    private val materialRepository: MaterialRepository,
+    private val probeMedia: ProbeMedia
 ) : MaterialService {
     override fun create(fileData: CreateFileDTO): Material {
         if (fileData.files.isEmpty()) throw IllegalArgumentException("At least one file must be provided")
 
-        // valido cada archivo y creo un PendingFile para cada uno, que contiene la metadata original del archivo antes de ser almacenado
         val pendings = fileData.files.map { mf ->
             PendingFile(
                 originalFileName = mf.originalFilename ?: "unknown",
@@ -28,10 +29,25 @@ class MaterialServiceImpl(
             )
         }
 
-        // despues de la validación, almaceno cada archivo usando el StorageProvider y creo un FileMetadata para cada uno, que contiene la metadata del archivo después de ser almacenado (incluyendo el nombre del archivo almacenado)
-        val fileMetadatas = fileData.files.zip(pendings).map { (mf, pending) ->
+        val fileMetadatas = mutableListOf<FileMetadata>()
+        val videoMetadatas = mutableListOf<VideoMetadata>()
+
+        fileData.files.zip(pendings).forEach { (mf, pending) ->
             val stored = storageProvider.store(mf)
-            FileMetadata.of(pending, stored.storedFileName)
+            if (pending.isVideo) {
+                val probed = probeMedia.probe(stored.storedFileName)
+                videoMetadatas.add(
+                    VideoMetadata.of(
+                        pending, stored.storedFileName,
+                        duracion = probed?.duracion,
+                        bitrate = probed?.bitrate,
+                        resolucion = probed?.resolucion,
+                        codec = probed?.codec
+                    )
+                )
+            } else {
+                fileMetadatas.add(FileMetadata.of(pending, stored.storedFileName))
+            }
         }
 
         val material = Material.create(
@@ -41,7 +57,8 @@ class MaterialServiceImpl(
             career = fileData.career,
             category = fileData.category,
             topic = fileData.topic,
-            fileMetadatas = fileMetadatas
+            fileMetadatas = fileMetadatas,
+            videoMetadatas = videoMetadatas
         )
 
         return materialRepository.save(material)
@@ -58,10 +75,8 @@ class MaterialServiceImpl(
         val material = materialRepository.findById(id)
         materialRepository.deleteById(id)
 
-        // borrar los archivos asociados al material usando el StorageProvider
-        material.fileMetadatas.forEach { fileMetadata ->
-            storageProvider.delete(fileMetadata.storedFileName)
-        }
+        material.fileMetadatas.forEach { storageProvider.delete(it.storedFileName) }
+        material.videoMetadatas.forEach { storageProvider.delete(it.storedFileName) }
     }
 
     @Transactional
