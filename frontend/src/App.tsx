@@ -10,6 +10,7 @@ import LoginPage from './pages/auth/LoginPage'
 import HomePage from './pages/HomePage'
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
 import ResetPasswordPage from './pages/auth/ResetPasswordPage'
+import ProtectedRoute from './components/auth/ProtectedRoute'
 
 function App() {
   return (
@@ -17,7 +18,9 @@ function App() {
     <CssBaseline />
       <Routes>
         <Route path="/" element={<MaterialListPage />} />
-        <Route path="/create" element={<UploadPage />} />
+        <Route path="/create" element={
+            <ProtectedRoute><UploadPage /></ProtectedRoute>
+        } />
         <Route path="/material/:id" element={<MaterialPage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<LoginPage />} />
