@@ -15,7 +15,7 @@ interface UseUploadMaterialReturn {
   loading: boolean
   success: string | null
   error: string | null
-  uploadMaterial: (data: MaterialFormData) => Promise<void>
+  uploadMaterial: (data: MaterialFormData) => Promise<boolean>
   resetMessages: () => void
 }
 
@@ -43,14 +43,14 @@ export const useUploadMaterial = (): UseUploadMaterialReturn => {
   const [error, setError] = useState<string | null>(null)
   const token = localStorage.getItem('jwt')
 
-  const uploadMaterial = async (data: MaterialFormData) => {
+  const uploadMaterial = async (data: MaterialFormData): Promise<boolean> => {
     setSuccess(null)
     setError(null)
 
     const validationError = validateForm(data)
     if (validationError) {
       setError(validationError)
-      return
+      return false
     }
 
     setLoading(true)
@@ -79,9 +79,11 @@ export const useUploadMaterial = (): UseUploadMaterialReturn => {
       }
 
       setSuccess(`Material subido correctamente con ${data.files.length} archivo${data.files.length > 1 ? 's' : ''}`)
+      return true
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Error desconocido'
       setError(msg === 'Error al subir el material' ? 'No se pudo subir el archivo, reintentá más tarde' : msg)
+      return false
     } finally {
       setLoading(false)
     }

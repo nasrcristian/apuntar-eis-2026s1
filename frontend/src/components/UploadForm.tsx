@@ -22,6 +22,7 @@ interface UploadFormProps {
   onCategoriaChange: (value: string) => void
   onFilesChange: (files: File[]) => void
   onSubmit: (e: React.FormEvent) => void
+  onCloseSuccess: () => void
 }
 
 export default function UploadForm({
@@ -43,6 +44,7 @@ export default function UploadForm({
   onCategoriaChange,
   onFilesChange,
   onSubmit,
+  onCloseSuccess,
 }: UploadFormProps) {
   const isValid =
     titulo.trim().length > 0 &&
@@ -57,7 +59,7 @@ export default function UploadForm({
     <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 2 }}>
       <Stack spacing={3}>
         {success && (
-          <Alert severity="success" onClose={() => {}}>
+          <Alert severity="success" onClose={onCloseSuccess}>
             {success}
           </Alert>
         )}
