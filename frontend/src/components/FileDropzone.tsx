@@ -4,6 +4,7 @@ import {
   ListItem, ListItemIcon, ListItemText, Chip, Tooltip,
 } from '@mui/material'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
+import VideoFileIcon from '@mui/icons-material/VideoFile'
 import DeleteIcon from '@mui/icons-material/Delete'
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
@@ -15,9 +16,19 @@ interface Props {
 }
 
 function FileIcon({ name }: { name: string }) {
-  return name.endsWith('.pdf')
-    ? <PictureAsPdfIcon color="error" fontSize="small" />
-    : <InsertDriveFileIcon color="primary" fontSize="small" />
+  
+  const lowerName = name.toLowerCase()
+  let icon;
+
+  if (lowerName.endsWith('.pdf')) {
+    icon = <PictureAsPdfIcon color="error" fontSize="small" />
+  }
+  else if (lowerName.endsWith('.mp4')) {
+    icon =  <VideoFileIcon color="secondary" fontSize="small" />
+  }
+  else icon =<InsertDriveFileIcon color="primary" fontSize="small" />
+
+  return icon
 }
 
 export default function FileDropzone({ files, onFilesChange }: Props) {
@@ -106,7 +117,9 @@ export default function FileDropzone({ files, onFilesChange }: Props) {
           {canAddMore ? 'Arrastrá archivos o hacé click para seleccionar' : `Límite de ${MAX_FILES} archivos alcanzado`}
         </Typography>
         <Typography variant="caption" color="text.secondary">
-          PDF, DOC, DOCX · Máx 20 MB por archivo · Hasta {MAX_FILES} archivos
+          PDF, DOC, DOCX · (Máx 20 MB por archivo) <br />
+          MP4, MKV, MOV · (Max 300 MB por archivo) <br />
+          Hasta {MAX_FILES} archivos
         </Typography>
       </Paper>
 
