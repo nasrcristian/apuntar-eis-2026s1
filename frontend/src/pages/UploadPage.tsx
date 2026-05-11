@@ -16,6 +16,7 @@ const EMPTY_FORM = {
 
 export default function UploadPage() {
   const [form, setForm] = useState(EMPTY_FORM)
+  const [submitCount, setSubmitCount] = useState(0)
   const { loading, success, error, uploadMaterial, resetMessages } = useUploadMaterial()
 
   const update = <K extends keyof typeof EMPTY_FORM>(key: K, value: (typeof EMPTY_FORM)[K]) =>
@@ -35,10 +36,11 @@ export default function UploadPage() {
       files: form.files,
     }
 
-    await uploadMaterial(formData)
+    const ok = await uploadMaterial(formData)
 
-    if (!error) {
+    if (ok) {
       setForm(EMPTY_FORM)
+      setSubmitCount((c) => c + 1)
     }
   }
 
@@ -68,6 +70,7 @@ export default function UploadPage() {
         <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
           <CardContent sx={{ p: { xs: 2, sm: 4 } }}>
             <UploadForm
+              key={submitCount}
               titulo={form.titulo}
               descripcion={form.descripcion}
               materia={form.materia}
@@ -86,6 +89,7 @@ export default function UploadPage() {
               onCategoriaChange={(v) => update('categoria', v)}
               onFilesChange={(v) => update('files', v)}
               onSubmit={handleSubmit}
+              onCloseSuccess={resetMessages}
             />
           </CardContent>
         </Card>
