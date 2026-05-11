@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository
 interface UserRepository {
 
     fun findByMail(mail: String): User?
-
     fun save(user: User): User
 
 }

@@ -4,6 +4,8 @@ import ar.edu.unq.apuntar.exception.UserAlreadyExistsException
 import ar.edu.unq.apuntar.dto.ApiErrorDto
 import ar.edu.unq.apuntar.dto.ValidationError
 import ar.edu.unq.apuntar.exception.InvalidMailException
+import ar.edu.unq.apuntar.exception.InvalidMaterialException
+import ar.edu.unq.apuntar.exception.MaterialNotFoundException
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -12,10 +14,31 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+import org.springframework.web.server.ResponseStatusException
 
 
 @RestControllerAdvice
 class GlobalErrorHandler {
+
+    @ExceptionHandler(ResponseStatusException::class)
+    fun handleResponseStatusException(
+        ex: ResponseStatusException,
+        request: HttpServletRequest
+    ): ResponseEntity<ApiErrorDto> {
+        return buildStandardResponse(
+            HttpStatus.valueOf(ex.statusCode.value()),
+            request.requestURI,
+            ex.reason ?: "Error"
+        )
+    }
+
+    @ExceptionHandler(InvalidMaterialException::class)
+    fun handleInvalidMaterialException(ex: InvalidMaterialException): ResponseEntity<String> =
+        ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.message)
+
+    @ExceptionHandler(MaterialNotFoundException::class)
+    fun handleMaterialNotFoundException(ex: MaterialNotFoundException): ResponseEntity<String> =
+        ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
 
     @ExceptionHandler(UserAlreadyExistsException::class)
     fun handleConflict(ex: RuntimeException, request: HttpServletRequest): ResponseEntity<ApiErrorDto> {

@@ -2,7 +2,6 @@ package ar.edu.unq.apuntar.model
 
 import ar.edu.unq.apuntar.exception.InvalidMailException
 import jakarta.persistence.Column
-import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
@@ -24,7 +23,7 @@ class User(
     val mail: String,
 
     @Column(nullable = false)
-    val password: String, // nadie. nadie va a ver que esto no esta hasheado 
+    var password: String
     ){
     init {
         if(!isValidMail(mail)){

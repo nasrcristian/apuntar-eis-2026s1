@@ -1,5 +1,13 @@
 import axios, { type AxiosResponse } from "axios"
-import type { RegisterReqDto, UserDto } from "../types/dto"
+import type { MaterialDTO } from "../types/material"
+import type {
+    RegisterReqDto,
+    UserDto,
+    ForgotPasswordReqDto,
+    ForgotPasswordResDto,
+    ResetPasswordReqDto,
+    ResetPasswordResDto
+} from "../types/dto"
 
 const urlApi = "http://localhost:8080/"
 
@@ -51,3 +59,9 @@ export const postRegister = (data: RegisterReqDto): Promise<ResolvedResponse<Use
 
 export const getMaterial = (id: String): Promise<ResolvedResponse<MaterialDTO>> => 
     get<MaterialDTO>(`${urlApi}/materiales/${id}`)
+
+export const postForgotPassword = (mail: string): Promise<ResolvedResponse<ForgotPasswordResDto>> =>
+    post<ForgotPasswordReqDto, ForgotPasswordResDto>(`${urlApi}api/auth/forgot-password`, { mail })
+
+export const postResetPassword = (token: string, newPassword: string): Promise<ResolvedResponse<ResetPasswordResDto>> =>
+    post<ResetPasswordReqDto, ResetPasswordResDto>(`${urlApi}api/auth/reset-password`, { token, newPassword })
