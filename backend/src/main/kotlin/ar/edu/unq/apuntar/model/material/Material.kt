@@ -12,6 +12,7 @@ class Material private constructor(
     val category: Category,
     val topic: String,
     val fileMetadatas: List<FileMetadata>,
+    val videoMetadatas: List<VideoMetadata> = emptyList(),
     var likes: Long,
     var dislikes: Long,
     val createdAt: Instant
@@ -26,7 +27,8 @@ class Material private constructor(
             career: String,
             category: Category,
             topic: String,
-            fileMetadatas: List<FileMetadata>
+            fileMetadatas: List<FileMetadata>,
+            videoMetadatas: List<VideoMetadata> = emptyList()
         ): Material {
             if (title.isBlank()) throw InvalidMaterialException("El título no puede estar vacío")
             if (description.length < MIN_DESCRIPTION) throw InvalidMaterialException("La descripción es demasiado corta")
@@ -39,13 +41,13 @@ class Material private constructor(
                 category,
                 topic.trim(),
                 fileMetadatas,
+                videoMetadatas,
                 0,
                 0,
                 Instant.now()
             )
         }
 
-        // Metodo para reconstruir un Material desde datos persistidos
         fun toModel(
             id: Long,
             title: String,
@@ -57,8 +59,9 @@ class Material private constructor(
             fileMetadatas: List<FileMetadata>,
             likes: Long,
             dislikes: Long,
-            createdAt: Instant
-        ): Material = Material(id, title, description, subject, career, category, topic, fileMetadatas, likes, dislikes, createdAt)
+            createdAt: Instant,
+            videoMetadatas: List<VideoMetadata> = emptyList()
+        ): Material = Material(id, title, description, subject, career, category, topic, fileMetadatas, videoMetadatas, likes, dislikes, createdAt)
     }
 
     fun applyVote(type: VoteType, isAdding: Boolean) {

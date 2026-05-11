@@ -8,16 +8,27 @@ data class PendingFile(
         val size: Long
 ) {
     companion object {
-        private val ALLOWED = setOf(
+        private val ALLOWED_DOCUMENT_TYPES = setOf(
                 "application/pdf",
                 "application/msword",
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
-        private const val MAX_BYTES = 20L * 1024L * 1024L // 20MB
+        private const val MAX_DOCUMENT_BYTES = 10L * 1024L * 1024L
+        private const val MAX_VIDEO_BYTES = 300L * 1024L * 1024L
     }
 
+    val isVideo: Boolean
+        get() = contentType.startsWith("video/")
+
     init {
-        if (size > MAX_BYTES) throw InvalidMaterialException("El archivo supera el tamaño máximo de 20MB")
-        if (!ALLOWED.contains(contentType.lowercase())) throw InvalidMaterialException("Tipo de archivo no permitido: $contentType")
+        val maxBytes = if (isVideo) MAX_VIDEO_BYTES else MAX_DOCUMENT_BYTES
+        if (size > maxBytes) {
+            val typeLabel = if (isVideo) "video" else "documento"
+            val maxMB = maxBytes / (1024 * 1024)
+            throw InvalidMaterialException("El $typeLabel supera el tamaño máximo de ${maxMB}MB")
+        }
+        if (!isVideo && !ALLOWED_DOCUMENT_TYPES.contains(contentType.lowercase())) {
+            throw InvalidMaterialException("Tipo de archivo no permitido: $contentType")
+        }
     }
 }
