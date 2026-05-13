@@ -20,6 +20,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
+
   const validate = (): boolean => {
     if (!email.trim() || !password.trim()) {
       setError('Los datos ingresados son incorrectos')
@@ -47,7 +48,7 @@ export default function LoginPage() {
         localStorage.setItem('jwt', data.token)
         navigate('/home')
       } else {
-        setError(data.error ?? 'Los datos ingresados son incorrectos')
+        setError(data.error ?? 'El usuario ingresado no existe')
       }
     } catch {
       setError('Los datos ingresados son incorrectos')
