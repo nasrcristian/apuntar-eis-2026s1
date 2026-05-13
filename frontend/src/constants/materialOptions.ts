@@ -32,6 +32,7 @@ export const ALLOWED_DOCUMENT_TYPES = [
 export const ALLOWED_VIDEO_TYPES = [
   'video/mp4', 
   'video/x-matroska', 
+  'video/matroska',
   'video/quicktime'
 ]
 
