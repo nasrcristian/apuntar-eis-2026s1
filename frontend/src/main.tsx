@@ -8,7 +8,14 @@ import App from "./App.tsx";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <SnackbarProvider autoHideDuration={5000}>
+      <SnackbarProvider
+        autoHideDuration={5000}
+        preventDuplicate
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
         <App />
       </SnackbarProvider>
     </BrowserRouter>
