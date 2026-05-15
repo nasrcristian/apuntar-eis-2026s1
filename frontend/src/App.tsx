@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { CssBaseline } from '@mui/material'
 import './App.css'
 
@@ -11,15 +11,18 @@ import HomePage from './pages/HomePage'
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
 import ResetPasswordPage from './pages/auth/ResetPasswordPage'
 import ProtectedRoute from './components/auth/ProtectedRoute'
+import Navbar from './components/navbar/Navbar'
+import ProfilePage from './pages/ProfilePage'
 
 function App() {
   return (
-   <>  
-    <CssBaseline />
+    <>
+      <CssBaseline />
+      <Navbar />
       <Routes>
         <Route path="/" element={<MaterialListPage />} />
         <Route path="/create" element={
-            <ProtectedRoute><UploadPage /></ProtectedRoute>
+          <ProtectedRoute><UploadPage /></ProtectedRoute>
         } />
         <Route path="/material/:id" element={<MaterialPage />} />
         <Route path="/register" element={<Register />} />
@@ -27,6 +30,9 @@ function App() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/profile" element={
+          <ProtectedRoute><ProfilePage /></ProtectedRoute>
+        }/>
       </Routes>
     </>
   )
