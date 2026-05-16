@@ -70,6 +70,9 @@ class MaterialServiceImpl(
     @Transactional(readOnly = true)
     override fun findAll(): List<Material> = materialRepository.findAll()
 
+    @Transactional(readOnly = true)
+    override fun findByName(name: String): List<Material> = materialRepository.findByName(name)
+
     @Transactional
     override fun deleteById(id: Long) {
         val material = materialRepository.findById(id)

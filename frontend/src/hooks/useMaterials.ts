@@ -15,11 +15,6 @@ export const useMaterials = () => {
   // const token = localStorage.getItem("jwt");
   // comentado por el warning nomas
 
-  interface busquedaObj {
-    detalle: string;
-    type: number;
-  }
-
   const fetchAllMaterials = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -46,12 +41,24 @@ export const useMaterials = () => {
     }
   };
 
-  const getMaterial = async (input: busquedaObj) => {
+  const getMaterial = async (detalle: string) => {
     setLoading(true);
     try {
-      const response = await getMaterialFiltrado(input.detalle, input.type);
-      setMaterials(response.data);
-    } catch (error) {}
+      const response = await getMaterialFiltrado(detalle);
+      if (response.data.length < 1) {
+        enqueueSnackbar(
+          `No se encontraron resultados para ${detalle}. Probá con otras palabras.`,
+          { variant: "error" },
+        );
+      } else {
+        setMaterials(response.data);
+      }
+    } catch (error) {
+      enqueueSnackbar(
+        `No se encontraron resultados para ${detalle}. Probá con otras palabras.`,
+        { variant: "error" },
+      );
+    }
     setLoading(false);
   };
 

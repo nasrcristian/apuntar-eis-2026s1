@@ -117,10 +117,9 @@ export const deleteMaterial = (
 
 export const getMaterialFiltrado = (
   detalle: string,
-  type: number,
 ): Promise<ResolvedResponse<MaterialDTO[]>> =>
   get<MaterialDTO[]>(
-    `${urlApi}/materiales/filtrado?detalle=${encodeURIComponent(detalle)}&type=${type}`,
+    `${urlApi}/materiales/filtrado?detalle=${encodeURIComponent(detalle)}`,
   );
 
 // Terminar de factorizar esto

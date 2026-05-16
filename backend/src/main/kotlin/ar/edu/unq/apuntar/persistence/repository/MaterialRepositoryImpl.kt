@@ -112,6 +112,8 @@ class MaterialRepositoryImpl(
 
     override fun findAll(): List<Material> = materialDao.findAll().map { toMaterial(it) }
 
+    override fun findByName(name: String): List<Material> = materialDao.findByName(name).map { toMaterial(it) }
+
     override fun deleteById(id: Long) {
         if (!materialDao.existsById(id)) throw MaterialNotFoundException("No se encontró el material")
         materialDao.deleteById(id)
