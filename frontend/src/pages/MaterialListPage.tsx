@@ -11,11 +11,15 @@ import {
   Alert,
   Snackbar,
   CircularProgress,
-  TextField,
+  FormControl,
+  OutlinedInput,
   Stack,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
 import type { AlertColor } from "@mui/material";
-import FindInPageIcon from "@mui/icons-material/FindInPage";
+import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
 import MaterialCard from "../components/MaterialCard";
 import { useMaterials } from "../hooks/useMaterials";
 import { enqueueSnackbar } from "notistack";
@@ -58,18 +62,22 @@ const MaterialListPage = () => {
     setOpenModal(false);
   };
 
-  const handleSearch = async (type: number) => {
-    if (inputBusqueda.length < 1) {
-      enqueueSnackbar("Tenes que ingresar algo para buscar", {
-        variant: "error",
-      });
+  const handleSearch = async () => {
+    if (inputBusqueda.length > 99) {
+      enqueueSnackbar(
+        `La búsqueda es demasiado larga. Usá menos de 100 caracteres.`,
+        { variant: "error" },
+      );
+    } else if (inputBusqueda.length < 1) {
+      await fetchAllMaterials();
     } else {
-      const busquedaObj = {
-        type,
-        detalle: inputBusqueda,
-      };
-      await getMaterial(busquedaObj);
+      await getMaterial(inputBusqueda.trim());
     }
+  };
+
+  const handleCleanText = async () => {
+    setInputBusqueda("");
+    await fetchAllMaterials();
   };
 
   /* 
@@ -96,22 +104,25 @@ const MaterialListPage = () => {
           mb: 3,
         }}
       >
-        <TextField
-          placeholder="Escribi lo que necesitas buscar..."
-          onChange={(e) => setInputBusqueda(e.target.value)}
-          disabled={loading}
-          variant="outlined"
-          fullWidth
-          value={inputBusqueda}
-        />
-        <Button
-          variant="contained"
-          onClick={() => handleSearch(1)}
-          disabled={loading}
-          startIcon={<FindInPageIcon />}
-        >
-          Buscar
-        </Button>
+        <FormControl variant="outlined" fullWidth>
+          <OutlinedInput
+            placeholder="Buscar por nombre, descripción o título de archivo..."
+            onChange={(e) => setInputBusqueda(e.target.value)}
+            disabled={loading}
+            fullWidth
+            value={inputBusqueda}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton onClick={handleCleanText} edge="end">
+                  <CloseIcon />
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+        </FormControl>
+        <IconButton onClick={handleSearch} disabled={loading}>
+          <SearchIcon />
+        </IconButton>
       </Stack>
 
       {loading ? (
