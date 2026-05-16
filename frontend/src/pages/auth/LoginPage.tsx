@@ -48,7 +48,7 @@ export default function LoginPage() {
 
       if (response.ok) {
         login(data.token)
-        navigate('/home')
+        navigate('/')
       } else {
         setError(data.error ?? 'El usuario ingresado no existe')
       }
