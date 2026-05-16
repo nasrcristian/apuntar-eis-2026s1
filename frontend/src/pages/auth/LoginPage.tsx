@@ -12,6 +12,7 @@ import {
   CircularProgress,
   Link,
 } from '@mui/material'
+import { useAuth } from '../../context/AuthContext'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -19,6 +20,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const { login } = useAuth()
 
 
   const validate = (): boolean => {
@@ -45,7 +47,7 @@ export default function LoginPage() {
       const data = await response.json()
 
       if (response.ok) {
-        localStorage.setItem('jwt', data.token)
+        login(data.token)
         navigate('/home')
       } else {
         setError(data.error ?? 'El usuario ingresado no existe')
