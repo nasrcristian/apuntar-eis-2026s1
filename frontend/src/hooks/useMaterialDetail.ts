@@ -1,41 +1,37 @@
-import { useState, useEffect } from 'react'
-import type { MaterialDTO } from '../types/material'
-
-const BASE_URL = 'http://localhost:8080'
+import { useState, useEffect } from "react";
+import type { MaterialDTO } from "../types/material";
+import { getMaterial } from "../service/api";
 
 interface UseMaterialDetailReturn {
-  data: MaterialDTO | null
-  loading: boolean
-  error: string | null
-  refetch: () => void
+  data: MaterialDTO | null;
+  loading: boolean;
+  error: string | null;
+  refetch: () => void;
 }
 
 export function useMaterialDetail(id: number): UseMaterialDetailReturn {
-  const [data, setData] = useState<MaterialDTO | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [data, setData] = useState<MaterialDTO | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchData = async () => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
     try {
-      const res = await fetch(`${BASE_URL}/materiales/${id}`)
-      if (!res.ok) {
-        throw new Error('Material no encontrado')
-      }
-      const result: MaterialDTO = await res.json()
-      result.reactions = {likes: 0, dislikes: 0}
-      setData(result)
+      const res = await getMaterial(id);
+      setData(res.data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al cargar el material')
+      setError(
+        err instanceof Error ? err.message : "Error al cargar el material",
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchData()
-  }, [id])
+    fetchData();
+  }, [id]);
 
-  return { data, loading, error, refetch: fetchData }
+  return { data, loading, error, refetch: fetchData };
 }

@@ -1,8 +1,15 @@
 // hooks/useMaterials.js
 import { useState, useCallback } from "react";
+import {
+  getAllMaterials,
+  deleteMaterial,
+  getMaterialFiltrado,
+} from "../service/api";
+import type { MaterialDTO } from "../types/material";
+import { enqueueSnackbar } from "notistack";
 
 export const useMaterials = () => {
-  const [materials, setMaterials] = useState([]);
+  const [materials, setMaterials] = useState<MaterialDTO[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   // const token = localStorage.getItem("jwt");
@@ -13,21 +20,13 @@ export const useMaterials = () => {
     type: number;
   }
 
-  /* 
-    To do:
-    Refactorizar con axios ver como lo hizo cris antes
-  */
-
   const fetchAllMaterials = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`http://localhost:8080/materiales`);
-      if (!response.ok) throw new Error("Error al cargar materiales");
+      const response = await getAllMaterials();
 
-      const data = await response.json();
-
-      setMaterials(data);
+      setMaterials(response.data);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -35,15 +34,14 @@ export const useMaterials = () => {
     }
   }, []);
 
-  const deleteMaterial = async (id: any) => {
+  const delMaterial = async (id: any) => {
     try {
-      const response = await fetch(`http://localhost:8080/materiales/${id}`, {
-        method: "DELETE",
-      });
-      if (!response.ok)
-        throw new Error("No se ha podido eliminar el contenido");
+      await deleteMaterial(id);
+
+      enqueueSnackbar("Material eliminado con exito", { variant: "success" });
       return { success: true };
     } catch (err: any) {
+      enqueueSnackbar(err.message, { variant: "error" });
       return { success: false, message: err.message };
     }
   };
@@ -51,16 +49,8 @@ export const useMaterials = () => {
   const getMaterial = async (input: busquedaObj) => {
     setLoading(true);
     try {
-      const response = await fetch(
-        `http://localhost:8080/materiales/${input}`,
-        {
-          method: "GET",
-        },
-      );
-      return {
-        success: true,
-        materiales: response,
-      };
+      const response = await getMaterialFiltrado(input.detalle, input.type);
+      setMaterials(response.data);
     } catch (error) {}
     setLoading(false);
   };
@@ -70,7 +60,7 @@ export const useMaterials = () => {
     loading,
     error,
     fetchAllMaterials,
-    deleteMaterial,
+    delMaterial,
     getMaterial,
   };
 };

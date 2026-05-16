@@ -27,7 +27,7 @@ type NotificationState = {
 };
 
 const MaterialListPage = () => {
-  const { materials, loading, fetchAllMaterials, deleteMaterial, getMaterial } =
+  const { materials, loading, fetchAllMaterials, delMaterial, getMaterial } =
     useMaterials();
   const [openModal, setOpenModal] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState<any | null>(null);
@@ -50,21 +50,10 @@ const MaterialListPage = () => {
   const handleConfirmDelete = async () => {
     if (!selectedMaterial) return;
 
-    const result = await deleteMaterial(selectedMaterial.id);
+    const result = await delMaterial(selectedMaterial.id);
 
     if (result.success) {
-      setNotification({
-        open: true,
-        message: "eliminación exitosa",
-        severity: "success",
-      });
       fetchAllMaterials();
-    } else {
-      setNotification({
-        open: true,
-        message: "No se ha podido eliminar el contenido, reinténtelo mas tarde",
-        severity: "error",
-      });
     }
     setOpenModal(false);
   };
