@@ -1,14 +1,7 @@
-import { useNavigate } from 'react-router-dom'
 import { Box, Card, CardContent, Typography, Button, Stack } from '@mui/material'
 
+
 export default function HomePage() {
-  const navigate = useNavigate()
-
-  const handleLogout = () => {
-    localStorage.removeItem('jwt')
-    navigate('/login')
-  }
-
   return (
     <Box sx={{
       minHeight: '100vh',
