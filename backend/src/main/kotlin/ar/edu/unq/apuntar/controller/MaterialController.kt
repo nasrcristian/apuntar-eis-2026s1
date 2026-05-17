@@ -38,6 +38,16 @@ class MaterialController(private val materialService: MaterialService) {
     @GetMapping
     fun getAll(): ResponseEntity<List<MaterialDTO>> = ResponseEntity.ok(materialService.findAll().map { it.toDTO() })
 
+    @GetMapping("/filtrado")
+    fun getByName(
+        @RequestParam(name = "id", required = false) id: Long?,
+        @RequestParam(name = "detalle") detalle: String
+    ): ResponseEntity<List<MaterialDTO>> {
+        return ResponseEntity.ok(materialService.findByName(detalle).map { it.toDTO() })
+    }
+
+
+
     @DeleteMapping("/{id}")
     fun deleteMaterial(@PathVariable id: Long): ResponseEntity<Void> {
         materialService.deleteById(id)

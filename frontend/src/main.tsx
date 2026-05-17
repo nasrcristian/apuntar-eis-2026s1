@@ -1,16 +1,23 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router'
-import { AuthProvider } from './context/AuthContext'
-import './index.css'
-import App from './App.tsx'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router";
+import { SnackbarProvider } from "notistack";
+import "./index.css";
+import App from "./App.tsx";
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <AuthProvider>
+      <SnackbarProvider
+        autoHideDuration={5000}
+        preventDuplicate
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
         <App />
-      </AuthProvider>
+      </SnackbarProvider>
     </BrowserRouter>
   </StrictMode>,
-)
+);

@@ -1,45 +1,73 @@
 // hooks/useMaterials.js
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
+import {
+  getAllMaterials,
+  deleteMaterial,
+  getMaterialFiltrado,
+} from "../service/api";
+import type { MaterialDTO } from "../types/material";
+import { enqueueSnackbar } from "notistack";
 
 export const useMaterials = () => {
-  const [materials, setMaterials] = useState([]);
+  const [materials, setMaterials] = useState<MaterialDTO[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem('jwt')
+  // const token = localStorage.getItem("jwt");
+  // comentado por el warning nomas
 
   const fetchAllMaterials = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`http://localhost:8080/materiales/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        },
-      })
-      if (!response.ok) throw new Error('Error al cargar materiales');
-      
-      const data = await response.json();
-      
-      setMaterials(data);
-    } catch (err) {
+      const response = await getAllMaterials();
+
+      setMaterials(response.data);
+    } catch (err: any) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const deleteMaterial = async (id) => {
+  const delMaterial = async (id: any) => {
     try {
-      const response = await fetch(`http://localhost:8080/materiales/${id}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) throw new Error('No se ha podido eliminar el contenido');
+      await deleteMaterial(id);
+
+      enqueueSnackbar("Material eliminado con exito", { variant: "success" });
       return { success: true };
-    } catch (err) {
+    } catch (err: any) {
+      enqueueSnackbar(err.message, { variant: "error" });
       return { success: false, message: err.message };
     }
   };
 
-  return { materials, loading, error, fetchAllMaterials, deleteMaterial };
+  const getMaterial = async (detalle: string) => {
+    setLoading(true);
+    try {
+      const response = await getMaterialFiltrado(detalle);
+      if (response.data.length < 1) {
+        enqueueSnackbar(
+          `No se encontraron resultados para ${detalle}. Probá con otras palabras.`,
+          { variant: "error" },
+        );
+      } else {
+        setMaterials(response.data);
+      }
+    } catch (error) {
+      enqueueSnackbar(
+        `No se encontraron resultados para ${detalle}. Probá con otras palabras.`,
+        { variant: "error" },
+      );
+    }
+    setLoading(false);
+  };
+
+  return {
+    materials,
+    loading,
+    error,
+    fetchAllMaterials,
+    delMaterial,
+    getMaterial,
+  };
 };

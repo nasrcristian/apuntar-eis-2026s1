@@ -1,67 +1,126 @@
-import axios, { type AxiosResponse } from "axios"
-import type { MaterialDTO } from "../types/material"
+import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
+import type { MaterialDTO } from "../types/material";
 import type {
-    RegisterReqDto,
-    UserDto,
-    ForgotPasswordReqDto,
-    ForgotPasswordResDto,
-    ResetPasswordReqDto,
-    ResetPasswordResDto
-} from "../types/dto"
+  RegisterReqDto,
+  UserDto,
+  ForgotPasswordReqDto,
+  ForgotPasswordResDto,
+  ResetPasswordReqDto,
+  ResetPasswordResDto,
+  // MaterialFormData,
+  // MaterialUploadResDto,
+} from "../types/dto";
+const token = localStorage.getItem("jwt");
 
-const urlApi = "http://localhost:8080/"
+const urlApi = "http://localhost:8080";
 
 export interface ResolvedResponse<T> {
-    headers: Record<string, string>
-    status: number
-    statusText: string
-    data: T
+  headers: Record<string, string>;
+  status: number;
+  statusText: string;
+  data: T;
 }
 
 export interface ErrorResponse {
-    code: string
-    message: string
-    response: AxiosResponse | undefined
+  code: string;
+  message: string;
+  response: AxiosResponse | undefined;
 }
 
-const handleResolvedResponse = <T>(response: AxiosResponse<T>): ResolvedResponse<T> => {
-    return {
-        headers: response.headers as Record<string, string>,
-        status: response.status,
-        statusText: response.statusText,
-        data: response.data,
-    }
-}
+const handleResolvedResponse = <T>(
+  response: AxiosResponse<T>,
+): ResolvedResponse<T> => {
+  return {
+    headers: response.headers as Record<string, string>,
+    status: response.status,
+    statusText: response.statusText,
+    data: response.data,
+  };
+};
 
 const handleErrorResponse = (error: {
-    code: string
-    message: string
-    response?: AxiosResponse
+  code: string;
+  message: string;
+  response?: AxiosResponse;
 }): ErrorResponse => {
-    throw { code: error.code, message: error.message, response: error.response }
-}
+  throw { code: error.code, message: error.message, response: error.response };
+};
 
-const post = <T, R>(url: string, data: T): Promise<ResolvedResponse<R>> =>(axios.post<R>(url, data)
-        .then((response) => handleResolvedResponse(response))
-        .catch((error) => {
-            throw handleErrorResponse(error)
-        }))
+const post = <T, R>(url: string, data: T): Promise<ResolvedResponse<R>> =>
+  axios
+    .post<R>(url, data)
+    .then((response) => handleResolvedResponse(response))
+    .catch((error) => {
+      throw handleErrorResponse(error);
+    });
 
-const get = <R>(url: string): Promise<ResolvedResponse<R>> => (axios.get<R>(url))
-                .then((response) => handleResolvedResponse(response))
-                .catch((error) => {
-                    throw handleErrorResponse(error)
-                })
+const get = <R>(
+  url: string,
+  config?: AxiosRequestConfig,
+): Promise<ResolvedResponse<R>> =>
+  axios
+    .get<R>(url, config) // Axios recibe aquí los headers, interceptores o params
+    .then((response) => handleResolvedResponse(response))
+    .catch((error) => {
+      throw handleErrorResponse(error);
+    });
 
-        
-export const postRegister = (data: RegisterReqDto): Promise<ResolvedResponse<UserDto>> =>
-    post<RegisterReqDto, UserDto>(`${urlApi}user`, data)
+const del = <R>(
+  url: string,
+  config: AxiosRequestConfig,
+): Promise<ResolvedResponse<R>> =>
+  axios
+    .delete<R>(url, config)
+    .then((response) => handleResolvedResponse(response))
+    .catch((error) => {
+      throw handleErrorResponse(error);
+    });
 
-export const getMaterial = (id: String): Promise<ResolvedResponse<MaterialDTO>> => 
-    get<MaterialDTO>(`${urlApi}/materiales/${id}`)
+export const postRegister = (
+  data: RegisterReqDto,
+): Promise<ResolvedResponse<UserDto>> =>
+  post<RegisterReqDto, UserDto>(`${urlApi}user`, data);
 
-export const postForgotPassword = (mail: string): Promise<ResolvedResponse<ForgotPasswordResDto>> =>
-    post<ForgotPasswordReqDto, ForgotPasswordResDto>(`${urlApi}api/auth/forgot-password`, { mail })
+export const getMaterial = (
+  id: String | number,
+): Promise<ResolvedResponse<MaterialDTO>> =>
+  get<MaterialDTO>(`${urlApi}/materiales/${id}`);
 
-export const postResetPassword = (token: string, newPassword: string): Promise<ResolvedResponse<ResetPasswordResDto>> =>
-    post<ResetPasswordReqDto, ResetPasswordResDto>(`${urlApi}api/auth/reset-password`, { token, newPassword })
+export const postForgotPassword = (
+  mail: string,
+): Promise<ResolvedResponse<ForgotPasswordResDto>> =>
+  post<ForgotPasswordReqDto, ForgotPasswordResDto>(
+    `${urlApi}api/auth/forgot-password`,
+    { mail },
+  );
+
+export const postResetPassword = (
+  token: string,
+  newPassword: string,
+): Promise<ResolvedResponse<ResetPasswordResDto>> =>
+  post<ResetPasswordReqDto, ResetPasswordResDto>(
+    `${urlApi}api/auth/reset-password`,
+    { token, newPassword },
+  );
+
+export const getAllMaterials = (): Promise<ResolvedResponse<MaterialDTO[]>> =>
+  get<MaterialDTO[]>(`${urlApi}/materiales`);
+
+export const deleteMaterial = (
+  id: string | number,
+): Promise<ResolvedResponse<void>> =>
+  del<void>(`${urlApi}/materiales/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`, // Reemplaza 'token' por tu variable, store o localStorage
+    },
+  });
+
+export const getMaterialFiltrado = (
+  detalle: string,
+): Promise<ResolvedResponse<MaterialDTO[]>> =>
+  get<MaterialDTO[]>(
+    `${urlApi}/materiales/filtrado?detalle=${encodeURIComponent(detalle)}`,
+  );
+
+// Terminar de factorizar esto
+// export const uploadMaterial = (form: MaterialFormData): Promise<ResolvedResponse<MaterialUploadResDto>> => post<MaterialFormData, MaterialUploadResDto>();
