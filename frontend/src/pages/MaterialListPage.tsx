@@ -109,6 +109,11 @@ const MaterialListPage = () => {
             placeholder="Buscar por nombre, descripción o título de archivo..."
             onChange={(e) => setInputBusqueda(e.target.value)}
             disabled={loading}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearch();
+              }
+            }}
             fullWidth
             value={inputBusqueda}
             endAdornment={
