@@ -79,7 +79,7 @@ const del = <R>(
 export const postRegister = (
   data: RegisterReqDto,
 ): Promise<ResolvedResponse<UserDto>> =>
-  post<RegisterReqDto, UserDto>(`${urlApi}user`, data);
+  post<RegisterReqDto, UserDto>(`${urlApi}/user`, data);
 
 export const getMaterial = (
   id: String | number,
