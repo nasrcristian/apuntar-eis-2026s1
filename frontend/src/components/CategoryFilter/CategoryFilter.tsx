@@ -37,7 +37,7 @@ export default function CategoryFilter({value, onChange}: CategoryFilterProps) {
         ))}
       </TextField>
       {value && (
-        <Button variant="outlined" size="small" onClick={() => onChange('')}>
+        <Button variant="outlined" size="small" onClick={() => setValueAndLabel('')}>
           Limpiar filtro
         </Button>
       )}
