@@ -21,12 +21,12 @@ export default function Navbar() {
   return (
     <header className="navbar">
       <div className="navbar__left">
-        <Link to="/home" className="navbar__logo">
+        <Link to="/" className="navbar__logo">
           <MenuBookIcon fontSize="small" />
           <span className="navbar__logo-text">Apuntar</span>
         </Link>
         <nav className="navbar__links">
-          <NavigationButton title="Materiales" to="/" />
+          <NavigationButton title="Materiales" to="/library" />
           <NavigationButton
             title="Quiero Colaborar"
             to="/create"

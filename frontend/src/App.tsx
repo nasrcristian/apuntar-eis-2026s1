@@ -5,7 +5,7 @@ import './App.css'
 import UploadPage from './pages/UploadPage'
 import MaterialPage from './pages/MaterialPage/MaterialPage'
 import MaterialListPage from './pages/MaterialListPage'
-import Register from './components/Register/Register'
+import Register from './pages/Register/Register'
 import LoginPage from './pages/auth/LoginPage'
 import HomePage from './pages/HomePage'
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
@@ -20,14 +20,14 @@ function App() {
       <CssBaseline />
       <Navbar />
       <Routes>
-        <Route path="/" element={<MaterialListPage />} />
+        <Route path="/library" element={<MaterialListPage />} />
         <Route path="/create" element={
           <ProtectedRoute><UploadPage /></ProtectedRoute>
         } />
         <Route path="/material/:id" element={<MaterialPage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/home" element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/profile" element={

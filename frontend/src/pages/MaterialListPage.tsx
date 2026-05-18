@@ -1,28 +1,30 @@
 import { useEffect, useState } from "react";
 import {
-  Container,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Box,
-  Alert,
-  Snackbar,
-  CircularProgress,
-  FormControl,
-  OutlinedInput,
-  Stack,
-  IconButton,
-  InputAdornment,
-} from "@mui/material";
+    Container,
+    Typography,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    Box,
+    Alert,
+    Snackbar,
+    CircularProgress,
+    FormControl,
+    OutlinedInput,
+    Stack,
+    IconButton,
+    InputAdornment,
+} from '@mui/material';
+import MaterialCard from '../components/MaterialCard';
+import CategoryFilter from '../components/CategoryFilter/CategoryFilter';
 import type { AlertColor } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
-import MaterialCard from "../components/MaterialCard";
 import { useMaterials } from "../hooks/useMaterials";
 import { enqueueSnackbar } from "notistack";
+import {categorias} from "../constants/materialOptions";
 
 type NotificationState = {
   open: boolean;
@@ -36,11 +38,16 @@ const MaterialListPage = () => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState<any | null>(null);
   const [inputBusqueda, setInputBusqueda] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [notification, setNotification] = useState<NotificationState>({
     open: false,
     message: "",
     severity: "success",
   });
+
+  const filteredMaterials = selectedCategory
+    ? materials.filter((m: any) => m.category === selectedCategory)
+    : materials;
 
   useEffect(() => {
     fetchAllMaterials();
@@ -80,19 +87,18 @@ const MaterialListPage = () => {
     await fetchAllMaterials();
   };
 
-  /* 
+  /*
    1 es busqueda por nombre
    2 por tema
    3 .....
-  
+
   */
+
+   const selectedCategoryLabel = categorias.find(c => c.value === selectedCategory)?.label ?? selectedCategory;
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
-      <Typography
-        variant="h4"
-        sx={{ fontWeight: "bold", mb: 4, color: "#1976d2" }}
-      >
+      <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2, color: '#1976d2' }}>
         Biblioteca de Apuntes
       </Typography>
       <Stack
@@ -130,23 +136,26 @@ const MaterialListPage = () => {
         </IconButton>
       </Stack>
 
+      <CategoryFilter value={selectedCategory} onChange={setSelectedCategory} />
+
       {loading ? (
         <Box sx={{ display: "flex", justifyContent: "center", my: 10 }}>
           <CircularProgress size={60} />
         </Box>
-      ) : [1].length > 0 ? (
-        // Contenedor simple para lista vertical
-        <>
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            {materials.map((m: any) => (
-              <MaterialCard
-                key={m.id}
-                material={m}
-                onDelete={() => handleDeleteClick(m)}
-              />
-            ))}
-          </Box>
-        </>
+      ) : filteredMaterials.length > 0 ? (
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          {filteredMaterials.map((m: any) => (
+            <MaterialCard
+              key={m.id}
+              material={m}
+              onDelete={() => handleDeleteClick(m)}
+            />
+          ))}
+        </Box>
+      ) : selectedCategory ? (
+        <Typography align="center" color="text.secondary">
+          No hay materiales para la categoria {selectedCategoryLabel}. Probá con otra categoria o subi nuevo material.
+        </Typography>
       ) : (
         <Typography align="center" color="text.secondary">
           No hay materiales disponibles actualmente.
