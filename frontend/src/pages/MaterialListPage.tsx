@@ -11,8 +11,6 @@ import {
     Alert,
     Snackbar,
     CircularProgress,
-    TextField,
-    MenuItem,
     FormControl,
     OutlinedInput,
     Stack,
@@ -20,7 +18,7 @@ import {
     InputAdornment,
 } from '@mui/material';
 import MaterialCard from '../components/MaterialCard';
-import { categorias } from '../constants/materialOptions';
+import CategoryFilter from '../components/CategoryFilter/CategoryFilter';
 import type { AlertColor } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
@@ -135,25 +133,7 @@ const MaterialListPage = () => {
         </IconButton>
       </Stack>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
-        <TextField
-          select
-          label="Categoría"
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-          sx={{ minWidth: 220 }}
-        >
-          <MenuItem value="">Ver todos</MenuItem>
-          {categorias.map((c) => (
-            <MenuItem key={c.value} value={c.value}>{c.label}</MenuItem>
-          ))}
-        </TextField>
-        {selectedCategory && (
-          <Button variant="outlined" size="small" onClick={() => setSelectedCategory('')}>
-            Limpiar filtro
-          </Button>
-        )}
-      </Box>
+      <CategoryFilter value={selectedCategory} onChange={setSelectedCategory} />
 
       {loading ? (
         <Box sx={{ display: "flex", justifyContent: "center", my: 10 }}>
@@ -171,7 +151,7 @@ const MaterialListPage = () => {
         </Box>
       ) : selectedCategory ? (
         <Typography align="center" color="text.secondary">
-          No hay materiales en esta categoría.
+          No hay materiales para la categoria {selectedCategory}. Probá con otra categoria o subi nuevo material.
         </Typography>
       ) : (
         <Typography align="center" color="text.secondary">

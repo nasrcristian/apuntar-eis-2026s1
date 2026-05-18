@@ -23,6 +23,8 @@ export const categorias = [
   { value: 'otro', label: 'Otro' },
 ]
 
+// export const categories = new Map<String, String>() TODO en algun momento para fixear un par de errores visuales :*
+
 export const ALLOWED_DOCUMENT_TYPES = [
   'application/pdf',
   'application/msword',
