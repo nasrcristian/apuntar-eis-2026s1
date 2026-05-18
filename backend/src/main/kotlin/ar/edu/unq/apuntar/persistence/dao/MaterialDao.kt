@@ -1,5 +1,6 @@
 package ar.edu.unq.apuntar.persistence.dao
 
+import ar.edu.unq.apuntar.model.material.Material
 import ar.edu.unq.apuntar.persistence.entity.MaterialSQL
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -22,4 +23,11 @@ interface MaterialDao : JpaRepository<MaterialSQL, Long> {
 		nativeQuery = true
 	)
 	fun toggleDislike(@Param("id") id: Long, @Param("isAdding") isAdding: Boolean): Int
+
+	@Query(
+		value = "SELECT * FROM materiales WHERE title LIKE CONCAT('%', :detalle, '%') OR description LIKE CONCAT('%', :detalle, '%')",
+		nativeQuery = true
+	)
+	fun findByName(@Param("detalle") name: String): List<MaterialSQL>
+
 }
