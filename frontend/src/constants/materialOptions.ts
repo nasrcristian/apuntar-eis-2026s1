@@ -17,7 +17,7 @@ export const categorias = [
   { value: 'apunte', label: 'Apunte' },
   { value: 'resumen', label: 'Resumen' },
   { value: 'modelo_examen', label: 'Modelo de examen' },
-  { value: 'presentacion', label: 'Presentación' },
+  { value: 'video', label: 'Video' },
   { value: 'trabajo_practico', label: 'Trabajo práctico' },
   { value: 'cuadro_grafico', label: 'Cuadro o gráfico' },
   { value: 'otro', label: 'Otro' },
