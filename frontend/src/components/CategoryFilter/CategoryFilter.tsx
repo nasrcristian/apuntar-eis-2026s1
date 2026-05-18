@@ -24,7 +24,7 @@ export default function CategoryFilter({value, onChange}: CategoryFilterProps) {
     <Box className="category-filter">
       <TextField
         select
-        label="Categoría"
+        label="Filtrar por categoría"
         value={label}
         onChange={(e) => setValueAndLabel(e.target.value)}
         className="category-filter__select"

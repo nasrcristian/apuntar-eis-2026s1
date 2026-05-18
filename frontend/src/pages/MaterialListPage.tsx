@@ -24,6 +24,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import { useMaterials } from "../hooks/useMaterials";
 import { enqueueSnackbar } from "notistack";
+import {categorias} from "../constants/materialOptions";
 
 type NotificationState = {
   open: boolean;
@@ -93,6 +94,8 @@ const MaterialListPage = () => {
 
   */
 
+   const selectedCategoryLabel = categorias.find(c => c.value === selectedCategory)?.label ?? selectedCategory;
+
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2, color: '#1976d2' }}>
@@ -151,7 +154,7 @@ const MaterialListPage = () => {
         </Box>
       ) : selectedCategory ? (
         <Typography align="center" color="text.secondary">
-          No hay materiales para la categoria {selectedCategory}. Probá con otra categoria o subi nuevo material.
+          No hay materiales para la categoria {selectedCategoryLabel}. Probá con otra categoria o subi nuevo material.
         </Typography>
       ) : (
         <Typography align="center" color="text.secondary">
