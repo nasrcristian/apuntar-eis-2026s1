@@ -89,7 +89,6 @@ class Material private constructor(
     ): Material {
         if (title.isBlank()) throw InvalidMaterialException("El titulo no puede estar vacio")
         if (title.trim().length > MAX_TITLE) throw InvalidMaterialException("El titulo no puede tener mas de $MAX_TITLE caracteres")
-        if (description.length < MIN_DESCRIPTION) throw InvalidMaterialException("La descripcion es demasiado corta")
         if (subject.isBlank()) throw InvalidMaterialException("La materia no puede estar vacia")
         if (career.isBlank()) throw InvalidMaterialException("La carrera no puede estar vacia")
         if (topic.isBlank()) throw InvalidMaterialException("El tema no puede estar vacio")

@@ -36,6 +36,7 @@ const MaterialListPage = () => {
   const { materials, loading, fetchAllMaterials, delMaterial, getMaterial } =
     useMaterials();
   const [openModal, setOpenModal] = useState(false);
+  const [snackOpen, setSnackOpen] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState<any | null>(null);
   const [inputBusqueda, setInputBusqueda] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -149,6 +150,14 @@ const MaterialListPage = () => {
               key={m.id}
               material={m}
               onDelete={() => handleDeleteClick(m)}
+              onEditSuccess={() => {
+                setNotification({
+                  open: true,
+                  message: "Cambios guardados correctamente",
+                  severity: "success",
+                });
+                fetchAllMaterials();
+              }}
             />
           ))}
         </Box>
