@@ -47,11 +47,10 @@ class SecurityConfig(private val jwtAuthFilter: JwtAuthFilter) {
                     "/swagger-ui.html",
                     "/v3/api-docs/**"
                 ).permitAll()
-                // Listado y detalle de materiales son públicos
                 auth.requestMatchers(HttpMethod.GET, "/materiales").permitAll()
+                auth.requestMatchers(HttpMethod.GET, "/materiales/mis-publicaciones").authenticated()
                 auth.requestMatchers(HttpMethod.GET, "/materiales/{id}").permitAll()
                 auth.requestMatchers(HttpMethod.POST, "/user").permitAll()
-                // Acciones que requieren login
                 auth.requestMatchers(HttpMethod.POST, "/materiales").authenticated()
                 auth.requestMatchers(HttpMethod.DELETE, "/materiales/{id}").authenticated()
                 auth.requestMatchers(HttpMethod.POST, "/materiales/{id}/like").authenticated()
