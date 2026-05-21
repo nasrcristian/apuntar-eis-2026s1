@@ -105,6 +105,8 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
               fontWeight: "bold",
               lineHeight: 1.2,
               mb: 0.5,
+              wordBreak: "break-word",
+              overflowWrap: "anywhere",
             }}
           >
             {material.title}

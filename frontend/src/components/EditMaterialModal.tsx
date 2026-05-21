@@ -64,7 +64,7 @@ export default function EditMaterialModal({ open, material, onClose, onSuccess }
     const isValid =
         form.titulo.trim().length > 0 &&
         form.titulo.trim().length <= 120 &&
-        form.descripcion.trim().length > 0 &&
+        form.descripcion.trim().length >= 10 &&
         form.materia.length > 0 &&
         form.carrera.length > 0 &&
         form.tema.trim().length > 0 &&

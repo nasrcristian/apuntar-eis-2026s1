@@ -7,6 +7,7 @@ function validateForm(data: MaterialFormData, replaceFiles: boolean): string | n
     if (!data.titulo.trim()) return 'El titulo es obligatorio'
     if (data.titulo.trim().length > 120) return 'El titulo no puede tener mas de 120 caracteres'
     if (!data.descripcion.trim()) return 'La descripcion es obligatoria'
+    if (data.descripcion.trim().length < 10) return 'La descripcion es demasiado corta'
     if (!data.materia.trim()) return 'Seleccioná una materia'
     if (!data.carrera.trim()) return 'Seleccioná una carrera'
     if (!data.tema.trim()) return 'Ingresá un topico'
