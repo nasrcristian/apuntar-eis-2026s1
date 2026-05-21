@@ -76,7 +76,9 @@ class MaterialController(private val materialService: MaterialService) {
     //  pero como todavia no tenemos id devuelve todos los materiales (se haria en APUNTAR-126).
     @GetMapping("/mis-publicaciones")
     fun getMyMaterials(): ResponseEntity<List<MaterialDTO>> {
-        return ResponseEntity.ok(materialService.findAll().map { it.toDTO() })
+        return ResponseEntity.ok(materialService.findAll()
+            .sortedByDescending { it.createdAt } //gasto en memoria, se podria mejorar con una query
+            .map { it.toDTO() })
     }
 }
 
