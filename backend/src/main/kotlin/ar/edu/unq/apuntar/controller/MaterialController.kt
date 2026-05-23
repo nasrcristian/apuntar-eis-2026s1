@@ -89,5 +89,14 @@ class MaterialController(private val materialService: MaterialService) {
         val updated = materialService.toggleDislike(id, isAdding)
         return ResponseEntity.ok(updated.toDTO())
     }
+
+    // TODO: deberia filtrar los materiales por usuario logueado leyendo el ownerId del JWT,
+    //  pero como todavia no tenemos id devuelve todos los materiales (se haria en APUNTAR-126).
+    @GetMapping("/mis-publicaciones")
+    fun getMyMaterials(): ResponseEntity<List<MaterialDTO>> {
+        return ResponseEntity.ok(materialService.findAll()
+            .sortedByDescending { it.createdAt } //gasto en memoria, se podria mejorar con una query
+            .map { it.toDTO() })
+    }
 }
 
