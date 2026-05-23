@@ -105,6 +105,59 @@ class MaterialRepositoryImpl(
         )
     }
 
+    override fun update(
+        material: Material,
+        replaceFiles: Boolean
+    ): Material {
+        val id = material.id ?: throw IllegalArgumentException("No se puede actualizar un material sin id")
+        val existing = materialDao.findById(id)
+            .orElseThrow { MaterialNotFoundException("No se encontro el material") }
+
+        existing.title = material.title
+        existing.description = material.description
+        existing.subject = material.subject
+        existing.career = material.career
+        existing.category = material.category
+        existing.topic = material.topic
+
+        if (replaceFiles) {
+            existing.files.clear()
+            existing.files.addAll(material.fileMetadatas.map { fm ->
+                MaterialFileSQL(
+                    id = null,
+                    originalFileName = fm.originalFileName,
+                    storedFileName = fm.storedFileName,
+                    contentType = fm.contentType,
+                    size = fm.size,
+                    material = existing
+                )
+            })
+
+            existing.videos.clear()
+            existing.videos.addAll(material.videoMetadatas.map { vm ->
+                val videoFile = MaterialFileSQL(
+                    id = null,
+                    originalFileName = vm.originalFileName,
+                    storedFileName = vm.storedFileName,
+                    contentType = vm.contentType,
+                    size = vm.size,
+                    material = existing
+                )
+                MaterialVideoSQL(
+                    id = null,
+                    duracion = vm.duracion?.seconds,
+                    bitrate = vm.bitrate,
+                    resolucion = vm.resolucion,
+                    codec = vm.codec,
+                    file = videoFile,
+                    material = existing
+                )
+            })
+        }
+        val saved = materialDao.save(existing)
+        return toMaterial(saved)
+    }
+
     override fun findById(id: Long): Material {
         val entity = materialDao.findById(id).orElseThrow { MaterialNotFoundException("No se encontró el material") }
         return toMaterial(entity)
