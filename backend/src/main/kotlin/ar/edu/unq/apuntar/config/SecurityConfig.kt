@@ -52,6 +52,7 @@ class SecurityConfig(private val jwtAuthFilter: JwtAuthFilter) {
                 auth.requestMatchers(HttpMethod.GET, "/materiales/{id}").permitAll()
                 auth.requestMatchers(HttpMethod.POST, "/user").permitAll()
                 auth.requestMatchers(HttpMethod.POST, "/materiales").authenticated()
+                auth.requestMatchers(HttpMethod.PUT, "/materiales/{id}").authenticated()
                 auth.requestMatchers(HttpMethod.DELETE, "/materiales/{id}").authenticated()
                 auth.requestMatchers(HttpMethod.POST, "/materiales/{id}/like").authenticated()
                 auth.requestMatchers(HttpMethod.POST, "/materiales/{id}/dislike").authenticated()

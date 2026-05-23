@@ -10,6 +10,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import kotlin.Long
+import ar.edu.unq.apuntar.dto.UpdateMaterialDto
+import com.mongodb.client.model.changestream.UpdateDescription
+import lombok.`val`
+import javax.security.auth.Subject
 
 @RestController
 @RequestMapping("/materiales")
@@ -46,7 +50,21 @@ class MaterialController(private val materialService: MaterialService) {
         return ResponseEntity.ok(materialService.findByName(detalle).map { it.toDTO() })
     }
 
-
+    @PutMapping("/{id}")
+    fun updateMaterial(
+        @PathVariable id: Long,
+        @RequestParam title: String,
+        @RequestParam description: String,
+        @RequestParam subject: String,
+        @RequestParam career: String,
+        @RequestParam topic: String,
+        @RequestParam category: Category,
+        @RequestParam(value = "files", required = false) files: List<MultipartFile>?
+    ): ResponseEntity<MaterialDTO> {
+        val data = UpdateMaterialDto(title, description, subject, career, topic, category, files)
+        val updated = materialService.update(id, data)
+        return ResponseEntity.ok(updated.toDTO())
+    }
 
     @DeleteMapping("/{id}")
     fun deleteMaterial(@PathVariable id: Long): ResponseEntity<Void> {

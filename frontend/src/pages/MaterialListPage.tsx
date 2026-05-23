@@ -53,6 +53,7 @@ const MaterialListPage = ({
   const { materials, loading, fetchAllMaterials, delMaterial, getMaterial } =
     useMaterials(fetchFn);
   const [openModal, setOpenModal] = useState(false);
+  const [snackOpen, setSnackOpen] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState<any | null>(null);
   const [inputBusqueda, setInputBusqueda] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState("");
