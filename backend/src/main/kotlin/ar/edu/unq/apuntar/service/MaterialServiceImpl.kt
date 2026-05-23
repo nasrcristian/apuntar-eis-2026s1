@@ -52,6 +52,7 @@ class MaterialServiceImpl(
         }
 
         val material = Material.create(
+            ownerMail = fileData.ownerMail,
             title = fileData.title,
             description = fileData.description,
             subject = fileData.subject,

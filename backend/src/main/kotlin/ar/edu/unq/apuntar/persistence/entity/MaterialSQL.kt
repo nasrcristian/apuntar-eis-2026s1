@@ -10,6 +10,8 @@ class MaterialSQL(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long?,
+    @Column(nullable = false)
+    var ownerMail: String,
     var title: String,
     var description: String,
     var subject: String,

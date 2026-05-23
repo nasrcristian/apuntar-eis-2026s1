@@ -77,6 +77,7 @@ class MaterialServiceIntegrationTest{
         val multipart = MockMultipartFile("file", "test.pdf", "application/pdf", content)
 
         val fileData = CreateFileDTO(
+            ownerMail = "test@test.com",
             title = "Título de prueba",
             description = "Descripción suficientemente larga para pasar la validación",
             subject = "Programación",
@@ -114,6 +115,7 @@ class MaterialServiceIntegrationTest{
         val multipart = MockMultipartFile("file", "a.pdf", "application/pdf", content)
 
         val fileData = CreateFileDTO(
+            ownerMail = "test@test.com",
             title = "Otro título",
             description = "Otra descripción suficientemente larga",
             subject = "Matemática",
@@ -136,6 +138,7 @@ class MaterialServiceIntegrationTest{
         val multipart = MockMultipartFile("file", "test.txt", "text/plain", content)
 
         val fileData = CreateFileDTO(
+            ownerMail = "test@test.com",
             title = "Título válido",
             description = "Descripción suficientemente larga para pasar la validación",
             subject = "Programación",
@@ -165,6 +168,7 @@ class MaterialServiceIntegrationTest{
         val file2 = MockMultipartFile("files", "documento2.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", docxContent)
 
         val fileData = CreateFileDTO(
+            ownerMail = "test@test.com",
             title = "Material con múltiples archivos",
             description = "Este material contiene dos archivos para demostrar soporte múltiple",
             subject = "Programación Avanzada",
@@ -216,6 +220,7 @@ class MaterialServiceIntegrationTest{
         val file2 = MockMultipartFile("files", "invalido.txt", "text/plain", invalidTxtContent)
 
         val fileData = CreateFileDTO(
+            ownerMail = "test@test.com",
             title = "Material con archivo inválido",
             description = "Este material intenta subir un archivo PDF y otro TXT (inválido)",
             subject = "Testing",
@@ -247,6 +252,7 @@ class MaterialServiceIntegrationTest{
         val file2 = MockMultipartFile("files", "delete-2.pdf", "application/pdf", content2)
 
         val fileData = CreateFileDTO(
+            ownerMail = "test@test.com",
             title = "Material a borrar",
             description = "Descripción suficientemente larga para poder borrar",
             subject = "Programación",
@@ -286,6 +292,7 @@ class MaterialServiceIntegrationTest{
     fun `like endpoint toggles like counter on and off`() {
         val created = materialService.create(
             CreateFileDTO(
+                ownerMail = "test@test.com",
                 title = "Material likes",
                 description = "Descripción suficientemente larga para likes",
                 subject = "Programación",
@@ -308,6 +315,7 @@ class MaterialServiceIntegrationTest{
     fun `dislike endpoint toggles dislike counter on and off`() {
         val created = materialService.create(
             CreateFileDTO(
+                ownerMail = "test@test.com",
                 title = "Material dislikes",
                 description = "Descripción suficientemente larga para dislikes",
                 subject = "Programación",

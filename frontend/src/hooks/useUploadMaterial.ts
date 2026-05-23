@@ -41,7 +41,6 @@ export const useUploadMaterial = (): UseUploadMaterialReturn => {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const token = localStorage.getItem('jwt')
 
   const uploadMaterial = async (data: MaterialFormData): Promise<boolean> => {
     setSuccess(null)
@@ -56,6 +55,7 @@ export const useUploadMaterial = (): UseUploadMaterialReturn => {
     setLoading(true)
 
     try {
+      const currentToken = localStorage.getItem('jwt')
       const form = new FormData()
       form.append('title', data.titulo)
       form.append('description', data.descripcion)
@@ -69,7 +69,7 @@ export const useUploadMaterial = (): UseUploadMaterialReturn => {
         method: 'POST',
         body: form,
         headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${currentToken}`,
         }
       })
 

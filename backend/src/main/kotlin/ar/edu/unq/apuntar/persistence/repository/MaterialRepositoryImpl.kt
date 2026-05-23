@@ -47,6 +47,7 @@ class MaterialRepositoryImpl(
 
         val entity = MaterialSQL(
             id = material.id,
+            ownerMail = material.ownerMail,
             title = material.title,
             description = material.description,
             subject = material.subject,
@@ -91,6 +92,7 @@ class MaterialRepositoryImpl(
 
         return Material.toModel(
             saved.id ?: throw IllegalStateException("Saved material does not have an id"),
+            ownerMail = saved.ownerMail,
             saved.title,
             saved.description,
             saved.subject,
@@ -201,6 +203,7 @@ class MaterialRepositoryImpl(
         }
         return Material.toModel(
             entity.id ?: throw IllegalStateException("Material sin id"),
+            entity.ownerMail,
             entity.title,
             entity.description,
             entity.subject,

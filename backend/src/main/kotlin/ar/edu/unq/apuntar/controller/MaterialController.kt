@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import kotlin.Long
 import ar.edu.unq.apuntar.dto.UpdateMaterialDto
-import com.mongodb.client.model.changestream.UpdateDescription
-import lombok.`val`
-import javax.security.auth.Subject
+import org.springframework.security.core.Authentication
 
 @RestController
 @RequestMapping("/materiales")
@@ -26,9 +24,20 @@ class MaterialController(private val materialService: MaterialService) {
         @RequestParam career: String,
         @RequestParam topic: String,
         @RequestParam category: Category,
-        @RequestParam("files") files: List<MultipartFile>
+        @RequestParam("files") files: List<MultipartFile>,
+        authentication: Authentication
     ): ResponseEntity<MaterialDTO> {
-        val fileData = CreateFileDTO(title, description, subject, career, topic, category, files)
+        val ownerMail = authentication.name
+        val fileData = CreateFileDTO(
+            ownerMail = ownerMail,
+            title = title,
+            description = description,
+            subject = subject,
+            career = career,
+            topic = topic,
+            category = category,
+            files = files
+        )
         val material = materialService.create(fileData)
         return ResponseEntity.status(HttpStatus.CREATED).body(material.toDTO())
     }
