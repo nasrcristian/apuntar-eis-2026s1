@@ -1,5 +1,6 @@
 package ar.edu.unq.apuntar.controller
 
+import ar.edu.unq.apuntar.dto.ReactionSummaryDTO
 import ar.edu.unq.apuntar.model.material.Reaction
 import ar.edu.unq.apuntar.model.material.VoteType
 import ar.edu.unq.apuntar.service.ReactionService
@@ -32,4 +33,10 @@ class ReactionController(private val reactionService: ReactionService) {
         @PathVariable materialId: Long
     ): ResponseEntity<Map<String, Long>> =
         ResponseEntity.ok(reactionService.getCounts(materialId))
+
+    @GetMapping("/summary")
+    fun getSummary(
+        @PathVariable materialId: Long
+    ): ResponseEntity<ReactionSummaryDTO> =
+        ResponseEntity.ok(reactionService.getReactionSummary(materialId))
 }

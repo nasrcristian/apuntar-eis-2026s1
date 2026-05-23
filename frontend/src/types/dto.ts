@@ -68,3 +68,7 @@ export interface MaterialFormData {
 export interface MaterialUploadResDto {
   message: string;
 }
+
+export interface ReactToMaterialDTO {
+  type: "LIKE" | "DISLIKE";
+}

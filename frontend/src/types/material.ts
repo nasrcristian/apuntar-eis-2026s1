@@ -1,3 +1,5 @@
+export type Reaction = "LIKE" | "DISLIKE" | null;
+
 export interface FileMetadataDTO {
   originalFileName: string;
   storedFileName: string;
@@ -30,4 +32,22 @@ export interface MaterialDTO {
   files: FileMetadataDTO[];
   videos: VideoMetadataDTO[];
   createdAt: string;
+}
+
+export interface ReactionDTO {
+  materialId: number;
+  userId: string;
+  type: "LIKE" | "DISLIKE";
+  createdAt: Date;
+}
+
+export interface ReactionSummaryDTO {
+  likes: number;
+  dislikes: number;
+  userReaction: "LIKE" | "DISLIKE" | null;
+}
+
+export interface MaterialSidebarProps {
+  material: MaterialDTO;
+  reactions: ReactionSummaryDTO;
 }

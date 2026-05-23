@@ -4,6 +4,8 @@ import {
   getAllMaterials,
   deleteMaterial,
   getMaterialFiltrado,
+  reactToMaterial,
+  removeReaction,
 } from "../service/api";
 import type { MaterialDTO } from "../types/material";
 import { enqueueSnackbar } from "notistack";
@@ -62,6 +64,58 @@ export const useMaterials = () => {
     setLoading(false);
   };
 
+  const valueMaterial = async (type: "LIKE" | "DISLIKE", materialId: any) => {
+    setLoading(true);
+    try {
+      await reactToMaterial(materialId, type);
+      enqueueSnackbar("Material valorado con exito", { variant: "success" });
+    } catch (error) {
+      enqueueSnackbar(`Error al valorar el material. Pruebe mas tarde`, {
+        variant: "error",
+      });
+    }
+    setLoading(false);
+  };
+
+  const unvalueMaterial = async (materialId: any) => {
+    setLoading(true);
+    try {
+      await removeReaction(materialId);
+      enqueueSnackbar("Material valorado con exito", { variant: "success" });
+    } catch (error) {
+      enqueueSnackbar(`Error al valorar el material. Pruebe mas tarde`, {
+        variant: "error",
+      });
+    }
+    setLoading(false);
+  };
+
+  // const saveComment = async (materialId: any, comment: string) => {
+  //   setLoading(true);
+  //   try {
+  //     await saveComentario(materialId, comment);
+  //     enqueueSnackbar("Comentario guardado con exito", { variant: "success" });
+  //   } catch (error) {
+  //     enqueueSnackbar(`Error al comentar el material. Pruebe mas tarde`, {
+  //       variant: "error",
+  //     });
+  //   }
+  //   setLoading(false);
+  // };
+
+  // const deleteComment = async (materialId: any) => {
+  //   setLoading(true);
+  //   try {
+  //     await deleteComment(materialId);
+  //     enqueueSnackbar("Comentario eliminado con exito", { variant: "success" });
+  //   } catch (error) {
+  //   enqueueSnackbar(`Error al comentar el material. Pruebe mas tarde`, {
+  //       variant: "error",
+  //     });
+  //   }
+  //   setLoading(false);
+  // }
+
   return {
     materials,
     loading,
@@ -69,5 +123,7 @@ export const useMaterials = () => {
     fetchAllMaterials,
     delMaterial,
     getMaterial,
+    valueMaterial,
+    unvalueMaterial,
   };
 };

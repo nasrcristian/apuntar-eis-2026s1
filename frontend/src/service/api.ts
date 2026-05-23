@@ -1,5 +1,9 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
-import type { MaterialDTO } from "../types/material";
+import type {
+  MaterialDTO,
+  ReactionSummaryDTO,
+  ReactionDTO,
+} from "../types/material";
 import type {
   RegisterReqDto,
   UserDto,
@@ -7,6 +11,8 @@ import type {
   ForgotPasswordResDto,
   ResetPasswordReqDto,
   ResetPasswordResDto,
+  ReactToMaterialDTO,
+
   // MaterialFormData,
   // MaterialUploadResDto,
 } from "../types/dto";
@@ -121,6 +127,31 @@ export const getMaterialFiltrado = (
   get<MaterialDTO[]>(
     `${urlApi}/materiales/filtrado?detalle=${encodeURIComponent(detalle)}`,
   );
+
+export const getReactionSummary = (
+  materialId: number,
+): Promise<ResolvedResponse<ReactionSummaryDTO>> =>
+  get<ReactionSummaryDTO>(
+    `${urlApi}/materials/${materialId}/reactions/summary`,
+  );
+
+export const reactToMaterial = (
+  materialId: number,
+  type: "LIKE" | "DISLIKE",
+): Promise<ResolvedResponse<ReactionDTO>> =>
+  post<ReactToMaterialDTO, ReactionDTO>(
+    `${urlApi}/materials/${materialId}/reactions`,
+    { type },
+  );
+
+export const removeReaction = (
+  materialId: number,
+): Promise<ResolvedResponse<void>> =>
+  del<void>(`${urlApi}/materials/${materialId}/reactions`, {
+    headers: {
+      Authorization: `Bearer ${token}`, // Reemplaza 'token' por tu variable, store o localStorage
+    },
+  });
 
 // Terminar de factorizar esto
 // export const uploadMaterial = (form: MaterialFormData): Promise<ResolvedResponse<MaterialUploadResDto>> => post<MaterialFormData, MaterialUploadResDto>();

@@ -1,17 +1,21 @@
-import { Box, Typography, IconButton } from '@mui/material'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import { useNavigate } from 'react-router-dom'
-import PdfPreview from '../PdfPreview/PdfPreview'
-import MaterialSidebar from '../MaterialSidebar/MaterialSidebar'
-import type { MaterialDTO } from '../../types/material'
-import './MaterialDetail.css'
+import { Box, Typography, IconButton } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useNavigate } from "react-router-dom";
+import PdfPreview from "../PdfPreview/PdfPreview";
+import MaterialSidebar from "../MaterialSidebar/MaterialSidebar";
+import type { MaterialDTO, ReactionSummaryDTO } from "../../types/material";
+import "./MaterialDetail.css";
 
 interface MaterialDetailProps {
-  material: MaterialDTO
+  material: MaterialDTO;
+  reactions: ReactionSummaryDTO;
 }
 
-export default function MaterialDetail({ material }: MaterialDetailProps) {
-  const navigate = useNavigate()
+export default function MaterialDetail({
+  material,
+  reactions,
+}: MaterialDetailProps) {
+  const navigate = useNavigate();
 
   return (
     <Box className="material-detail">
@@ -19,7 +23,11 @@ export default function MaterialDetail({ material }: MaterialDetailProps) {
         <IconButton onClick={() => navigate(-1)} size="small">
           <ArrowBackIcon />
         </IconButton>
-        <Typography variant="h4" component="h1" className="material-detail__title">
+        <Typography
+          variant="h4"
+          component="h1"
+          className="material-detail__title"
+        >
           {material.title}
         </Typography>
       </Box>
@@ -29,9 +37,9 @@ export default function MaterialDetail({ material }: MaterialDetailProps) {
           <PdfPreview files={material.files} materialId={material.id} />
         </Box>
         <Box className="material-detail__sidebar">
-          <MaterialSidebar material={material} />
+          <MaterialSidebar material={material} reactions={reactions} />
         </Box>
       </Box>
     </Box>
-  )
+  );
 }
