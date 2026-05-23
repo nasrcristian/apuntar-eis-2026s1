@@ -8,6 +8,7 @@ import ar.edu.unq.apuntar.storage.StorageProvider
 import org.springframework.stereotype.Service
 import ar.edu.unq.apuntar.dto.CreateFileDTO
 import ar.edu.unq.apuntar.dto.UpdateMaterialDto
+import ar.edu.unq.apuntar.exception.ForbiddenActionException
 import ar.edu.unq.apuntar.model.material.PendingFile
 import org.springframework.transaction.annotation.Transactional
 
@@ -69,9 +70,15 @@ class MaterialServiceImpl(
     @Transactional
     override fun update(
         id: Long,
-        data: UpdateMaterialDto
+        data: UpdateMaterialDto,
+        requesterMail: String
     ): Material {
         val existing = materialRepository.findById(id)
+
+        if (existing.ownerMail != requesterMail) {
+            throw ForbiddenActionException("No tenés permiso para modificar este material")
+        }
+
         val hasNewFiles = !data.files.isNullOrEmpty()
         val newlyStoredFileNames = mutableListOf<String>()
 
@@ -151,8 +158,13 @@ class MaterialServiceImpl(
     override fun findByName(name: String): List<Material> = materialRepository.findByName(name)
 
     @Transactional
-    override fun deleteById(id: Long) {
+    override fun deleteById(id: Long, requesterMail: String) {
         val material = materialRepository.findById(id)
+
+        if (material.ownerMail != requesterMail) {
+            throw ForbiddenActionException("No tenés permiso para eliminar este material")
+        }
+
         materialRepository.deleteById(id)
 
         material.fileMetadatas.forEach { storageProvider.delete(it.storedFileName) }
@@ -174,5 +186,8 @@ class MaterialServiceImpl(
         materialRepository.toggleDislike(id, isAdding)
         return materialRepository.findById(id)
     }
+
+    override fun findByOwnerMail(ownerMail: String): List<Material> =
+        materialRepository.findByOwnerMail(ownerMail)
 }
 

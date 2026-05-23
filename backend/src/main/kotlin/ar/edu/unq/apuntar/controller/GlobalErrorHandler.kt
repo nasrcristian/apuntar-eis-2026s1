@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import org.springframework.web.server.ResponseStatusException
+import ar.edu.unq.apuntar.exception.ForbiddenActionException
 
 
 @RestControllerAdvice
@@ -35,6 +36,10 @@ class GlobalErrorHandler {
     @ExceptionHandler(InvalidMaterialException::class)
     fun handleInvalidMaterialException(ex: InvalidMaterialException): ResponseEntity<String> =
         ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.message)
+
+    @ExceptionHandler(ForbiddenActionException::class)
+    fun handleForbiddenAction(ex: ForbiddenActionException): ResponseEntity<String> =
+        ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.message)
 
     @ExceptionHandler(MaterialNotFoundException::class)
     fun handleMaterialNotFoundException(ex: MaterialNotFoundException): ResponseEntity<String> =

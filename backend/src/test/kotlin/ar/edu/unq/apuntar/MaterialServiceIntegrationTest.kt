@@ -270,7 +270,7 @@ class MaterialServiceIntegrationTest{
             Assertions.assertTrue(Files.exists(uploadsDir.resolve(name)), "El archivo debería existir antes de borrar: $name")
         }
 
-        materialService.deleteById(id)
+        materialService.deleteById(id, "test@test.com")
 
         Assertions.assertThrows(MaterialNotFoundException::class.java) {
             materialService.findById(id)
@@ -284,7 +284,7 @@ class MaterialServiceIntegrationTest{
     @Test
     fun `delete material with unknown id throws material not found`() {
         Assertions.assertThrows(MaterialNotFoundException::class.java) {
-            materialService.deleteById(Long.MAX_VALUE)
+            materialService.deleteById(Long.MAX_VALUE, "test@test.com")
         }
     }
 

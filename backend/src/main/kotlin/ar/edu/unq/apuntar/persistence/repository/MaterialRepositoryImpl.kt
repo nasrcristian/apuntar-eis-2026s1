@@ -184,6 +184,9 @@ class MaterialRepositoryImpl(
         if (updated == 0) throw MaterialNotFoundException("No se encontró el material")
     }
 
+    override fun findByOwnerMail(ownerMail: String): List<Material> =
+        materialDao.findByOwnerMail(ownerMail).map { toMaterial(it) }
+
     private fun toMaterial(entity: MaterialSQL): Material {
         val fileMetadatas = entity.files.map { f ->
             FileMetadata.fromPersistence(f.originalFileName, f.storedFileName, f.contentType, f.size)
