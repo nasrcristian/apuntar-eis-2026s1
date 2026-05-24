@@ -81,7 +81,7 @@ export default function MaterialSidebar({ material }: MaterialSidebarProps) {
       <Field
         icon={<PersonIcon fontSize="small" />}
         label="Autor"
-        value={material.author || "Vamian Dillalba"}
+        value={material.ownerMail}
       />
 
       <Box className="sidebar__reactions">
