@@ -180,7 +180,7 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
         }}
       >
         <Typography variant="caption" color="text.secondary">
-          por {material.author || "Usuario"} el {date}
+          por {material.ownerMail || "Usuario"} el {date}
         </Typography>
 
         <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
