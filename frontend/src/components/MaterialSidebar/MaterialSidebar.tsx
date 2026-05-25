@@ -68,8 +68,8 @@ export default function MaterialSidebar({
     },
   );
 
-  const displayedLikes = reactions.likes;
-  const displayedDislikes = reactions.dislikes;
+  const displayedLikes = localLikes;
+  const displayedDislikes = localDislikes;
 
   const handleLike = async () => {
     if (userReaction === "LIKE") {
