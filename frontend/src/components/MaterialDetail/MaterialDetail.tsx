@@ -1,23 +1,105 @@
-import { Box, Typography, IconButton } from "@mui/material";
+import { useState } from "react";
+import {
+  Box,
+  Typography,
+  IconButton,
+  TextField,
+  Button,
+  Avatar,
+  Divider,
+  Paper,
+} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SendIcon from "@mui/icons-material/Send";
+import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import { useNavigate } from "react-router-dom";
 import PdfPreview from "../PdfPreview/PdfPreview";
 import MaterialSidebar from "../MaterialSidebar/MaterialSidebar";
 import type { MaterialDTO, ReactionSummaryDTO } from "../../types/material";
 import "./MaterialDetail.css";
 
+export interface CommentDTO {
+  id: string;
+  authorId: string;
+  authorName: string;
+  content: string;
+  createdAt: string; // ISO date string
+}
+
+interface CurrentUser {
+  id: string;
+  name: string;
+}
+
 interface MaterialDetailProps {
   material: MaterialDTO;
   reactions: ReactionSummaryDTO;
   fetchReactions: () => void;
+  currentUser: CurrentUser;
+  initialComments?: CommentDTO[];
+}
+
+function formatDate(isoString: string): string {
+  const date = new Date(isoString);
+  return date.toLocaleDateString("es-AR", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 }
 
 export default function MaterialDetail({
   material,
   reactions,
   fetchReactions,
+  currentUser,
+  initialComments = [],
 }: MaterialDetailProps) {
   const navigate = useNavigate();
+  const [comments, setComments] = useState<CommentDTO[]>(initialComments);
+  const [commentText, setCommentText] = useState("");
+  const [error, setError] = useState("");
+
+  const handlePublish = () => {
+    if (!commentText.trim()) {
+      setError("El comentario no puede estar vacío.");
+      return;
+    }
+
+    const newComment: CommentDTO = {
+      id: crypto.randomUUID(),
+      authorId: currentUser.id,
+      authorName: currentUser.name,
+      content: commentText.trim(),
+      createdAt: new Date().toISOString(),
+    };
+
+    setComments((prev) => [...prev, newComment]);
+    setCommentText("");
+    setError("");
+  };
+
+  const handleDelete = (id: string) => {
+    setComments((prev) => prev.filter((c) => c.id !== id));
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      handlePublish();
+    }
+  };
 
   return (
     <Box className="material-detail">
@@ -37,7 +119,117 @@ export default function MaterialDetail({
       <Box className="material-detail__body">
         <Box className="material-detail__pdf-panel">
           <PdfPreview files={material.files} materialId={material.id} />
+
+          {/* ── Sección de comentarios ── */}
+          <Box className="material-detail__comments">
+            <Box className="material-detail__comments-header">
+              <ChatBubbleIcon fontSize="small" color="action" />
+              <Typography variant="h6" component="h2">
+                Comentarios
+                {comments.length > 0 && (
+                  <Typography
+                    component="span"
+                    className="material-detail__comments-count"
+                  >
+                    {comments.length}
+                  </Typography>
+                )}
+              </Typography>
+            </Box>
+
+            <Divider />
+
+            {/* Lista de comentarios */}
+            {comments.length === 0 ? (
+              <Box className="material-detail__comments-empty">
+                <Typography variant="body2" color="text.secondary">
+                  Aún no hay comentarios. ¡Sé el primero en comentar!
+                </Typography>
+              </Box>
+            ) : (
+              <Box className="material-detail__comments-list">
+                {comments.map((comment) => (
+                  <Paper
+                    key={comment.id}
+                    variant="outlined"
+                    className="material-detail__comment-item"
+                  >
+                    <Box className="material-detail__comment-top">
+                      <Box className="material-detail__comment-author">
+                        <Avatar className="material-detail__comment-avatar">
+                          {getInitials(comment.authorName)}
+                        </Avatar>
+                        <Box>
+                          <Typography
+                            variant="subtitle2"
+                            className="material-detail__comment-name"
+                          >
+                            {comment.authorName}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {formatDate(comment.createdAt)}
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      {comment.authorId === currentUser.id && (
+                        <IconButton
+                          size="small"
+                          aria-label="Eliminar comentario"
+                          onClick={() => handleDelete(comment.id)}
+                          className="material-detail__comment-delete"
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      )}
+                    </Box>
+
+                    <Typography
+                      variant="body2"
+                      className="material-detail__comment-content"
+                    >
+                      {comment.content}
+                    </Typography>
+                  </Paper>
+                ))}
+              </Box>
+            )}
+
+            {/* Caja de nuevo comentario */}
+            <Box className="material-detail__comment-form">
+              <Avatar className="material-detail__comment-avatar material-detail__comment-avatar--current">
+                {getInitials(currentUser.name)}
+              </Avatar>
+              <Box className="material-detail__comment-input-wrapper">
+                <TextField
+                  multiline
+                  minRows={2}
+                  maxRows={6}
+                  fullWidth
+                  placeholder="Escribí tu comentario... (Ctrl+Enter para publicar)"
+                  value={commentText}
+                  onChange={(e) => {
+                    setCommentText(e.target.value);
+                    if (error) setError("");
+                  }}
+                  onKeyDown={handleKeyDown}
+                  error={!!error}
+                  helperText={error}
+                  size="small"
+                />
+                <Button
+                  variant="contained"
+                  endIcon={<SendIcon />}
+                  onClick={handlePublish}
+                  className="material-detail__comment-submit"
+                >
+                  Publicar comentario
+                </Button>
+              </Box>
+            </Box>
+          </Box>
         </Box>
+
         <Box className="material-detail__sidebar">
           <MaterialSidebar
             material={material}

@@ -188,6 +188,7 @@ export default function MaterialSidebar({
           </Typography>
         </Box>
       </Box>
+      <Divider className="sidebar__divider" />
     </Box>
   );
 }

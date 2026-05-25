@@ -31,6 +31,8 @@ export default function MaterialPage() {
       material={data}
       reactions={reactions}
       fetchReactions={fetchReactions}
+      currentUser={{ id: "dillalva", name: "Vami" }}
+      initialComments={[]}
     />
   );
 }
