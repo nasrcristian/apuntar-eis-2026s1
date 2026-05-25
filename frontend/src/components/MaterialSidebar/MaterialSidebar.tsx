@@ -19,6 +19,7 @@ import {
 import type { Reaction, MaterialSidebarProps } from "../../types/material";
 import { useMaterials } from "../../hooks/useMaterials";
 import "./MaterialSidebar.css";
+import { enqueueSnackbar } from "notistack";
 
 interface FieldProps {
   icon: React.ReactNode;
@@ -42,6 +43,7 @@ export default function MaterialSidebar({
   material,
   reactions,
   fetchReactions,
+  currentUser,
 }: MaterialSidebarProps) {
   const [localLikes, setLocalLikes] = useState(reactions.likes);
   const [localDislikes, setLocalDislikes] = useState(reactions.dislikes);
@@ -72,7 +74,11 @@ export default function MaterialSidebar({
   const displayedDislikes = localDislikes;
 
   const handleLike = async () => {
-    if (userReaction === "LIKE") {
+    if (!currentUser.mail) {
+      enqueueSnackbar("Debes iniciar sesion para valorar", {
+        variant: "error",
+      });
+    } else if (userReaction === "LIKE") {
       setUserReaction(null);
       setLocalLikes((prev) => prev - 1);
       await unvalueMaterial(material.id);
@@ -86,7 +92,11 @@ export default function MaterialSidebar({
   };
 
   const handleDislike = async () => {
-    if (userReaction === "DISLIKE") {
+    if (!currentUser.mail) {
+      enqueueSnackbar("Debes iniciar sesion para valorar", {
+        variant: "error",
+      });
+    } else if (userReaction === "DISLIKE") {
       setUserReaction(null);
       setLocalDislikes((prev) => prev - 1);
       await unvalueMaterial(material.id);

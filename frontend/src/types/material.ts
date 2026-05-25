@@ -61,8 +61,15 @@ export interface AddCommentDTO {
   authorName: string;
 }
 
+export interface CurrentUser {
+  mail: string;
+  name: string;
+  surname: string;
+}
+
 export interface MaterialSidebarProps {
   material: MaterialDTO;
   reactions: ReactionSummaryDTO;
   fetchReactions: () => void;
+  currentUser: CurrentUser;
 }

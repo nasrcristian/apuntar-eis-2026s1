@@ -161,7 +161,7 @@ const MaterialCard = ({ material, onDelete }: MaterialCardProps) => {
           por {material.author || "Usuario"} el {date}
         </Typography>
 
-        <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+        {/* <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <IconButton size="small" onClick={handleToggleLike}>
               {vote === "like" ? (
@@ -183,7 +183,7 @@ const MaterialCard = ({ material, onDelete }: MaterialCardProps) => {
             </IconButton>
             <Typography variant="caption">{dislikesCount}</Typography>
           </Box>
-        </Stack>
+        </Stack> */}
       </Box>
     </Card>
   );

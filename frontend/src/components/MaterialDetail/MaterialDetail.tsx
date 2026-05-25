@@ -21,16 +21,11 @@ import type {
   ReactionSummaryDTO,
   CommentDTO,
   AddCommentDTO,
+  CurrentUser,
 } from "../../types/material";
 import { useMaterials } from "../../hooks/useMaterials";
 import "./MaterialDetail.css";
 import { enqueueSnackbar } from "notistack";
-
-interface CurrentUser {
-  mail: string;
-  name: string;
-  surname: string;
-}
 
 interface MaterialDetailProps {
   material: MaterialDTO;
@@ -58,12 +53,16 @@ function formatDate(dateInput: Date | string): string {
 }
 
 function getInitials(name: string): string {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
+  if (!name) {
+    return "";
+  } else {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  }
 }
 
 export default function MaterialDetail({
@@ -110,6 +109,8 @@ export default function MaterialDetail({
       handlePublish();
     }
   };
+
+  console.log(currentUser);
 
   return (
     <Box className="material-detail">
@@ -186,6 +187,7 @@ export default function MaterialDetail({
                         <IconButton
                           size="small"
                           aria-label="Eliminar comentario"
+                          disabled={!currentUser.mail}
                           onClick={() =>
                             handleDelete(comment.id, comment.userId)
                           }
@@ -218,7 +220,11 @@ export default function MaterialDetail({
                   minRows={2}
                   maxRows={6}
                   fullWidth
-                  placeholder="Escribí tu comentario... (Ctrl+Enter para publicar)"
+                  placeholder={
+                    !currentUser.mail
+                      ? "Inicia sesion para comentar"
+                      : "Escribí tu comentario... (Ctrl+Enter para publicar)"
+                  }
                   value={commentText}
                   onChange={(e) => {
                     setCommentText(e.target.value);
@@ -233,6 +239,7 @@ export default function MaterialDetail({
                   variant="contained"
                   endIcon={<SendIcon />}
                   onClick={handlePublish}
+                  disabled={!currentUser.mail}
                   className="material-detail__comment-submit"
                 >
                   Publicar comentario
@@ -247,6 +254,7 @@ export default function MaterialDetail({
             material={material}
             reactions={reactions}
             fetchReactions={fetchReactions}
+            currentUser={currentUser}
           />
         </Box>
       </Box>
