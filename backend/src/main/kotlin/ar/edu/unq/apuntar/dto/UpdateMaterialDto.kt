@@ -1,15 +1,14 @@
 package ar.edu.unq.apuntar.dto
 
-import org.springframework.web.multipart.MultipartFile
 import ar.edu.unq.apuntar.model.material.Category
+import org.springframework.web.multipart.MultipartFile
 
-data class CreateFileDTO(
-    val ownerMail: String,
+data class UpdateMaterialDto(
     val title: String,
     val description: String,
     val subject: String,
     val career: String,
     val topic: String,
     val category: Category,
-    val files: List<MultipartFile>
+    val files: List<MultipartFile>?
 )

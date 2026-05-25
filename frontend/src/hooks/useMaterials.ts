@@ -8,11 +8,17 @@ import {
   removeReaction,
   addComment,
   deleteComment,
+  type ResolvedResponse,
 } from "../service/api";
 import type { AddCommentDTO, MaterialDTO } from "../types/material";
 import { enqueueSnackbar } from "notistack";
 
-export const useMaterials = () => {
+// modifico esto para que el listado de libreria y de mis publicaciones haga lo mismo
+type FetchMaterialsFn = () => Promise<ResolvedResponse<MaterialDTO[]>>;
+
+export const useMaterials = (
+    fetchFn: FetchMaterialsFn = getAllMaterials
+) => {
   const [materials, setMaterials] = useState<MaterialDTO[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -23,15 +29,14 @@ export const useMaterials = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await getAllMaterials();
-
+      const response = await fetchFn();
       setMaterials(response.data);
     } catch (err: any) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [fetchFn]);
 
   const delMaterial = async (id: any) => {
     try {

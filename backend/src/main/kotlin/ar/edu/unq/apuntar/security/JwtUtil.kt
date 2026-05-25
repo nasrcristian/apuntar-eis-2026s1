@@ -28,7 +28,7 @@ class JwtUtil(
                 .build()
                 .parseSignedClaims(token)
                 .payload
-                .subject // Aquí es donde guardaste el mail al generar el token
+                .subject
         } catch (e: Exception) {
             null
         }

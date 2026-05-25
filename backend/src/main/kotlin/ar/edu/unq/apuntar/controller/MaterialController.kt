@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import kotlin.Long
+import ar.edu.unq.apuntar.dto.UpdateMaterialDto
+import org.springframework.security.core.Authentication
 
 @RestController
 @RequestMapping("/materiales")
@@ -22,9 +24,20 @@ class MaterialController(private val materialService: MaterialService) {
         @RequestParam career: String,
         @RequestParam topic: String,
         @RequestParam category: Category,
-        @RequestParam("files") files: List<MultipartFile>
+        @RequestParam("files") files: List<MultipartFile>,
+        authentication: Authentication
     ): ResponseEntity<MaterialDTO> {
-        val fileData = CreateFileDTO(title, description, subject, career, topic, category, files)
+        val ownerMail = authentication.name
+        val fileData = CreateFileDTO(
+            ownerMail = ownerMail,
+            title = title,
+            description = description,
+            subject = subject,
+            career = career,
+            topic = topic,
+            category = category,
+            files = files
+        )
         val material = materialService.create(fileData)
         return ResponseEntity.status(HttpStatus.CREATED).body(material.toDTO())
     }
@@ -46,11 +59,29 @@ class MaterialController(private val materialService: MaterialService) {
         return ResponseEntity.ok(materialService.findByName(detalle).map { it.toDTO() })
     }
 
-
+    @PutMapping("/{id}")
+    fun updateMaterial(
+        @PathVariable id: Long,
+        @RequestParam title: String,
+        @RequestParam description: String,
+        @RequestParam subject: String,
+        @RequestParam career: String,
+        @RequestParam topic: String,
+        @RequestParam category: Category,
+        @RequestParam(value = "files", required = false) files: List<MultipartFile>?,
+        authentication: Authentication
+    ): ResponseEntity<MaterialDTO> {
+        val data = UpdateMaterialDto(title, description, subject, career, topic, category, files)
+        val updated = materialService.update(id, data, authentication.name)
+        return ResponseEntity.ok(updated.toDTO())
+    }
 
     @DeleteMapping("/{id}")
-    fun deleteMaterial(@PathVariable id: Long): ResponseEntity<Void> {
-        materialService.deleteById(id)
+    fun deleteMaterial(
+        @PathVariable id: Long,
+        authentication: Authentication
+    ): ResponseEntity<Void> {
+        materialService.deleteById(id, authentication.name)
         return ResponseEntity.noContent().build()
     }
 
@@ -70,6 +101,13 @@ class MaterialController(private val materialService: MaterialService) {
     ): ResponseEntity<MaterialDTO> {
         val updated = materialService.toggleDislike(id, isAdding)
         return ResponseEntity.ok(updated.toDTO())
+    }
+
+    @GetMapping("/mis-publicaciones")
+    fun getMyMaterials(authentication: Authentication): ResponseEntity<List<MaterialDTO>> {
+        return ResponseEntity.ok(materialService.findByOwnerMail(authentication.name)
+            .sortedByDescending { it.createdAt }
+            .map { it.toDTO() })
     }
 }
 

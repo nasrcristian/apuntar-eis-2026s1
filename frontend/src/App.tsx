@@ -13,6 +13,7 @@ import ResetPasswordPage from './pages/auth/ResetPasswordPage'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import Navbar from './components/navbar/Navbar'
 import ProfilePage from './pages/ProfilePage'
+import MyMaterialsPage from './pages/MyMaterialsPage'
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
         <Route path="/library" element={<MaterialListPage />} />
         <Route path="/create" element={
           <ProtectedRoute><UploadPage /></ProtectedRoute>
-        } />
+        }/>
         <Route path="/material/:id" element={<MaterialPage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<LoginPage />} />
@@ -32,6 +33,9 @@ function App() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/profile" element={
           <ProtectedRoute><ProfilePage /></ProtectedRoute>
+        }/>
+        <Route path="/mis-publicaciones" element={
+            <ProtectedRoute><MyMaterialsPage /></ProtectedRoute>
         }/>
       </Routes>
     </>

@@ -24,6 +24,7 @@ data class VideoMetadataDTO(
 
 data class MaterialDTO(
     val id: Long,
+    val ownerMail: String,
     val title: String,
     val description: String,
     val subject: String,
@@ -50,6 +51,7 @@ fun VideoMetadata.toDTO(): VideoMetadataDTO = VideoMetadataDTO(
 
 fun Material.toDTO(): MaterialDTO = MaterialDTO(
     id = this.id ?: throw IllegalStateException("Material sin id"),
+    ownerMail = this.ownerMail,
     title = this.title,
     description = this.description,
     subject = this.subject,
