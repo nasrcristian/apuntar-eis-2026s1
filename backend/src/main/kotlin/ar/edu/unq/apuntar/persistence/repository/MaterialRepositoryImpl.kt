@@ -47,6 +47,7 @@ class MaterialRepositoryImpl(
 
         val entity = MaterialSQL(
             id = material.id,
+            ownerMail = material.ownerMail,
             title = material.title,
             description = material.description,
             subject = material.subject,
@@ -91,6 +92,7 @@ class MaterialRepositoryImpl(
 
         return Material.toModel(
             saved.id ?: throw IllegalStateException("Saved material does not have an id"),
+            ownerMail = saved.ownerMail,
             saved.title,
             saved.description,
             saved.subject,
@@ -103,6 +105,59 @@ class MaterialRepositoryImpl(
             saved.createdAt,
             videoMetadatas = videoMetadatas
         )
+    }
+
+    override fun update(
+        material: Material,
+        replaceFiles: Boolean
+    ): Material {
+        val id = material.id ?: throw IllegalArgumentException("No se puede actualizar un material sin id")
+        val existing = materialDao.findById(id)
+            .orElseThrow { MaterialNotFoundException("No se encontro el material") }
+
+        existing.title = material.title
+        existing.description = material.description
+        existing.subject = material.subject
+        existing.career = material.career
+        existing.category = material.category
+        existing.topic = material.topic
+
+        if (replaceFiles) {
+            existing.files.clear()
+            existing.files.addAll(material.fileMetadatas.map { fm ->
+                MaterialFileSQL(
+                    id = null,
+                    originalFileName = fm.originalFileName,
+                    storedFileName = fm.storedFileName,
+                    contentType = fm.contentType,
+                    size = fm.size,
+                    material = existing
+                )
+            })
+
+            existing.videos.clear()
+            existing.videos.addAll(material.videoMetadatas.map { vm ->
+                val videoFile = MaterialFileSQL(
+                    id = null,
+                    originalFileName = vm.originalFileName,
+                    storedFileName = vm.storedFileName,
+                    contentType = vm.contentType,
+                    size = vm.size,
+                    material = existing
+                )
+                MaterialVideoSQL(
+                    id = null,
+                    duracion = vm.duracion?.seconds,
+                    bitrate = vm.bitrate,
+                    resolucion = vm.resolucion,
+                    codec = vm.codec,
+                    file = videoFile,
+                    material = existing
+                )
+            })
+        }
+        val saved = materialDao.save(existing)
+        return toMaterial(saved)
     }
 
     override fun findById(id: Long): Material {
@@ -129,6 +184,9 @@ class MaterialRepositoryImpl(
         if (updated == 0) throw MaterialNotFoundException("No se encontró el material")
     }
 
+    override fun findByOwnerMail(ownerMail: String): List<Material> =
+        materialDao.findByOwnerMail(ownerMail).map { toMaterial(it) }
+
     private fun toMaterial(entity: MaterialSQL): Material {
         val fileMetadatas = entity.files.map { f ->
             FileMetadata.fromPersistence(f.originalFileName, f.storedFileName, f.contentType, f.size)
@@ -148,6 +206,7 @@ class MaterialRepositoryImpl(
         }
         return Material.toModel(
             entity.id ?: throw IllegalStateException("Material sin id"),
+            entity.ownerMail,
             entity.title,
             entity.description,
             entity.subject,

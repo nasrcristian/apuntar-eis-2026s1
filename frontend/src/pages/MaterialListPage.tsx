@@ -25,6 +25,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useMaterials } from "../hooks/useMaterials";
 import { enqueueSnackbar } from "notistack";
 import { categorias } from "../constants/materialOptions";
+import type { ResolvedResponse } from "../service/api";
+import type { MaterialDTO } from "../types/material";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 type NotificationState = {
   open: boolean;
@@ -32,13 +35,29 @@ type NotificationState = {
   severity: AlertColor;
 };
 
-const MaterialListPage = () => {
+const PAGE_SIZE = 4;
+
+interface MaterialListPageProps {
+  title?: string;
+  fetchFn?: () => Promise<ResolvedResponse<MaterialDTO[]>>;
+  emptyMessage?: string;
+  emptyAction?: { label: string; onClick: () => void };
+}
+
+const MaterialListPage = ({
+  title = "Biblioteca de Apuntes",
+  fetchFn,
+  emptyMessage = "No hay materiales disponibles actualmente.",
+  emptyAction,
+}: MaterialListPageProps = {}) => {
   const { materials, loading, fetchAllMaterials, delMaterial, getMaterial } =
-    useMaterials();
+    useMaterials(fetchFn);
   const [openModal, setOpenModal] = useState(false);
+  const [snackOpen, setSnackOpen] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState<any | null>(null);
   const [inputBusqueda, setInputBusqueda] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [notification, setNotification] = useState<NotificationState>({
     open: false,
     message: "",
@@ -52,6 +71,10 @@ const MaterialListPage = () => {
   useEffect(() => {
     fetchAllMaterials();
   }, [fetchAllMaterials]);
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [selectedCategory]);
 
   const handleDeleteClick = (material: any) => {
     setSelectedMaterial(material);
@@ -69,7 +92,12 @@ const MaterialListPage = () => {
     setOpenModal(false);
   };
 
+  const loadMore = () => {
+      setVisibleCount((c) => Math.min(c + PAGE_SIZE, filteredMaterials.length));
+  }
+
   const handleSearch = async () => {
+    setVisibleCount(PAGE_SIZE);
     if (inputBusqueda.length > 99) {
       enqueueSnackbar(
         `La búsqueda es demasiado larga. Usá menos de 100 caracteres.`,
@@ -83,13 +111,13 @@ const MaterialListPage = () => {
   };
 
   const handleCleanText = async () => {
+    setVisibleCount(PAGE_SIZE);
     setInputBusqueda("");
     await fetchAllMaterials();
   };
 
   const selectedCategoryLabel =
-    categorias.find((c) => c.value === selectedCategory)?.label ??
-    selectedCategory;
+    categorias.find((c) => c.value === selectedCategory)?.label ?? "";
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
@@ -97,7 +125,7 @@ const MaterialListPage = () => {
         variant="h4"
         sx={{ fontWeight: "bold", mb: 2, color: "#1976d2" }}
       >
-        Biblioteca de Apuntes
+        {title}
       </Typography>
       <Stack
         direction="row"
@@ -141,24 +169,51 @@ const MaterialListPage = () => {
           <CircularProgress size={60} />
         </Box>
       ) : filteredMaterials.length > 0 ? (
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          {filteredMaterials.map((m: any) => (
-            <MaterialCard
-              key={m.id}
-              material={m}
-              onDelete={() => handleDeleteClick(m)}
-            />
-          ))}
-        </Box>
+        <InfiniteScroll
+          dataLength={Math.min(visibleCount, filteredMaterials.length)}
+          next={loadMore}
+          hasMore={visibleCount < filteredMaterials.length}
+          loader={
+            <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+              <CircularProgress size={30} />
+            </Box>
+          }
+          style={{ overflow: "visible" }}
+        >
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            {filteredMaterials.slice(0, visibleCount).map((m: any) => (
+              <MaterialCard
+                key={m.id}
+                material={m}
+                onDelete={() => handleDeleteClick(m)}
+                onEditSuccess={() => {
+                  setNotification({
+                    open: true,
+                    message: "Cambios guardados correctamente",
+                    severity: "success",
+                  });
+                  fetchAllMaterials();
+                }}
+              />
+            ))}
+          </Box>
+        </InfiniteScroll>
       ) : selectedCategory ? (
         <Typography align="center" color="text.secondary">
           No hay materiales para la categoria {selectedCategoryLabel}. Probá con
           otra categoria o subi nuevo material.
         </Typography>
       ) : (
-        <Typography align="center" color="text.secondary">
-          No hay materiales disponibles actualmente.
-        </Typography>
+        <Box sx={{ textAlign: "center", py: 4 }}>
+          <Typography color="text.secondary" sx={{ mb: 2 }}>
+            {emptyMessage}
+          </Typography>
+          {emptyAction && (
+            <Button variant="contained" onClick={emptyAction.onClick}>
+              {emptyAction.label}
+            </Button>
+          )}
+        </Box>
       )}
 
       {/* Modal de Confirmación */}

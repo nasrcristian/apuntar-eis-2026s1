@@ -30,4 +30,6 @@ interface MaterialDao : JpaRepository<MaterialSQL, Long> {
 	)
 	fun findByName(@Param("detalle") name: String): List<MaterialSQL>
 
+    fun findByOwnerMail(ownerMail: String): List<MaterialSQL>
+
 }

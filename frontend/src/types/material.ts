@@ -20,6 +20,7 @@ export interface VideoMetadataDTO {
 
 export interface MaterialDTO {
   id: number;
+  ownerMail: string,
   title: string;
   description: string;
   subject: string;

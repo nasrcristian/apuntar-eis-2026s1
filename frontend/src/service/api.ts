@@ -120,7 +120,7 @@ export const deleteMaterial = (
   del<void>(`${urlApi}/materiales/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`, // Reemplaza 'token' por tu variable, store o localStorage
-    },
+    },                                  // Aca habria que volver a leer el token por caso borde que pueda ser null
   });
 
 export const getMaterialFiltrado = (
@@ -182,3 +182,12 @@ export const deleteComment = (
 
 // Terminar de factorizar esto
 // export const uploadMaterial = (form: MaterialFormData): Promise<ResolvedResponse<MaterialUploadResDto>> => post<MaterialFormData, MaterialUploadResDto>();
+
+export const getMyMaterials = (): Promise<ResolvedResponse<MaterialDTO[]>> => {
+    const currentToken = localStorage.getItem("jwt"); // lo vuelve a leer por un bug de caso borde
+    return get<MaterialDTO[]>(`${urlApi}/materiales/mis-publicaciones`, {
+        headers: {
+            Authorization: `Bearer ${currentToken}`,
+        },
+    });
+};
