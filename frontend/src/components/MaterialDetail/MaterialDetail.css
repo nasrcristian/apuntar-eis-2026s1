@@ -34,3 +34,118 @@
   border-left: 1px solid rgba(0, 0, 0, 0.12);
   padding: 24px;
 }
+
+/* ── Agrega estos estilos al final de MaterialDetail.css ── */
+
+/* Sección principal de comentarios */
+.material-detail__comments {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.material-detail__comments-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.material-detail__comments-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+  padding: 0 0.45rem;
+  height: 1.35rem;
+  border-radius: 999px;
+  background-color: var(--mui-palette-action-selected, #e8e8e8);
+  color: var(--mui-palette-text-secondary, #666);
+  font-size: 0.75rem;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+/* Estado vacío */
+.material-detail__comments-empty {
+  padding: 1.5rem;
+  text-align: center;
+  background-color: var(--mui-palette-action-hover, #f5f5f5);
+  border-radius: 8px;
+}
+
+/* Lista */
+.material-detail__comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Cada comentario */
+.material-detail__comment-item {
+  padding: 0.875rem 1rem;
+  border-radius: 8px !important;
+}
+
+.material-detail__comment-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.material-detail__comment-author {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.material-detail__comment-avatar {
+  width: 36px !important;
+  height: 36px !important;
+  font-size: 0.8rem !important;
+  background-color: var(--mui-palette-primary-main, #1976d2) !important;
+  flex-shrink: 0;
+}
+
+.material-detail__comment-avatar--current {
+  background-color: var(--mui-palette-secondary-main, #9c27b0) !important;
+}
+
+.material-detail__comment-name {
+  line-height: 1.2 !important;
+}
+
+.material-detail__comment-delete {
+  color: var(--mui-palette-text-disabled, #bbb) !important;
+  transition: color 0.2s ease !important;
+}
+
+.material-detail__comment-delete:hover {
+  color: var(--mui-palette-error-main, #d32f2f) !important;
+}
+
+.material-detail__comment-content {
+  line-height: 1.55 !important;
+  color: var(--mui-palette-text-primary, #212121);
+  white-space: pre-wrap;
+}
+
+/* Formulario nuevo comentario */
+.material-detail__comment-form {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+.material-detail__comment-input-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.material-detail__comment-submit {
+  align-self: flex-end !important;
+}

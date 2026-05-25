@@ -1,5 +1,6 @@
 package ar.edu.unq.apuntar.controller
 
+import ar.edu.unq.apuntar.dto.LoginResDto
 import ar.edu.unq.apuntar.dto.auth.ForgotPasswordReqDto
 import ar.edu.unq.apuntar.dto.auth.LoginReqDto
 import ar.edu.unq.apuntar.dto.auth.ResetPasswordReqDto
@@ -13,9 +14,9 @@ import org.springframework.web.bind.annotation.*
 class AuthController(private val authService: AuthService) {
 
     @PostMapping("/login")
-    fun login(@RequestBody request: LoginReqDto): ResponseEntity<Map<String, String>> {
-        val token = authService.login(request)
-        return ResponseEntity.ok(mapOf("token" to token))
+    fun login(@RequestBody request: LoginReqDto): ResponseEntity<LoginResDto> {
+        val loginRes = authService.login(request)
+        return ResponseEntity.ok(loginRes)
     }
 
     @PostMapping("/forgot-password")

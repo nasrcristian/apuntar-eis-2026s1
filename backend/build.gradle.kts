@@ -33,6 +33,7 @@ dependencies {
 	implementation("ws.schild:jave-all-deps:3.5.0")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
+	runtimeOnly("org.mongodb:mongodb-driver-sync")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jdbc-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")

@@ -1,5 +1,11 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
-import type { MaterialDTO } from "../types/material";
+import type {
+  MaterialDTO,
+  ReactionSummaryDTO,
+  ReactionDTO,
+  CommentDTO,
+  AddCommentDTO,
+} from "../types/material";
 import type {
   RegisterReqDto,
   UserDto,
@@ -7,6 +13,8 @@ import type {
   ForgotPasswordResDto,
   ResetPasswordReqDto,
   ResetPasswordResDto,
+  ReactToMaterialDTO,
+
   // MaterialFormData,
   // MaterialUploadResDto,
 } from "../types/dto";
@@ -121,6 +129,56 @@ export const getMaterialFiltrado = (
   get<MaterialDTO[]>(
     `${urlApi}/materiales/filtrado?detalle=${encodeURIComponent(detalle)}`,
   );
+
+export const getReactionSummary = (
+  materialId: number,
+): Promise<ResolvedResponse<ReactionSummaryDTO>> =>
+  get<ReactionSummaryDTO>(
+    `${urlApi}/materiales/${materialId}/reactions/summary`,
+  );
+
+export const reactToMaterial = (
+  materialId: number,
+  type: "LIKE" | "DISLIKE",
+): Promise<ResolvedResponse<ReactionDTO>> =>
+  post<ReactToMaterialDTO, ReactionDTO>(
+    `${urlApi}/materiales/${materialId}/reactions`,
+    { type },
+  );
+
+export const removeReaction = (
+  materialId: number,
+): Promise<ResolvedResponse<void>> =>
+  del<void>(`${urlApi}/materiales/${materialId}/reactions`, {
+    headers: {
+      Authorization: `Bearer ${token}`, // Reemplaza 'token' por tu variable, store o localStorage
+    },
+  });
+
+export const getComments = (
+  materialId: number,
+): Promise<ResolvedResponse<CommentDTO[]>> =>
+  get<CommentDTO[]>(`${urlApi}/materiales/${materialId}/comments`);
+
+export const addComment = (
+  materialId: number,
+  text: string,
+  authorName: string,
+): Promise<ResolvedResponse<CommentDTO>> =>
+  post<AddCommentDTO, CommentDTO>(
+    `${urlApi}/materiales/${materialId}/comments`,
+    { text, authorName },
+  );
+
+export const deleteComment = (
+  materialId: number,
+  commentId: string,
+): Promise<ResolvedResponse<void>> =>
+  del<void>(`${urlApi}/materiales/${materialId}/comments/${commentId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
 // Terminar de factorizar esto
 // export const uploadMaterial = (form: MaterialFormData): Promise<ResolvedResponse<MaterialUploadResDto>> => post<MaterialFormData, MaterialUploadResDto>();

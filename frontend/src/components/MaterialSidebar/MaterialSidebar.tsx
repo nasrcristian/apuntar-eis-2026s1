@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography, Divider } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
@@ -16,10 +16,10 @@ import {
   carreras,
   categorias,
 } from "../../constants/materialOptions";
-import type { MaterialDTO } from "../../types/material";
+import type { Reaction, MaterialSidebarProps } from "../../types/material";
+import { useMaterials } from "../../hooks/useMaterials";
 import "./MaterialSidebar.css";
-
-type Reaction = "like" | "dislike" | null;
+import { enqueueSnackbar } from "notistack";
 
 interface FieldProps {
   icon: React.ReactNode;
@@ -39,12 +39,18 @@ function Field({ icon, label, value }: FieldProps) {
   );
 }
 
-interface MaterialSidebarProps {
-  material: MaterialDTO;
-}
-
-export default function MaterialSidebar({ material }: MaterialSidebarProps) {
-  const [userReaction, setUserReaction] = useState<Reaction>(null);
+export default function MaterialSidebar({
+  material,
+  reactions,
+  fetchReactions,
+  currentUser,
+}: MaterialSidebarProps) {
+  const [localLikes, setLocalLikes] = useState(reactions.likes);
+  const [localDislikes, setLocalDislikes] = useState(reactions.dislikes);
+  const [userReaction, setUserReaction] = useState<Reaction>(
+    reactions.userReaction,
+  );
+  const { valueMaterial, unvalueMaterial } = useMaterials();
 
   const subjectLabel =
     materias.find((m) => m.value === material.subject)?.label ??
@@ -64,17 +70,50 @@ export default function MaterialSidebar({ material }: MaterialSidebarProps) {
     },
   );
 
-  const displayedLikes = material.likes + (userReaction === "like" ? 1 : 0);
-  const displayedDislikes =
-    material.dislikes + (userReaction === "dislike" ? 1 : 0);
+  const displayedLikes = localLikes;
+  const displayedDislikes = localDislikes;
 
-  const handleLike = () => {
-    setUserReaction((prev) => (prev === "like" ? null : "like"));
+  const handleLike = async () => {
+    if (!currentUser.mail) {
+      enqueueSnackbar("Debes iniciar sesion para valorar", {
+        variant: "error",
+      });
+    } else if (userReaction === "LIKE") {
+      setUserReaction(null);
+      setLocalLikes((prev) => prev - 1);
+      await unvalueMaterial(material.id);
+    } else {
+      if (userReaction === "DISLIKE") setLocalDislikes((prev) => prev - 1);
+      setUserReaction("LIKE");
+      setLocalLikes((prev) => prev + 1);
+      await valueMaterial("LIKE", material.id);
+    }
+    fetchReactions();
   };
 
-  const handleDislike = () => {
-    setUserReaction((prev) => (prev === "dislike" ? null : "dislike"));
+  const handleDislike = async () => {
+    if (!currentUser.mail) {
+      enqueueSnackbar("Debes iniciar sesion para valorar", {
+        variant: "error",
+      });
+    } else if (userReaction === "DISLIKE") {
+      setUserReaction(null);
+      setLocalDislikes((prev) => prev - 1);
+      await unvalueMaterial(material.id);
+    } else {
+      if (userReaction === "LIKE") setLocalLikes((prev) => prev - 1);
+      setUserReaction("DISLIKE");
+      setLocalDislikes((prev) => prev + 1);
+      await valueMaterial("DISLIKE", material.id);
+    }
+    fetchReactions();
   };
+
+  useEffect(() => {
+    setUserReaction(reactions.userReaction);
+    setLocalLikes(reactions.likes);
+    setLocalDislikes(reactions.dislikes);
+  }, [reactions]);
 
   return (
     <Box className="sidebar">
@@ -94,27 +133,27 @@ export default function MaterialSidebar({ material }: MaterialSidebarProps) {
           </Typography>
           <Box className="sidebar__reactions-row">
             <Box className="sidebar__reaction-btn" onClick={handleLike}>
-              {userReaction === "like" ? (
+              {userReaction === "LIKE" ? (
                 <ThumbUpIcon fontSize="small" color="primary" />
               ) : (
                 <ThumbUpOutlinedIcon fontSize="small" />
               )}
               <Typography
                 className="sidebar__reaction-count"
-                color={userReaction === "like" ? "primary" : undefined}
+                color={userReaction === "LIKE" ? "primary" : undefined}
               >
                 {displayedLikes}
               </Typography>
             </Box>
             <Box className="sidebar__reaction-btn" onClick={handleDislike}>
-              {userReaction === "dislike" ? (
+              {userReaction === "DISLIKE" ? (
                 <ThumbDownIcon fontSize="small" color="error" />
               ) : (
                 <ThumbDownOutlinedIcon fontSize="small" />
               )}
               <Typography
                 className="sidebar__reaction-count"
-                color={userReaction === "dislike" ? "error" : undefined}
+                color={userReaction === "DISLIKE" ? "error" : undefined}
               >
                 {displayedDislikes}
               </Typography>
@@ -167,6 +206,7 @@ export default function MaterialSidebar({ material }: MaterialSidebarProps) {
           </Typography>
         </Box>
       </Box>
+      <Divider className="sidebar__divider" />
     </Box>
   );
 }
