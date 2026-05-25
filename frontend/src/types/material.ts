@@ -47,6 +47,20 @@ export interface ReactionSummaryDTO {
   userReaction: "LIKE" | "DISLIKE" | null;
 }
 
+export interface CommentDTO {
+  id: string;
+  materialId: number;
+  userId: string;
+  text: string;
+  createdAt: Date;
+  authorName: string;
+}
+
+export interface AddCommentDTO {
+  text: string;
+  authorName: string;
+}
+
 export interface MaterialSidebarProps {
   material: MaterialDTO;
   reactions: ReactionSummaryDTO;

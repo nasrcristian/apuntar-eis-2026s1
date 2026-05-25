@@ -18,4 +18,6 @@ class CommentRepositoryImpl(private val mongoTemplate: MongoTemplate) {
 
     fun save(comment: Comment): Comment =
         mongoTemplate.save(comment)
+
+
 }

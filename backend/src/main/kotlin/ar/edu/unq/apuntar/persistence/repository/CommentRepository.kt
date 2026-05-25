@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface CommentRepository : MongoRepository<Comment, ObjectId> {
     fun findAllByMaterialIdOrderByCreatedAtDesc(materialId: Long): List<Comment>
+
+    fun deleteByIdAndMaterialId(id: ObjectId, materialId: Long): Long
+
 }

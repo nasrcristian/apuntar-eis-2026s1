@@ -9,7 +9,8 @@ import java.util.Date
 data class Comment(
     @Id val id: ObjectId = ObjectId(),
     val materialId: Long,  // FK lógica hacia PSQL
-    val userId: Long,
+    val userId: String?,
     val text: String,
+    val authorName: String?,
     val createdAt: Date = Date()
 )

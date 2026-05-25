@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
-import type { MaterialDTO, ReactionSummaryDTO } from "../types/material";
+import type {
+  CommentDTO,
+  MaterialDTO,
+  ReactionSummaryDTO,
+} from "../types/material";
 import { enqueueSnackbar } from "notistack";
-import { getMaterial, getReactionSummary } from "../service/api";
+import { getMaterial, getReactionSummary, getComments } from "../service/api";
 
 interface UseMaterialDetailReturn {
   data: MaterialDTO | null;
@@ -9,6 +13,8 @@ interface UseMaterialDetailReturn {
   refetch: () => void;
   reactions: ReactionSummaryDTO;
   fetchReactions: () => void;
+  comments: CommentDTO[];
+  fetchComments: () => void;
 }
 
 export function useMaterialDetail(id: number): UseMaterialDetailReturn {
@@ -18,6 +24,7 @@ export function useMaterialDetail(id: number): UseMaterialDetailReturn {
     dislikes: 0,
     userReaction: null,
   });
+  const [comments, setComments] = useState<CommentDTO[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
@@ -43,10 +50,30 @@ export function useMaterialDetail(id: number): UseMaterialDetailReturn {
     setLoading(false);
   };
 
+  const fetchComments = async () => {
+    setLoading(true);
+    try {
+      const res = await getComments(id);
+      setComments(res.data);
+    } catch (error) {
+      enqueueSnackbar(`Error al cargar los comentarios`, { variant: "error" });
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     fetchData();
     fetchReactions();
+    fetchComments();
   }, [id]);
 
-  return { data, loading, refetch: fetchData, reactions, fetchReactions };
+  return {
+    data,
+    loading,
+    refetch: fetchData,
+    reactions,
+    fetchReactions,
+    comments,
+    fetchComments,
+  };
 }

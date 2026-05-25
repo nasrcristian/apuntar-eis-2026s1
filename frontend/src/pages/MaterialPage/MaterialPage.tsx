@@ -7,7 +7,7 @@ import "./MaterialPage.css";
 export default function MaterialPage() {
   const { id } = useParams<{ id: string }>();
   const materialId = Number(id);
-  const { data, loading, reactions, fetchReactions } =
+  const { data, loading, reactions, fetchReactions, comments, fetchComments } =
     useMaterialDetail(materialId);
   const user = JSON.parse(localStorage.getItem("user") ?? "{}");
 
@@ -33,7 +33,8 @@ export default function MaterialPage() {
       reactions={reactions}
       fetchReactions={fetchReactions}
       currentUser={user}
-      initialComments={[]}
+      initialComments={comments}
+      fetchComments={fetchComments}
     />
   );
 }

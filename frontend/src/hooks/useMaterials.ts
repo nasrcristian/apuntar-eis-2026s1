@@ -6,8 +6,10 @@ import {
   getMaterialFiltrado,
   reactToMaterial,
   removeReaction,
+  addComment,
+  deleteComment,
 } from "../service/api";
-import type { MaterialDTO } from "../types/material";
+import type { AddCommentDTO, MaterialDTO } from "../types/material";
 import { enqueueSnackbar } from "notistack";
 
 export const useMaterials = () => {
@@ -90,31 +92,31 @@ export const useMaterials = () => {
     setLoading(false);
   };
 
-  // const saveComment = async (materialId: any, comment: string) => {
-  //   setLoading(true);
-  //   try {
-  //     await saveComentario(materialId, comment);
-  //     enqueueSnackbar("Comentario guardado con exito", { variant: "success" });
-  //   } catch (error) {
-  //     enqueueSnackbar(`Error al comentar el material. Pruebe mas tarde`, {
-  //       variant: "error",
-  //     });
-  //   }
-  //   setLoading(false);
-  // };
+  const saveComment = async (materialId: any, comment: AddCommentDTO) => {
+    setLoading(true);
+    try {
+      await addComment(materialId, comment.text, comment.authorName);
+      enqueueSnackbar("Comentario guardado con exito", { variant: "success" });
+    } catch (error) {
+      enqueueSnackbar(`Error al comentar el material. Pruebe mas tarde`, {
+        variant: "error",
+      });
+    }
+    setLoading(false);
+  };
 
-  // const deleteComment = async (materialId: any) => {
-  //   setLoading(true);
-  //   try {
-  //     await deleteComment(materialId);
-  //     enqueueSnackbar("Comentario eliminado con exito", { variant: "success" });
-  //   } catch (error) {
-  //   enqueueSnackbar(`Error al comentar el material. Pruebe mas tarde`, {
-  //       variant: "error",
-  //     });
-  //   }
-  //   setLoading(false);
-  // }
+  const delComment = async (materialId: any, commentId: string) => {
+    setLoading(true);
+    try {
+      await deleteComment(materialId, commentId);
+      enqueueSnackbar("Comentario eliminado con exito", { variant: "success" });
+    } catch (error) {
+      enqueueSnackbar(`Error al comentar el material. Pruebe mas tarde`, {
+        variant: "error",
+      });
+    }
+    setLoading(false);
+  };
 
   return {
     materials,
@@ -125,5 +127,7 @@ export const useMaterials = () => {
     getMaterial,
     valueMaterial,
     unvalueMaterial,
+    saveComment,
+    delComment,
   };
 };

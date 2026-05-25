@@ -16,20 +16,20 @@ import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import { useNavigate } from "react-router-dom";
 import PdfPreview from "../PdfPreview/PdfPreview";
 import MaterialSidebar from "../MaterialSidebar/MaterialSidebar";
-import type { MaterialDTO, ReactionSummaryDTO } from "../../types/material";
+import type {
+  MaterialDTO,
+  ReactionSummaryDTO,
+  CommentDTO,
+  AddCommentDTO,
+} from "../../types/material";
+import { useMaterials } from "../../hooks/useMaterials";
 import "./MaterialDetail.css";
-
-export interface CommentDTO {
-  id: string;
-  authorId: string;
-  authorName: string;
-  content: string;
-  createdAt: string; // ISO date string
-}
+import { enqueueSnackbar } from "notistack";
 
 interface CurrentUser {
-  id: string;
+  mail: string;
   name: string;
+  surname: string;
 }
 
 interface MaterialDetailProps {
@@ -38,10 +38,16 @@ interface MaterialDetailProps {
   fetchReactions: () => void;
   currentUser: CurrentUser;
   initialComments?: CommentDTO[];
+  fetchComments: () => void;
 }
 
-function formatDate(isoString: string): string {
-  const date = new Date(isoString);
+function formatDate(dateInput: Date | string): string {
+  const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+
+  if (isNaN(date.getTime())) {
+    return "Fecha inválida";
+  }
+
   return date.toLocaleDateString("es-AR", {
     day: "2-digit",
     month: "short",
@@ -66,33 +72,37 @@ export default function MaterialDetail({
   fetchReactions,
   currentUser,
   initialComments = [],
+  fetchComments,
 }: MaterialDetailProps) {
   const navigate = useNavigate();
-  const [comments, setComments] = useState<CommentDTO[]>(initialComments);
   const [commentText, setCommentText] = useState("");
   const [error, setError] = useState("");
+  const { saveComment, delComment } = useMaterials();
 
   const handlePublish = () => {
     if (!commentText.trim()) {
       setError("El comentario no puede estar vacío.");
       return;
     }
-
-    const newComment: CommentDTO = {
-      id: crypto.randomUUID(),
-      authorId: currentUser.id,
-      authorName: currentUser.name,
-      content: commentText.trim(),
-      createdAt: new Date().toISOString(),
+    const newComment: AddCommentDTO = {
+      authorName: currentUser.name + " " + currentUser.surname,
+      text: commentText.trim(),
     };
-
-    setComments((prev) => [...prev, newComment]);
+    saveComment(material.id, newComment);
+    fetchComments();
     setCommentText("");
     setError("");
   };
 
-  const handleDelete = (id: string) => {
-    setComments((prev) => prev.filter((c) => c.id !== id));
+  const handleDelete = (id: string, authorId: string) => {
+    if (currentUser.mail != authorId) {
+      enqueueSnackbar("No puede eliminar un comentario ajeno", {
+        variant: "error",
+      });
+    } else {
+      delComment(material.id, id);
+    }
+    fetchComments();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -126,12 +136,12 @@ export default function MaterialDetail({
               <ChatBubbleIcon fontSize="small" color="action" />
               <Typography variant="h6" component="h2">
                 Comentarios
-                {comments.length > 0 && (
+                {initialComments.length > 0 && (
                   <Typography
                     component="span"
                     className="material-detail__comments-count"
                   >
-                    {comments.length}
+                    {initialComments.length}
                   </Typography>
                 )}
               </Typography>
@@ -140,7 +150,7 @@ export default function MaterialDetail({
             <Divider />
 
             {/* Lista de comentarios */}
-            {comments.length === 0 ? (
+            {initialComments.length === 0 ? (
               <Box className="material-detail__comments-empty">
                 <Typography variant="body2" color="text.secondary">
                   Aún no hay comentarios. ¡Sé el primero en comentar!
@@ -148,7 +158,7 @@ export default function MaterialDetail({
               </Box>
             ) : (
               <Box className="material-detail__comments-list">
-                {comments.map((comment) => (
+                {initialComments.map((comment) => (
                   <Paper
                     key={comment.id}
                     variant="outlined"
@@ -172,11 +182,13 @@ export default function MaterialDetail({
                         </Box>
                       </Box>
 
-                      {comment.authorId === currentUser.id && (
+                      {comment.userId === currentUser.mail && (
                         <IconButton
                           size="small"
                           aria-label="Eliminar comentario"
-                          onClick={() => handleDelete(comment.id)}
+                          onClick={() =>
+                            handleDelete(comment.id, comment.userId)
+                          }
                           className="material-detail__comment-delete"
                         >
                           <DeleteIcon fontSize="small" />
@@ -188,7 +200,7 @@ export default function MaterialDetail({
                       variant="body2"
                       className="material-detail__comment-content"
                     >
-                      {comment.content}
+                      {comment.text}
                     </Typography>
                   </Paper>
                 ))}

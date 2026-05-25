@@ -1,6 +1,6 @@
 package ar.edu.unq.apuntar.dto
 
 data class CommentDTO(
-    val userId: Long,
+    val authorName: String,
     val text: String
 )

@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/materials/{materialId}/comments")
+@RequestMapping("/materiales/{materialId}/comments")
 class CommentController(private val commentService: CommentService) {
 
     @PostMapping
@@ -16,11 +16,20 @@ class CommentController(private val commentService: CommentService) {
         @RequestBody request: CommentDTO
     ): ResponseEntity<Comment> =
         ResponseEntity.status(HttpStatus.CREATED)
-            .body(commentService.addComment(materialId, request.userId, request.text))
+            .body(commentService.addComment(materialId,  request.text, request.authorName))
 
     @GetMapping
     fun getComments(
         @PathVariable materialId: Long
     ): ResponseEntity<List<Comment>> =
         ResponseEntity.ok(commentService.getComments(materialId))
+
+    @DeleteMapping("/{commentId}")
+    fun deleteComment(
+        @PathVariable materialId: Long,
+        @PathVariable commentId: String
+    ): ResponseEntity<Unit> {
+        commentService.deleteComment(materialId, commentId)
+        return ResponseEntity.noContent().build()
+    }
 }

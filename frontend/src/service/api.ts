@@ -3,6 +3,8 @@ import type {
   MaterialDTO,
   ReactionSummaryDTO,
   ReactionDTO,
+  CommentDTO,
+  AddCommentDTO,
 } from "../types/material";
 import type {
   RegisterReqDto,
@@ -150,6 +152,31 @@ export const removeReaction = (
   del<void>(`${urlApi}/materiales/${materialId}/reactions`, {
     headers: {
       Authorization: `Bearer ${token}`, // Reemplaza 'token' por tu variable, store o localStorage
+    },
+  });
+
+export const getComments = (
+  materialId: number,
+): Promise<ResolvedResponse<CommentDTO[]>> =>
+  get<CommentDTO[]>(`${urlApi}/materiales/${materialId}/comments`);
+
+export const addComment = (
+  materialId: number,
+  text: string,
+  authorName: string,
+): Promise<ResolvedResponse<CommentDTO>> =>
+  post<AddCommentDTO, CommentDTO>(
+    `${urlApi}/materiales/${materialId}/comments`,
+    { text, authorName },
+  );
+
+export const deleteComment = (
+  materialId: number,
+  commentId: string,
+): Promise<ResolvedResponse<void>> =>
+  del<void>(`${urlApi}/materiales/${materialId}/comments/${commentId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
   });
 
