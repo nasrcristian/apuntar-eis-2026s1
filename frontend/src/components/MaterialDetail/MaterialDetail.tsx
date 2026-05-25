@@ -79,7 +79,7 @@ export default function MaterialDetail({
   const [error, setError] = useState("");
   const { saveComment, delComment } = useMaterials();
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
     if (!commentText.trim()) {
       setError("El comentario no puede estar vacío.");
       return;
@@ -88,19 +88,19 @@ export default function MaterialDetail({
       authorName: currentUser.name + " " + currentUser.surname,
       text: commentText.trim(),
     };
-    saveComment(material.id, newComment);
+    await saveComment(material.id, newComment);
     fetchComments();
     setCommentText("");
     setError("");
   };
 
-  const handleDelete = (id: string, authorId: string) => {
+  const handleDelete = async (id: string, authorId: string) => {
     if (currentUser.mail != authorId) {
       enqueueSnackbar("No puede eliminar un comentario ajeno", {
         variant: "error",
       });
     } else {
-      delComment(material.id, id);
+      await delComment(material.id, id);
     }
     fetchComments();
   };

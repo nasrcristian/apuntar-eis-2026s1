@@ -111,7 +111,7 @@ export const useMaterials = () => {
       await deleteComment(materialId, commentId);
       enqueueSnackbar("Comentario eliminado con exito", { variant: "success" });
     } catch (error) {
-      enqueueSnackbar(`Error al comentar el material. Pruebe mas tarde`, {
+      enqueueSnackbar(`Error al eliminar el comentario. Pruebe mas tarde`, {
         variant: "error",
       });
     }
