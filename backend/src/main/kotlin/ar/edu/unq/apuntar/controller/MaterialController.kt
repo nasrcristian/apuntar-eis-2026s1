@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import kotlin.Long
 import ar.edu.unq.apuntar.dto.UpdateMaterialDto
-import com.mongodb.client.model.changestream.UpdateDescription
-import lombok.`val`
-import javax.security.auth.Subject
+import org.springframework.security.core.Authentication
 
 @RestController
 @RequestMapping("/materiales")
@@ -26,9 +24,20 @@ class MaterialController(private val materialService: MaterialService) {
         @RequestParam career: String,
         @RequestParam topic: String,
         @RequestParam category: Category,
-        @RequestParam("files") files: List<MultipartFile>
+        @RequestParam("files") files: List<MultipartFile>,
+        authentication: Authentication
     ): ResponseEntity<MaterialDTO> {
-        val fileData = CreateFileDTO(title, description, subject, career, topic, category, files)
+        val ownerMail = authentication.name
+        val fileData = CreateFileDTO(
+            ownerMail = ownerMail,
+            title = title,
+            description = description,
+            subject = subject,
+            career = career,
+            topic = topic,
+            category = category,
+            files = files
+        )
         val material = materialService.create(fileData)
         return ResponseEntity.status(HttpStatus.CREATED).body(material.toDTO())
     }
@@ -59,16 +68,20 @@ class MaterialController(private val materialService: MaterialService) {
         @RequestParam career: String,
         @RequestParam topic: String,
         @RequestParam category: Category,
-        @RequestParam(value = "files", required = false) files: List<MultipartFile>?
+        @RequestParam(value = "files", required = false) files: List<MultipartFile>?,
+        authentication: Authentication
     ): ResponseEntity<MaterialDTO> {
         val data = UpdateMaterialDto(title, description, subject, career, topic, category, files)
-        val updated = materialService.update(id, data)
+        val updated = materialService.update(id, data, authentication.name)
         return ResponseEntity.ok(updated.toDTO())
     }
 
     @DeleteMapping("/{id}")
-    fun deleteMaterial(@PathVariable id: Long): ResponseEntity<Void> {
-        materialService.deleteById(id)
+    fun deleteMaterial(
+        @PathVariable id: Long,
+        authentication: Authentication
+    ): ResponseEntity<Void> {
+        materialService.deleteById(id, authentication.name)
         return ResponseEntity.noContent().build()
     }
 
@@ -90,12 +103,10 @@ class MaterialController(private val materialService: MaterialService) {
         return ResponseEntity.ok(updated.toDTO())
     }
 
-    // TODO: deberia filtrar los materiales por usuario logueado leyendo el ownerId del JWT,
-    //  pero como todavia no tenemos id devuelve todos los materiales (se haria en APUNTAR-126).
     @GetMapping("/mis-publicaciones")
-    fun getMyMaterials(): ResponseEntity<List<MaterialDTO>> {
-        return ResponseEntity.ok(materialService.findAll()
-            .sortedByDescending { it.createdAt } //gasto en memoria, se podria mejorar con una query
+    fun getMyMaterials(authentication: Authentication): ResponseEntity<List<MaterialDTO>> {
+        return ResponseEntity.ok(materialService.findByOwnerMail(authentication.name)
+            .sortedByDescending { it.createdAt }
             .map { it.toDTO() })
     }
 }

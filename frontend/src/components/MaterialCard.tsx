@@ -13,6 +13,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import type { MaterialDTO } from "../types/material";
 import EditMaterialModal from "./EditMaterialModal";
+import { getCurrentUserEmail } from '../service/auth';
 
 interface MaterialCardProps {
   material: MaterialDTO;
@@ -23,6 +24,8 @@ interface MaterialCardProps {
 const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) => {
   const navigate = useNavigate();
   const [isFavorite, setIsFav] = useState(false);
+  const currentUserEmail = getCurrentUserEmail();
+  const isOwner = currentUserEmail === material.ownerMail;
   const [vote, setVote] = useState<null | "like" | "dislike">(null);
   const [editOpen, setEditOpen] = useState(false);
   const baseLikes = material.likes ?? 0;
@@ -44,6 +47,7 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
 
   const handleEditClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!isOwner) return;
     setEditOpen(true);
   };
 
@@ -142,22 +146,26 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
           >
             {isFavorite ? <Favorite /> : <FavoriteBorder />}
           </IconButton>
-          <IconButton
-              size="small"
-              color="primary"
-              onClick={handleEditClick}
-              aria-label="editar"
-            >
-              <Edit />
-          </IconButton>
-          <IconButton
-            size="small"
-            color="error"
-            onClick={() => onDelete(material)}
-            aria-label="eliminar"
-          >
-            <Delete />
-          </IconButton>
+          {isOwner && (
+              <>
+                  <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={handleEditClick}
+                      aria-label="editar"
+                  >
+                      <Edit />
+                  </IconButton>
+                  <IconButton
+                      size="small"
+                      color="error"
+                      onClick={() => onDelete(material)}
+                      aria-label="eliminar"
+                  >
+                      <Delete />
+                  </IconButton>
+              </>
+          )}
         </Box>
       </Box>
 
@@ -172,7 +180,7 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
         }}
       >
         <Typography variant="caption" color="text.secondary">
-          por {material.author || "Usuario"} el {date}
+          por {material.ownerMail || "Usuario"} el {date}
         </Typography>
 
         <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>

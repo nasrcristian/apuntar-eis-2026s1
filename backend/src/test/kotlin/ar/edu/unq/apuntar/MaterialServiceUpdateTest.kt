@@ -55,7 +55,8 @@ class MaterialServiceUpdateTest {
                 topic = "Nuevo tópico",
                 category = Category.RESUMEN,
                 files = null
-            )
+            ),
+            requesterMail = "test@test.com"
         )
 
         Assertions.assertEquals("Título actualizado", updated.title)
@@ -82,7 +83,8 @@ class MaterialServiceUpdateTest {
                 topic = "Nuevo",
                 category = Category.APUNTE,
                 files = listOf(pdfFile("nuevo.pdf"))
-            )
+            ),
+            requesterMail = "test@test.com"
         )
 
         val newStoredName = updated.fileMetadatas.first().storedFileName
@@ -95,7 +97,7 @@ class MaterialServiceUpdateTest {
     fun `update con titulo vacio lanza InvalidMaterialException`() {
         val id = crearMaterialBase()
         Assertions.assertThrows(InvalidMaterialException::class.java) {
-            materialService.update(id, datosValidos().copy(title = "   "))
+            materialService.update(id, datosValidos().copy(title = "   "), "test@test.com")
         }
     }
 
@@ -103,7 +105,7 @@ class MaterialServiceUpdateTest {
     fun `update con titulo de mas de 120 caracteres lanza InvalidMaterialException`() {
         val id = crearMaterialBase()
         Assertions.assertThrows(InvalidMaterialException::class.java) {
-            materialService.update(id, datosValidos().copy(title = "x".repeat(121)))
+            materialService.update(id, datosValidos().copy(title = "x".repeat(121)), "test@test.com")
         }
     }
 
@@ -111,7 +113,7 @@ class MaterialServiceUpdateTest {
     fun `update con descripcion de menos de 10 caracteres lanza InvalidMaterialException`() {
         val id = crearMaterialBase()
         Assertions.assertThrows(InvalidMaterialException::class.java) {
-            materialService.update(id, datosValidos().copy(description = "corto"))
+            materialService.update(id, datosValidos().copy(description = "corto"), "test@test.com")
         }
     }
 
@@ -119,14 +121,14 @@ class MaterialServiceUpdateTest {
     fun `update con tema de mas de 80 caracteres lanza InvalidMaterialException`() {
         val id = crearMaterialBase()
         Assertions.assertThrows(InvalidMaterialException::class.java) {
-            materialService.update(id, datosValidos().copy(topic = "x".repeat(81)))
+            materialService.update(id, datosValidos().copy(topic = "x".repeat(81)), "test@test.com")
         }
     }
 
     @Test
     fun `update de material inexistente lanza MaterialNotFoundException`() {
         Assertions.assertThrows(MaterialNotFoundException::class.java) {
-            materialService.update(Long.MAX_VALUE, datosValidos())
+            materialService.update(Long.MAX_VALUE, datosValidos(), "test@test.com")
         }
     }
 
@@ -138,6 +140,7 @@ class MaterialServiceUpdateTest {
     private fun crearMaterialBase(): Long {
         val created = materialService.create(
             CreateFileDTO(
+                ownerMail = "test@test.com",
                 title = "Material original",
                 description = "Descripción original suficientemente larga",
                 subject = "Programación",

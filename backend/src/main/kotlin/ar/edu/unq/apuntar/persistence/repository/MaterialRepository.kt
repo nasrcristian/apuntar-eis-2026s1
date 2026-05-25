@@ -11,5 +11,6 @@ interface MaterialRepository {
     fun deleteById(id: Long)
     fun toggleLike(id: Long, isAdding: Boolean)
     fun toggleDislike(id: Long, isAdding: Boolean)
+    fun findByOwnerMail(ownerMail: String): List<Material>
 }
 

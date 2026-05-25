@@ -47,6 +47,7 @@ class MaterialRepositoryImpl(
 
         val entity = MaterialSQL(
             id = material.id,
+            ownerMail = material.ownerMail,
             title = material.title,
             description = material.description,
             subject = material.subject,
@@ -91,6 +92,7 @@ class MaterialRepositoryImpl(
 
         return Material.toModel(
             saved.id ?: throw IllegalStateException("Saved material does not have an id"),
+            ownerMail = saved.ownerMail,
             saved.title,
             saved.description,
             saved.subject,
@@ -182,6 +184,9 @@ class MaterialRepositoryImpl(
         if (updated == 0) throw MaterialNotFoundException("No se encontró el material")
     }
 
+    override fun findByOwnerMail(ownerMail: String): List<Material> =
+        materialDao.findByOwnerMail(ownerMail).map { toMaterial(it) }
+
     private fun toMaterial(entity: MaterialSQL): Material {
         val fileMetadatas = entity.files.map { f ->
             FileMetadata.fromPersistence(f.originalFileName, f.storedFileName, f.contentType, f.size)
@@ -201,6 +206,7 @@ class MaterialRepositoryImpl(
         }
         return Material.toModel(
             entity.id ?: throw IllegalStateException("Material sin id"),
+            entity.ownerMail,
             entity.title,
             entity.description,
             entity.subject,

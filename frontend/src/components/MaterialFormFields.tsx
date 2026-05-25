@@ -39,7 +39,9 @@ export default function MaterialFormFields({
         required
         fullWidth
         placeholder="Ej: Resumen Unidad 3 - Termodinámica"
-        {...({ inputProps: { maxLength: 120 } } as any)}
+        slotProps={{
+            htmlInput: { maxLength: 120 }
+        }}
         helperText={titulo.length > 80 ? `${titulo.length}/120 caracteres` : undefined}
       />
 
@@ -96,7 +98,9 @@ export default function MaterialFormFields({
         required
         fullWidth
         placeholder="Ej: Unidad 3 o Termodinámica"
-        {...({ inputProps: { maxLength: 80 } } as any)}
+        slotProps={{
+            htmlInput: { maxLength: 80 }
+        }}
         helperText={tema.length > 60 ? `${tema.length}/80 caracteres` : undefined}
       />
 
