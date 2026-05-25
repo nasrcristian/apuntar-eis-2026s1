@@ -43,6 +43,8 @@ export default function MaterialSidebar({
   reactions,
   fetchReactions,
 }: MaterialSidebarProps) {
+  const [localLikes, setLocalLikes] = useState(reactions.likes);
+  const [localDislikes, setLocalDislikes] = useState(reactions.dislikes);
   const [userReaction, setUserReaction] = useState<Reaction>(
     reactions.userReaction,
   );
@@ -69,32 +71,38 @@ export default function MaterialSidebar({
   const displayedLikes = reactions.likes;
   const displayedDislikes = reactions.dislikes;
 
-  const handleLike = () => {
-    if (userReaction) {
-      unvalueMaterial(material.id);
-      fetchReactions();
+  const handleLike = async () => {
+    if (userReaction === "LIKE") {
       setUserReaction(null);
+      setLocalLikes((prev) => prev - 1);
+      await unvalueMaterial(material.id);
     } else {
-      valueMaterial("LIKE", material.id);
-      fetchReactions();
+      if (userReaction === "DISLIKE") setLocalDislikes((prev) => prev - 1);
       setUserReaction("LIKE");
+      setLocalLikes((prev) => prev + 1);
+      await valueMaterial("LIKE", material.id);
     }
+    fetchReactions();
   };
 
-  const handleDislike = () => {
-    if (userReaction) {
-      unvalueMaterial(material.id);
-      fetchReactions();
+  const handleDislike = async () => {
+    if (userReaction === "DISLIKE") {
       setUserReaction(null);
+      setLocalDislikes((prev) => prev - 1);
+      await unvalueMaterial(material.id);
     } else {
-      valueMaterial("DISLIKE", material.id);
-      fetchReactions();
+      if (userReaction === "LIKE") setLocalLikes((prev) => prev - 1);
       setUserReaction("DISLIKE");
+      setLocalDislikes((prev) => prev + 1);
+      await valueMaterial("DISLIKE", material.id);
     }
+    fetchReactions();
   };
 
   useEffect(() => {
     setUserReaction(reactions.userReaction);
+    setLocalLikes(reactions.likes);
+    setLocalDislikes(reactions.dislikes);
   }, [reactions]);
 
   return (
