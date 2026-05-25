@@ -1,5 +1,7 @@
 package ar.edu.unq.apuntar.service
 
+import ar.edu.unq.apuntar.dto.LoginResDto
+import ar.edu.unq.apuntar.dto.UserDto
 import ar.edu.unq.apuntar.dto.auth.LoginReqDto
 import ar.edu.unq.apuntar.model.PasswordResetToken
 import ar.edu.unq.apuntar.persistence.dao.PasswordResetTokenDao
@@ -18,13 +20,21 @@ class AuthServiceImpl (
     private val tokenDao: PasswordResetTokenDao,
     private val jwtUtil: JwtUtil
 ) : AuthService {
-    override fun login(request: LoginReqDto): String {
+    override fun login(request: LoginReqDto): LoginResDto {
         val user = userRepository.findByMail(request.mail)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Credenciales invalidas")
         if (request.password != user.password) {
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciales invalidas")
         }
-        return jwtUtil.generateToken(user.mail)
+
+        return LoginResDto(
+            token = jwtUtil.generateToken(user.mail),
+            user = UserDto(
+                mail = user.mail,
+                name = user.name,
+                surname = user.surname,
+            )
+        )
     }
 
     @Transactional

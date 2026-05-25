@@ -9,6 +9,7 @@ export default function MaterialPage() {
   const materialId = Number(id);
   const { data, loading, reactions, fetchReactions } =
     useMaterialDetail(materialId);
+  const user = JSON.parse(localStorage.getItem("user") ?? "{}");
 
   if (loading) {
     return (
@@ -31,7 +32,7 @@ export default function MaterialPage() {
       material={data}
       reactions={reactions}
       fetchReactions={fetchReactions}
-      currentUser={{ id: "dillalva", name: "Vami" }}
+      currentUser={user}
       initialComments={[]}
     />
   );
