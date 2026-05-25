@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography, Divider } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
@@ -41,6 +41,7 @@ function Field({ icon, label, value }: FieldProps) {
 export default function MaterialSidebar({
   material,
   reactions,
+  fetchReactions,
 }: MaterialSidebarProps) {
   const [userReaction, setUserReaction] = useState<Reaction>(
     reactions.userReaction,
@@ -65,29 +66,36 @@ export default function MaterialSidebar({
     },
   );
 
-  const displayedLikes = reactions.likes + (userReaction === "LIKE" ? 1 : 0);
-  const displayedDislikes =
-    reactions.dislikes + (userReaction === "DISLIKE" ? 1 : 0);
+  const displayedLikes = reactions.likes;
+  const displayedDislikes = reactions.dislikes;
 
   const handleLike = () => {
     if (userReaction) {
-      setUserReaction(null);
       unvalueMaterial(material.id);
+      fetchReactions();
+      setUserReaction(null);
     } else {
-      setUserReaction("LIKE");
       valueMaterial("LIKE", material.id);
+      fetchReactions();
+      setUserReaction("LIKE");
     }
   };
 
   const handleDislike = () => {
     if (userReaction) {
-      setUserReaction(null);
       unvalueMaterial(material.id);
+      fetchReactions();
+      setUserReaction(null);
     } else {
-      setUserReaction("DISLIKE");
       valueMaterial("DISLIKE", material.id);
+      fetchReactions();
+      setUserReaction("DISLIKE");
     }
   };
+
+  useEffect(() => {
+    setUserReaction(reactions.userReaction);
+  }, [reactions]);
 
   return (
     <Box className="sidebar">

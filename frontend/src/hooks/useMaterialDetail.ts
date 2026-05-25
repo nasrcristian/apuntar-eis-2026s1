@@ -8,6 +8,7 @@ interface UseMaterialDetailReturn {
   loading: boolean;
   refetch: () => void;
   reactions: ReactionSummaryDTO;
+  fetchReactions: () => void;
 }
 
 export function useMaterialDetail(id: number): UseMaterialDetailReturn {
@@ -47,5 +48,5 @@ export function useMaterialDetail(id: number): UseMaterialDetailReturn {
     fetchReactions();
   }, [id]);
 
-  return { data, loading, refetch: fetchData, reactions };
+  return { data, loading, refetch: fetchData, reactions, fetchReactions };
 }

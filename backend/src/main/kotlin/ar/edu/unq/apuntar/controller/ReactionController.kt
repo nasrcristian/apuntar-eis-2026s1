@@ -1,6 +1,7 @@
 package ar.edu.unq.apuntar.controller
 
 import ar.edu.unq.apuntar.dto.ReactionSummaryDTO
+import ar.edu.unq.apuntar.dto.auth.ReactDTO
 import ar.edu.unq.apuntar.model.material.Reaction
 import ar.edu.unq.apuntar.model.material.VoteType
 import ar.edu.unq.apuntar.service.ReactionService
@@ -8,23 +9,21 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/materials/{materialId}/reactions")
+@RequestMapping("/materiales/{materialId}/reactions")
 class ReactionController(private val reactionService: ReactionService) {
 
     @PostMapping
     fun react(
         @PathVariable materialId: Long,
-        @RequestParam userId: Long,
-        @RequestParam type: VoteType
+        @RequestBody request: ReactDTO
     ): ResponseEntity<Reaction> =
-        ResponseEntity.ok(reactionService.react(materialId, userId, type))
+        ResponseEntity.ok(reactionService.react(materialId, request.type))
 
     @DeleteMapping
     fun removeReaction(
         @PathVariable materialId: Long,
-        @RequestParam userId: Long
     ): ResponseEntity<Void> {
-        reactionService.removeReaction(materialId, userId)
+        reactionService.removeReaction(materialId)
         return ResponseEntity.noContent().build()
     }
 

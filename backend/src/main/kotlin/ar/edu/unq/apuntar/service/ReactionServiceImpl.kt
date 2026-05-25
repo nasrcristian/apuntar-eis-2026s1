@@ -3,13 +3,14 @@ import ar.edu.unq.apuntar.dto.ReactionSummaryDTO
 import ar.edu.unq.apuntar.model.material.Reaction
 import ar.edu.unq.apuntar.model.material.VoteType
 import ar.edu.unq.apuntar.persistence.repository.ReactionRepository
-import ar.edu.unq.apuntar.persistence.repository.UserRepository
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
-class ReactionServiceImpl(private val reactionRepository: ReactionRepository, private val userRepository: UserRepository) : ReactionService  {
+class ReactionServiceImpl(private val reactionRepository: ReactionRepository) : ReactionService  {
 
-    override fun react(materialId: Long, userId: Long, type: VoteType): Reaction {
+    override fun react(materialId: Long, type: VoteType): Reaction {
+        val userId = SecurityContextHolder.getContext().authentication?.name
         val existing = reactionRepository.findByMaterialIdAndUserId(materialId, userId)
         return if (existing != null) {
             reactionRepository.save(existing.copy(type = type))
@@ -19,10 +20,15 @@ class ReactionServiceImpl(private val reactionRepository: ReactionRepository, pr
     }
 
     override fun getReactionSummary(materialId: Long): ReactionSummaryDTO {
-        val email = SecurityContextHolder.getContext().authentication.name
         val likes = reactionRepository.countByMaterialIdAndType(materialId, VoteType.LIKE)
         val dislikes = reactionRepository.countByMaterialIdAndType(materialId, VoteType.DISLIKE)
-        val userReaction = reactionRepository.findByMaterialIdAndUserId(materialId, email)?.type
+
+        val authentication = SecurityContextHolder.getContext().authentication
+        val userReaction = if (authentication != null && authentication.isAuthenticated && authentication.name != "anonymousUser") {
+            reactionRepository.findByMaterialIdAndUserId(materialId, authentication.name)?.type
+        } else {
+            null
+        }
 
         return ReactionSummaryDTO(
             likes = likes,
@@ -31,7 +37,8 @@ class ReactionServiceImpl(private val reactionRepository: ReactionRepository, pr
         )
     }
 
-    override fun removeReaction(materialId: Long, userId: Long) {
+    override fun removeReaction(materialId: Long) {
+        val userId = SecurityContextHolder.getContext().authentication?.name
         reactionRepository.deleteByMaterialIdAndUserId(materialId, userId)
     }
 

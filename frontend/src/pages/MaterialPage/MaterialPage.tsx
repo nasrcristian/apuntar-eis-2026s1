@@ -7,7 +7,8 @@ import "./MaterialPage.css";
 export default function MaterialPage() {
   const { id } = useParams<{ id: string }>();
   const materialId = Number(id);
-  const { data, loading, reactions } = useMaterialDetail(materialId);
+  const { data, loading, reactions, fetchReactions } =
+    useMaterialDetail(materialId);
 
   if (loading) {
     return (
@@ -25,5 +26,11 @@ export default function MaterialPage() {
     );
   }
 
-  return <MaterialDetail material={data} reactions={reactions} />;
+  return (
+    <MaterialDetail
+      material={data}
+      reactions={reactions}
+      fetchReactions={fetchReactions}
+    />
+  );
 }

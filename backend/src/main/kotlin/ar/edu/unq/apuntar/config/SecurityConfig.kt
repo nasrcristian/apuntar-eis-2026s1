@@ -51,11 +51,13 @@ class SecurityConfig(private val jwtAuthFilter: JwtAuthFilter) {
                 auth.requestMatchers(HttpMethod.GET, "/materiales").permitAll()
                 auth.requestMatchers(HttpMethod.GET, "/materiales/{id}").permitAll()
                 auth.requestMatchers(HttpMethod.POST, "/user").permitAll()
+                auth.requestMatchers(HttpMethod.GET, "/materiales/{materialId}/reactions/summary").permitAll()
                 // Acciones que requieren login
                 auth.requestMatchers(HttpMethod.POST, "/materiales").authenticated()
                 auth.requestMatchers(HttpMethod.DELETE, "/materiales/{id}").authenticated()
-                auth.requestMatchers(HttpMethod.POST, "/materiales/{id}/like").authenticated()
-                auth.requestMatchers(HttpMethod.POST, "/materiales/{id}/dislike").authenticated()
+                auth.requestMatchers(HttpMethod.POST, "/materiales/{id}/reactions").authenticated()
+                auth.requestMatchers(HttpMethod.DELETE, "/materiales/{id}/reactions").authenticated()
+                auth.requestMatchers(HttpMethod.POST, "/materiales/{id}/comments").authenticated()
                 auth.requestMatchers("/user/**").authenticated()
                 auth.anyRequest().authenticated()
             }

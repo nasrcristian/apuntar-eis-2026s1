@@ -132,7 +132,7 @@ export const getReactionSummary = (
   materialId: number,
 ): Promise<ResolvedResponse<ReactionSummaryDTO>> =>
   get<ReactionSummaryDTO>(
-    `${urlApi}/materials/${materialId}/reactions/summary`,
+    `${urlApi}/materiales/${materialId}/reactions/summary`,
   );
 
 export const reactToMaterial = (
@@ -140,14 +140,14 @@ export const reactToMaterial = (
   type: "LIKE" | "DISLIKE",
 ): Promise<ResolvedResponse<ReactionDTO>> =>
   post<ReactToMaterialDTO, ReactionDTO>(
-    `${urlApi}/materials/${materialId}/reactions`,
+    `${urlApi}/materiales/${materialId}/reactions`,
     { type },
   );
 
 export const removeReaction = (
   materialId: number,
 ): Promise<ResolvedResponse<void>> =>
-  del<void>(`${urlApi}/materials/${materialId}/reactions`, {
+  del<void>(`${urlApi}/materiales/${materialId}/reactions`, {
     headers: {
       Authorization: `Bearer ${token}`, // Reemplaza 'token' por tu variable, store o localStorage
     },

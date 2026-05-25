@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ReactionRepository : MongoRepository<Reaction, ObjectId> {
-    fun findByMaterialIdAndUserId(materialId: Long, userId: Long): Reaction?
+    fun findByMaterialIdAndUserId(materialId: Long, userId: String?): Reaction?
     fun countByMaterialIdAndType(materialId: Long, type: VoteType): Long
-    fun deleteByMaterialIdAndUserId(materialId: Long, userId: Long)
+    fun deleteByMaterialIdAndUserId(materialId: Long, userId: String?)
 }

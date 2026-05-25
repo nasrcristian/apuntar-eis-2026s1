@@ -11,7 +11,7 @@ import java.util.Date
 data class Reaction(
     @Id val id: ObjectId = ObjectId(),
     val materialId: Long,  // FK lógica hacia PSQL
-    val userId: Long,
+    val userId: String?,
     val type: VoteType,
     val createdAt: Date = Date()
 )

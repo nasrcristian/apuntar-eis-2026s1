@@ -50,4 +50,5 @@ export interface ReactionSummaryDTO {
 export interface MaterialSidebarProps {
   material: MaterialDTO;
   reactions: ReactionSummaryDTO;
+  fetchReactions: () => void;
 }

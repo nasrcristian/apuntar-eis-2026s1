@@ -9,11 +9,13 @@ import "./MaterialDetail.css";
 interface MaterialDetailProps {
   material: MaterialDTO;
   reactions: ReactionSummaryDTO;
+  fetchReactions: () => void;
 }
 
 export default function MaterialDetail({
   material,
   reactions,
+  fetchReactions,
 }: MaterialDetailProps) {
   const navigate = useNavigate();
 
@@ -37,7 +39,11 @@ export default function MaterialDetail({
           <PdfPreview files={material.files} materialId={material.id} />
         </Box>
         <Box className="material-detail__sidebar">
-          <MaterialSidebar material={material} reactions={reactions} />
+          <MaterialSidebar
+            material={material}
+            reactions={reactions}
+            fetchReactions={fetchReactions}
+          />
         </Box>
       </Box>
     </Box>

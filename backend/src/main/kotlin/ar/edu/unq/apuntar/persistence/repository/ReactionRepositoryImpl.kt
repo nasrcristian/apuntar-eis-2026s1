@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 @Repository
 class ReactionRepositoryImpl(private val mongoTemplate: MongoTemplate) {
 
-    fun findByMaterialIdAndUserId(materialId: Long, userId: Long): Reaction? {
+    fun findByMaterialIdAndUserId(materialId: Long, userId: String): Reaction? {
         val query = Query(
             Criteria.where("materialId").`is`(materialId)
                 .and("userId").`is`(userId)
@@ -26,7 +26,7 @@ class ReactionRepositoryImpl(private val mongoTemplate: MongoTemplate) {
         return mongoTemplate.count(query, Reaction::class.java)
     }
 
-    fun deleteByMaterialIdAndUserId(materialId: Long, userId: Long) {
+    fun deleteByMaterialIdAndUserId(materialId: Long, userId: String) {
         val query = Query(
             Criteria.where("materialId").`is`(materialId)
                 .and("userId").`is`(userId)

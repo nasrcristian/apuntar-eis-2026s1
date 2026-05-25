@@ -35,21 +35,22 @@ services:
     restart: unless-stopped
 
   nsql_db:
-   image: mongo:8.2.7
-   container_name: apuntar-mongo
-   environment:
-     - MONGO_INITDB_ROOT_USERNAME=root
-     - MONGO_INITDB_ROOT_PASSWORD=rootroot
-   ports:
-    - "27017:27017"
-   volumes:
-     - mongo_data:/data/db
-   restart: unless-stopped
-   healthcheck:
-     test: [ "CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })" ]
-     interval: 5s
-     timeout: 5s
-     retries: 3
+    image: mongo:8.2.7
+    container_name: apuntar-mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=rootroot
+      - MONGO_INITDB_DATABASE=apuntar-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
 
 volumes:
   pg_data:
