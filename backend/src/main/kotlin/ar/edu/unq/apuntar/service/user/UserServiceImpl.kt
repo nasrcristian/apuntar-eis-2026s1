@@ -5,6 +5,7 @@ import ar.edu.unq.apuntar.model.User
 import ar.edu.unq.apuntar.persistence.repository.UserRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 
 @Service
@@ -18,5 +19,9 @@ class UserServiceImpl(private val repository: UserRepository) : UserService {
         }
 
         return repository.save(user)
+    }
+
+    override fun getUserByEmail(email: String): User? {
+        return repository.findByMail(email)
     }
 }
