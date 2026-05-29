@@ -1,9 +1,8 @@
 package ar.edu.unq.apuntar.controller
 
 import ar.edu.unq.apuntar.dto.ReactionSummaryDTO
-import ar.edu.unq.apuntar.dto.auth.ReactDTO
+import ar.edu.unq.apuntar.dto.interaction.ReactDTO
 import ar.edu.unq.apuntar.model.material.Reaction
-import ar.edu.unq.apuntar.model.material.VoteType
 import ar.edu.unq.apuntar.service.ReactionService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
