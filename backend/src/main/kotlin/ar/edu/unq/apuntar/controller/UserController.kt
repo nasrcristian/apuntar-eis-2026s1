@@ -1,8 +1,8 @@
 package ar.edu.unq.apuntar.controller
 
-import ar.edu.unq.apuntar.dto.RegisterReqDto
 import ar.edu.unq.apuntar.dto.UserDto
 import ar.edu.unq.apuntar.dto.toDto
+import ar.edu.unq.apuntar.dto.user.RegisterReqDto
 import ar.edu.unq.apuntar.service.UserService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
