@@ -14,6 +14,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute'
 import Navbar from './components/navbar/Navbar'
 import ProfilePage from './pages/ProfilePage'
 import MyMaterialsPage from './pages/MyMaterialsPage'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
 
 function App() {
   return (

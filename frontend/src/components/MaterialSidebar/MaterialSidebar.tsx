@@ -132,28 +132,32 @@ export default function MaterialSidebar({
             Reacciones
           </Typography>
           <Box className="sidebar__reactions-row">
-            <Box className="sidebar__reaction-btn" onClick={handleLike}>
+            <Box
+              className="sidebar__reaction-btn sidebar__reaction-btn_up"
+              onClick={handleLike}
+            >
               {userReaction === "LIKE" ? (
-                <ThumbUpIcon fontSize="small" color="primary" />
+                <ThumbUpIcon fontSize="small" />
               ) : (
                 <ThumbUpOutlinedIcon fontSize="small" />
               )}
               <Typography
                 className="sidebar__reaction-count"
-                color={userReaction === "LIKE" ? "primary" : undefined}
               >
                 {displayedLikes}
               </Typography>
             </Box>
-            <Box className="sidebar__reaction-btn" onClick={handleDislike}>
+            <Box
+              className="sidebar__reaction-btn sidebar__reaction-btn_dwn"
+              onClick={handleDislike}
+            >
               {userReaction === "DISLIKE" ? (
-                <ThumbDownIcon fontSize="small" color="error" />
+                <ThumbDownIcon fontSize="small"/>
               ) : (
                 <ThumbDownOutlinedIcon fontSize="small" />
               )}
               <Typography
                 className="sidebar__reaction-count"
-                color={userReaction === "DISLIKE" ? "error" : undefined}
               >
                 {displayedDislikes}
               </Typography>

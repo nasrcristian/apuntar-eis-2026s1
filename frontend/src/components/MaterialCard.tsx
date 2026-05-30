@@ -3,10 +3,6 @@ import { Card, Typography, IconButton, Box, Stack } from "@mui/material";
 import {
   Favorite,
   FavoriteBorder,
-  ThumbUp,
-  ThumbUpOutlined,
-  ThumbDown,
-  ThumbDownAltOutlined,
   Delete,
   Edit,
 } from "@mui/icons-material";
@@ -62,22 +58,22 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
             sx={{
             mb: 2,
             display: "flex",
+            bgcolor: "#ebddb2",
+            borderRadius: 3,
             flexDirection: "column",
             p: 1.5,
             transition: "0.2s",
             "&:hover": { boxShadow: 4 },
             }}
         >
-        {/* 1. Categoría superior (Resumen, Apunte, etc) */}
         <Typography
             variant="caption"
-            sx={{ fontWeight: "bold", color: "text.secondary", ml: 1, mb: 1 }}
+            sx={{ fontWeight: "bold", ml: 1, mb: 1 }}
         >
             {material.category.toUpperCase()}
         </Typography>
 
         <Box sx={{ display: "flex", gap: 2 }}>
-            {/* 2. Miniatura a la izquierda */}
             <Box onClick={() => navigate(`/material/${material.id}`)}
                 sx={{
                     width: 130,
@@ -99,7 +95,6 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
             />
         </Box>
 
-        {/* 3. Contenido central */}
         <Box sx={{ flexGrow: 1 }}>
           <Typography
             variant="h6"
@@ -130,7 +125,6 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
           </Stack>
         </Box>
 
-        {/* 4. Botones de acción laterales (Favorito y Borrado) */}
         <Box
           sx={{
             display: "flex",
@@ -141,7 +135,7 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
           <IconButton
             size="small"
             onClick={() => setIsFav(!isFavorite)}
-            color={isFavorite ? "error" : "default"}
+            sx = {{color: isFavorite ? "#9d0006" : "default"}}
             aria-label="favorito"
           >
             {isFavorite ? <Favorite /> : <FavoriteBorder />}
@@ -169,7 +163,6 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
         </Box>
       </Box>
 
-      {/* 5. Footer: Autor y Estadísticas (Like/Dislike/Views) */}
       <Box
         sx={{
           display: "flex",

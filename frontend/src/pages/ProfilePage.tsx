@@ -7,7 +7,7 @@ export default function ProfilePage() {
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
-      <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 3, color: '#1976d2' }}>
+      <Typography variant="h4" sx={{ letterSpacing: 2, fontFamily: 'Lilita One', mb: 3}}>
         Mi Perfil
       </Typography>
 
