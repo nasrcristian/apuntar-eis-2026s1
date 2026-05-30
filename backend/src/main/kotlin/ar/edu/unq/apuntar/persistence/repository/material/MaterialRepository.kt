@@ -12,5 +12,5 @@ interface MaterialRepository {
     fun toggleLike(id: Long, isAdding: Boolean)
     fun toggleDislike(id: Long, isAdding: Boolean)
     fun findByOwnerMail(ownerMail: String): List<Material>
+    fun findByIds(ids: List<Long>): List<Material>
 }
-
