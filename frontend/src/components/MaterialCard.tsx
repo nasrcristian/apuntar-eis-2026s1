@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, Typography, IconButton, Box, Stack } from "@mui/material";
 import {
   Favorite,
@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import type { MaterialDTO } from "../types/material";
 import EditMaterialModal from "./EditMaterialModal";
 import { getCurrentUserEmail } from '../service/auth';
+import { toggleFavorite, getFavoriteStatus } from '../service/api';
 
 interface MaterialCardProps {
   material: MaterialDTO;
@@ -20,25 +21,33 @@ interface MaterialCardProps {
 const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) => {
   const navigate = useNavigate();
   const [isFavorite, setIsFav] = useState(false);
+  const [loadingFav, setLoadingFav] = useState(false);
   const currentUserEmail = getCurrentUserEmail();
   const isOwner = currentUserEmail === material.ownerMail;
-  const [vote, setVote] = useState<null | "like" | "dislike">(null);
+  const isLoggedIn = !!currentUserEmail;
   const [editOpen, setEditOpen] = useState(false);
-  const baseLikes = material.likes ?? 0;
-  const baseDislikes = material.dislikes ?? 0;
-  const likesCount =
-    baseLikes + (vote === "like" ? 1 : 0) - (vote == null ? 0 : 0);
-  const dislikesCount =
-    baseDislikes + (vote === "dislike" ? 1 : 0) - (vote == null ? 0 : 0);
 
   const date = new Date(material.createdAt).toLocaleDateString();
 
-  const handleToggleLike = () => {
-    setVote((prev) => (prev === "like" ? null : "like"));
-  };
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    getFavoriteStatus(material.id)
+      .then((res) => setIsFav(res.data.isFavorite))
+      .catch(() => {});
+  }, [material.id, isLoggedIn]);
 
-  const handleToggleDislike = () => {
-    setVote((prev) => (prev === "dislike" ? null : "dislike"));
+  const handleToggleFavorite = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isLoggedIn || loadingFav) return;
+    setLoadingFav(true);
+    try {
+      const res = await toggleFavorite(material.id);
+      setIsFav(res.data.isFavorite);
+    } catch {
+      // silencioso
+    } finally {
+      setLoadingFav(false);
+    }
   };
 
   const handleEditClick = (e: React.MouseEvent) => {
@@ -70,7 +79,7 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
             variant="caption"
             sx={{ fontWeight: "bold", ml: 1, mb: 1 }}
         >
-            {material.category.toUpperCase()}
+          {material.category.toUpperCase()}
         </Typography>
 
         <Box sx={{ display: "flex", gap: 2 }}>
@@ -100,36 +109,103 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
             variant="h6"
             onClick={() => navigate(`/material/${material.id}`)}
             sx={{
+              width: 130,
+              height: 90,
+              bgcolor: "#f0f0f0",
+              borderRadius: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               cursor: "pointer",
-              fontWeight: "bold",
-              lineHeight: 1.2,
-              mb: 0.5,
-              wordBreak: "break-word",
-              overflowWrap: "anywhere",
+              flexShrink: 0,
+              border: "1px solid #e0e0e0",
             }}
           >
-            {material.title}
-          </Typography>
-          <Typography variant="body2" color="primary" sx={{ fontWeight: 500 }}>
-            {material.subject}
-          </Typography>
+            <img
+              src="https://via.placeholder.com/130x90?text=PDF"
+              alt="preview"
+              style={{ borderRadius: "4px" }}
+            />
+          </Box>
 
-          <Stack spacing={0.2} sx={{ mt: 1 }}>
-            <Typography variant="caption" color="text.secondary">
-              <strong>Descripción:</strong>{" "}
-              {material.description || "Sin descripción adicional"}
+          <Box sx={{ flexGrow: 1 }}>
+            <Typography
+              variant="h6"
+              onClick={() => navigate(`/material/${material.id}`)}
+              sx={{
+                cursor: "pointer",
+                fontWeight: "bold",
+                lineHeight: 1.2,
+                mb: 0.5,
+                wordBreak: "break-word",
+                overflowWrap: "anywhere",
+              }}
+            >
+              {material.title}
             </Typography>
-            <Typography variant="caption" color="text.secondary">
-              <strong>Tópico:</strong> {material.topic || "No aclarado"}
+            <Typography variant="body2" color="primary" sx={{ fontWeight: 500 }}>
+              {material.subject}
             </Typography>
-          </Stack>
+
+            <Stack spacing={0.2} sx={{ mt: 1 }}>
+              <Typography variant="caption" color="text.secondary">
+                <strong>Descripción:</strong>{" "}
+                {material.description || "Sin descripción adicional"}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                <strong>Tópico:</strong> {material.topic || "No aclarado"}
+              </Typography>
+            </Stack>
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            {isLoggedIn && (
+              <IconButton
+                size="small"
+                onClick={handleToggleFavorite}
+                disabled={loadingFav}
+                color={isFavorite ? "error" : "default"}
+                aria-label="favorito"
+              >
+                {isFavorite ? <Favorite /> : <FavoriteBorder />}
+              </IconButton>
+            )}
+            {isOwner && (
+              <>
+                <IconButton
+                  size="small"
+                  color="primary"
+                  onClick={handleEditClick}
+                  aria-label="editar"
+                >
+                  <Edit />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  color="error"
+                  onClick={() => onDelete(material)}
+                  aria-label="eliminar"
+                >
+                  <Delete />
+                </IconButton>
+              </>
+            )}
+          </Box>
         </Box>
 
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mt: 1.5,
+            px: 1,
           }}
         >
           <IconButton
@@ -202,12 +278,12 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
       </Box>
     </Card>
 
-    {editOpen && (
+      {editOpen && (
         <EditMaterialModal
-            open={editOpen}
-            material={material}
-            onClose={() => setEditOpen(false)}
-            onSuccess={handleEditSuccess}
+          open={editOpen}
+          material={material}
+          onClose={() => setEditOpen(false)}
+          onSuccess={handleEditSuccess}
         />
       )}
     </>

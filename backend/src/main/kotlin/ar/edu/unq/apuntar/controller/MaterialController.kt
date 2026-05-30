@@ -12,10 +12,15 @@ import org.springframework.web.multipart.MultipartFile
 import kotlin.Long
 import ar.edu.unq.apuntar.dto.UpdateMaterialDto
 import org.springframework.security.core.Authentication
+import ar.edu.unq.apuntar.dto.material.FavoriteStatusDTO
+import ar.edu.unq.apuntar.service.favorite.FavoriteService
 
 @RestController
 @RequestMapping("/materiales")
-class MaterialController(private val materialService: MaterialService) {
+class MaterialController(
+    private val materialService: MaterialService,
+    private val favoriteService: FavoriteService
+) {
     @PostMapping
     fun createMaterial(
         @RequestParam title: String,
@@ -103,6 +108,31 @@ class MaterialController(private val materialService: MaterialService) {
         return ResponseEntity.ok(updated.toDTO())
     }
 
+    @PostMapping("/{id}/favoritos")
+    fun toggleFavorite(
+        @PathVariable id: Long,
+        authentication: Authentication
+    ): ResponseEntity<FavoriteStatusDTO> {
+        val isFavorite = favoriteService.toggleFavorite(id, authentication.name)
+        return ResponseEntity.ok(FavoriteStatusDTO(materialId = id, isFavorite = isFavorite))
+    }
+
+    @GetMapping("/{id}/favoritos")
+    fun getFavoriteStatus(
+        @PathVariable id: Long,
+        authentication: Authentication
+    ): ResponseEntity<FavoriteStatusDTO> {
+        val isFavorite = favoriteService.isFavorite(id, authentication.name)
+        return ResponseEntity.ok(FavoriteStatusDTO(materialId = id, isFavorite = isFavorite))
+    }
+
+    @GetMapping("/favoritos")
+    fun getFavorites(authentication: Authentication): ResponseEntity<List<MaterialDTO>> {
+        val favorites = favoriteService.getFavorites(authentication.name)
+            .map { it.toDTO() }
+        return ResponseEntity.ok(favorites)
+    }
+
     @GetMapping("/mis-publicaciones")
     fun getMyMaterials(authentication: Authentication): ResponseEntity<List<MaterialDTO>> {
         return ResponseEntity.ok(materialService.findByOwnerMail(authentication.name)
@@ -110,4 +140,3 @@ class MaterialController(private val materialService: MaterialService) {
             .map { it.toDTO() })
     }
 }
-

@@ -187,6 +187,9 @@ class MaterialRepositoryImpl(
     override fun findByOwnerMail(ownerMail: String): List<Material> =
         materialDao.findByOwnerMail(ownerMail).map { toMaterial(it) }
 
+    override fun findByIds(ids: List<Long>): List<Material> =
+        materialDao.findAllById(ids).map { toMaterial(it) }
+
     private fun toMaterial(entity: MaterialSQL): Material {
         val fileMetadatas = entity.files.map { f ->
             FileMetadata.fromPersistence(f.originalFileName, f.storedFileName, f.contentType, f.size)
@@ -221,4 +224,3 @@ class MaterialRepositoryImpl(
         )
     }
 }
-

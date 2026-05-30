@@ -15,6 +15,7 @@ import Navbar from './components/navbar/Navbar'
 import ProfilePage from './pages/ProfilePage'
 import MyMaterialsPage from './pages/MyMaterialsPage'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
+import FavoritesPage from './pages/FavoritesPage'
 
 function App() {
   return (
@@ -37,6 +38,9 @@ function App() {
         }/>
         <Route path="/mis-publicaciones" element={
             <ProtectedRoute><MyMaterialsPage /></ProtectedRoute>
+        }/>
+        <Route path="/favoritos" element={
+          <ProtectedRoute><FavoritesPage /></ProtectedRoute>
         }/>
       </Routes>
     </>

@@ -1,4 +1,4 @@
-package ar.edu.unq.apuntar.dto
+package ar.edu.unq.apuntar.dto.user
 
 import ar.edu.unq.apuntar.model.User
 import jakarta.validation.constraints.NotBlank
