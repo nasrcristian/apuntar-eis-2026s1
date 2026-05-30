@@ -62,51 +62,29 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
   };
 
   return (
-      <>
-        <Card
-            sx={{
-            mb: 2,
-            display: "flex",
-            bgcolor: "#ebddb2",
-            borderRadius: 3,
-            flexDirection: "column",
-            p: 1.5,
-            transition: "0.2s",
-            "&:hover": { boxShadow: 4 },
-            }}
-        >
+    <>
+      <Card
+        sx={{
+          mb: 2,
+          display: "flex",
+          bgcolor: "#ebddb2",
+          borderRadius: 3,
+          flexDirection: "column",
+          p: 1.5,
+          transition: "0.2s",
+          "&:hover": { boxShadow: 4 },
+        }}
+      >
         <Typography
-            variant="caption"
-            sx={{ fontWeight: "bold", ml: 1, mb: 1 }}
+          variant="caption"
+          sx={{ fontWeight: "bold", ml: 1, mb: 1 }}
         >
           {material.category.toUpperCase()}
         </Typography>
 
         <Box sx={{ display: "flex", gap: 2 }}>
-            <Box onClick={() => navigate(`/material/${material.id}`)}
-                sx={{
-                    width: 130,
-                    height: 90,
-                    bgcolor: "#f0f0f0",
-                    borderRadius: 1,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    flexShrink: 0,
-                    border: "1px solid #e0e0e0",
-                }}
-            >
-            <img
-                src="https://via.placeholder.com/130x90?text=PDF"
-                alt="preview"
-                style={{ borderRadius: "4px" }}
-            />
-        </Box>
-
-        <Box sx={{ flexGrow: 1 }}>
-          <Typography
-            variant="h6"
+          {/* Preview */}
+          <Box
             onClick={() => navigate(`/material/${material.id}`)}
             sx={{
               width: 130,
@@ -128,6 +106,7 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
             />
           </Box>
 
+          {/* Info del material */}
           <Box sx={{ flexGrow: 1 }}>
             <Typography
               variant="h6"
@@ -158,6 +137,7 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
             </Stack>
           </Box>
 
+          {/* Acciones */}
           <Box
             sx={{
               display: "flex",
@@ -170,7 +150,7 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
                 size="small"
                 onClick={handleToggleFavorite}
                 disabled={loadingFav}
-                color={isFavorite ? "error" : "default"}
+                sx={{ color: isFavorite ? "#9d0006" : "default" }}
                 aria-label="favorito"
               >
                 {isFavorite ? <Favorite /> : <FavoriteBorder />}
@@ -199,6 +179,7 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
           </Box>
         </Box>
 
+        {/* Footer */}
         <Box
           sx={{
             display: "flex",
@@ -208,75 +189,35 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
             px: 1,
           }}
         >
-          <IconButton
-            size="small"
-            onClick={() => setIsFav(!isFavorite)}
-            sx = {{color: isFavorite ? "#9d0006" : "default"}}
-            aria-label="favorito"
-          >
-            {isFavorite ? <Favorite /> : <FavoriteBorder />}
-          </IconButton>
-          {isOwner && (
-              <>
-                  <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={handleEditClick}
-                      aria-label="editar"
-                  >
-                      <Edit />
-                  </IconButton>
-                  <IconButton
-                      size="small"
-                      color="error"
-                      onClick={() => onDelete(material)}
-                      aria-label="eliminar"
-                  >
-                      <Delete />
-                  </IconButton>
-              </>
-          )}
+          <Typography variant="caption" color="text.secondary">
+            por {material.ownerMail || "Usuario"} el {date}
+          </Typography>
+
+          {/* <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <IconButton size="small" onClick={handleToggleLike}>
+                {vote === "like" ? (
+                  <ThumbUp fontSize="small" color="primary" />
+                ) : (
+                  <ThumbUpOutlined fontSize="small" />
+                )}
+              </IconButton>
+              <Typography variant="caption">{likesCount}</Typography>
+            </Box>
+
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <IconButton size="small" onClick={handleToggleDislike}>
+                {vote === "dislike" ? (
+                  <ThumbDown fontSize="small" color="error" />
+                ) : (
+                  <ThumbDownAltOutlined fontSize="small" />
+                )}
+              </IconButton>
+              <Typography variant="caption">{dislikesCount}</Typography>
+            </Box>
+          </Stack> */}
         </Box>
-      </Box>
-
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mt: 1.5,
-          px: 1,
-        }}
-      >
-        <Typography variant="caption" color="text.secondary">
-          por {material.ownerMail || "Usuario"} el {date}
-        </Typography>
-
-        {/* <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton size="small" onClick={handleToggleLike}>
-              {vote === "like" ? (
-                <ThumbUp fontSize="small" color="primary" />
-              ) : (
-                <ThumbUpOutlined fontSize="small" />
-              )}
-            </IconButton>
-            <Typography variant="caption">{likesCount}</Typography>
-          </Box>
-
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton size="small" onClick={handleToggleDislike}>
-              {vote === "dislike" ? (
-                <ThumbDown fontSize="small" color="error" />
-              ) : (
-                <ThumbDownAltOutlined fontSize="small" />
-              )}
-            </IconButton>
-            <Typography variant="caption">{dislikesCount}</Typography>
-          </Box>
-        </Stack> */}
-      </Box>
-    </Card>
+      </Card>
 
       {editOpen && (
         <EditMaterialModal
