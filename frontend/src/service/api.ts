@@ -191,3 +191,41 @@ export const getMyMaterials = (): Promise<ResolvedResponse<MaterialDTO[]>> => {
         },
     });
 };
+
+export interface FavoriteStatusDTO {
+  materialId: number;
+  isFavorite: boolean;
+}
+
+export const toggleFavorite = (
+  materialId: number,
+): Promise<ResolvedResponse<FavoriteStatusDTO>> => {
+  const currentToken = localStorage.getItem("jwt");
+  return axios
+    .post<FavoriteStatusDTO>(
+      `${urlApi}/materiales/${materialId}/favoritos`,
+      null,
+      { headers: { Authorization: `Bearer ${currentToken}` } },
+    )
+    .then(handleResolvedResponse)
+    .catch((error) => {
+      throw handleErrorResponse(error);
+    });
+};
+
+export const getFavoriteStatus = (
+  materialId: number,
+): Promise<ResolvedResponse<FavoriteStatusDTO>> => {
+  const currentToken = localStorage.getItem("jwt");
+  return get<FavoriteStatusDTO>(
+    `${urlApi}/materiales/${materialId}/favoritos`,
+    { headers: { Authorization: `Bearer ${currentToken}` } },
+  );
+};
+
+export const getMyFavorites = (): Promise<ResolvedResponse<MaterialDTO[]>> => {
+  const currentToken = localStorage.getItem("jwt");
+  return get<MaterialDTO[]>(`${urlApi}/materiales/favoritos`, {
+    headers: { Authorization: `Bearer ${currentToken}` },
+  });
+};

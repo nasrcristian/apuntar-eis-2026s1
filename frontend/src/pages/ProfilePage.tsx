@@ -1,14 +1,13 @@
 import { Container, Typography, Button, Stack, Box, CircularProgress, Alert } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks'
+import FavoriteIcon from '@mui/icons-material/Favorite'
 import UserCard from '../components/UserCard'
 import { useUser } from '../hooks/useUser'
 
 export default function ProfilePage() {
-  
   const navigate = useNavigate()
   const { user, loading, error } = useUser()
-
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
@@ -48,6 +47,15 @@ export default function ProfilePage() {
           onClick={() => navigate('/mis-publicaciones')}
         >
           Mis publicaciones
+        </Button>
+        <Button
+          variant="outlined"
+          size="large"
+          startIcon={<FavoriteIcon />}
+          color="error"
+          onClick={() => navigate('/favoritos')}
+        >
+          Favoritos
         </Button>
       </Stack>
     </Container>
