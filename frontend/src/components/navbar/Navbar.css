@@ -6,8 +6,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  height: 56px;
-  background-color: #ffffff;
+  height: 60px;
+  background-color: #f7e5ad;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
@@ -22,7 +22,7 @@
   align-items: center;
   gap: 8px;
   text-decoration: none;
-  color: #1976d2;
+  color: #ab4516;
   font-weight: 700;
   font-size: 1.25rem;
 }
@@ -30,11 +30,13 @@
 .navbar__links {
   display: flex;
   align-items: center;
+  color: #ab4516;
   gap: 4px;
 }
 
 .navbar__right {
   display: flex;
   align-items: center;
+  color: #ab4516;
   gap: 4px;
 }

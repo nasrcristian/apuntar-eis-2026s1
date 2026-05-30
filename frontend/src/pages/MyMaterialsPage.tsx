@@ -12,7 +12,7 @@ export default function MyMaterialsPage() {
       emptyMessage="Aún no has publicado nada. Subí tu primera publicación haciendo click en 'Subir publicación'."
       emptyAction={{
         label: 'Subir publicación',
-        onClick: () => navigate('/create'),
+        onClick: () => navigate('/create')
       }}
     />
   );

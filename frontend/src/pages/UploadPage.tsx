@@ -53,13 +53,12 @@ export default function UploadPage() {
         justifyContent: 'center',
         pt: { xs: 3, sm: 6 },
         pb: 4,
-        px: 2,
-        backgroundColor: 'grey.50',
+        px: 2
       }}
     >
       <Box sx={{ width: '100%', maxWidth: 760 }}>
         <Box sx={{ mb: 3 }}>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 600 }} gutterBottom>
+          <Typography variant="h4" component="h1" sx={{ fontFamily: "Lilita One",letterSpacing: 2}} gutterBottom>
             Subir material teórico
           </Typography>
           <Typography variant="body1" color="text.secondary">

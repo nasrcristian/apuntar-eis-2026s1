@@ -68,7 +68,6 @@ export default function LoginPage() {
         pt: { xs: 3, sm: 6 },
         pb: 4,
         px: 2,
-        backgroundColor: "grey.50",
       }}
     >
       <Box sx={{ width: "100%", maxWidth: 480, textAlign: "center" }}>
@@ -76,7 +75,7 @@ export default function LoginPage() {
           <Typography
             variant="h4"
             component="h1"
-            sx={{ fontWeight: 600 }}
+            sx={{ letterSpacing: 2,fontFamily: 'Lilita One'}}
             gutterBottom
           >
             Iniciar sesión
@@ -88,7 +87,12 @@ export default function LoginPage() {
 
         <Card
           elevation={0}
-          sx={{ border: "1px solid", borderColor: "divider" }}
+          sx={{ 
+            border: "1px solid", 
+            borderColor: "divider", 
+            background: "#ebddb2",
+            borderRadius: 5
+          }}
         >
           <CardContent sx={{ p: { xs: 2, sm: 4 } }}>
             <Box component="form" onSubmit={handleLogin} noValidate>

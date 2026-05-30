@@ -34,10 +34,15 @@ export default function ForgotPasswordPage() {
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', justifyContent: 'center',
-              pt: { xs: 3, sm: 6 }, pb: 4, px: 2, backgroundColor: 'grey.50' }}>
+              pt: { xs: 3, sm: 6 }, pb: 4, px: 2}}>
       <Box sx={{ width: '100%', maxWidth: 480, textAlign: 'center' }}>
         <Box sx={{ mb: 3 }}>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 600 }} gutterBottom>
+          <Typography 
+            variant="h4" 
+            component="h1" 
+            sx={{letterSpacing: 2,fontFamily: 'Lilita One' }} 
+            gutterBottom
+            >
             Recuperar contraseña
           </Typography>
           <Typography variant="body1" color="text.secondary">
@@ -45,7 +50,12 @@ export default function ForgotPasswordPage() {
           </Typography>
         </Box>
 
-        <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
+        <Card elevation={0} sx={{ 
+            border: '1px solid', 
+            borderColor: 'divider', 
+            background: "#ebddb2",
+            borderRadius: 5
+          }}>
           <CardContent sx={{ p: { xs: 2, sm: 4 } }}>
             {submitted ? (
               <Stack spacing={2}>

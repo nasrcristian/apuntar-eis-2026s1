@@ -8,9 +8,10 @@
 
 body {
   margin: 0;
-  background-color: #f9fafb;
+  background-color: #d5c4a1;
 }
 
 #root {
   min-height: 100svh;
+  background-color: #d5c4a1;
 }

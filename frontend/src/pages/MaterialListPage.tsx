@@ -120,139 +120,141 @@ const MaterialListPage = ({
     categorias.find((c) => c.value === selectedCategory)?.label ?? "";
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Typography
-        variant="h4"
-        sx={{ fontWeight: "bold", mb: 2, color: "#1976d2" }}
-      >
-        {title}
-      </Typography>
-      <Stack
-        direction="row"
-        spacing={2}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          mb: 3,
-        }}
-      >
-        <FormControl variant="outlined" fullWidth>
-          <OutlinedInput
-            placeholder="Buscar por nombre, descripción o título de archivo..."
-            onChange={(e) => setInputBusqueda(e.target.value)}
-            disabled={loading}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSearch();
-              }
-            }}
-            fullWidth
-            value={inputBusqueda}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton onClick={handleCleanText} edge="end">
-                  <CloseIcon />
-                </IconButton>
-              </InputAdornment>
-            }
-          />
-        </FormControl>
-        <IconButton onClick={handleSearch} disabled={loading}>
-          <SearchIcon />
-        </IconButton>
-      </Stack>
-
-      <CategoryFilter value={selectedCategory} onChange={setSelectedCategory} />
-
-      {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", my: 10 }}>
-          <CircularProgress size={60} />
-        </Box>
-      ) : filteredMaterials.length > 0 ? (
-        <InfiniteScroll
-          dataLength={Math.min(visibleCount, filteredMaterials.length)}
-          next={loadMore}
-          hasMore={visibleCount < filteredMaterials.length}
-          loader={
-            <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
-              <CircularProgress size={30} />
-            </Box>
-          }
-          style={{ overflow: "visible" }}
+    <Box sx={{ minHeight: "100vh", backgroundColor: "#d5c4a1" }}>
+      <Container maxWidth="md" sx={{ py: 4, backgroundColor: "#d3c09b" }}>
+        <Typography
+          variant="h4"
+          sx={{ letterSpacing: 2, mb: 2 ,fontFamily: 'Lilita One, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'}}
         >
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            {filteredMaterials.slice(0, visibleCount).map((m: any) => (
-              <MaterialCard
-                key={m.id}
-                material={m}
-                onDelete={() => handleDeleteClick(m)}
-                onEditSuccess={() => {
-                  setNotification({
-                    open: true,
-                    message: "Cambios guardados correctamente",
-                    severity: "success",
-                  });
-                  fetchAllMaterials();
-                }}
-              />
-            ))}
-          </Box>
-        </InfiniteScroll>
-      ) : selectedCategory ? (
-        <Typography align="center" color="text.secondary">
-          No hay materiales para la categoria {selectedCategoryLabel}. Probá con
-          otra categoria o subi nuevo material.
+          {title}
         </Typography>
-      ) : (
-        <Box sx={{ textAlign: "center", py: 4 }}>
-          <Typography color="text.secondary" sx={{ mb: 2 }}>
-            {emptyMessage}
-          </Typography>
-          {emptyAction && (
-            <Button variant="contained" onClick={emptyAction.onClick}>
-              {emptyAction.label}
-            </Button>
-          )}
-        </Box>
-      )}
-
-      {/* Modal de Confirmación */}
-      <Dialog open={openModal} onClose={() => setOpenModal(false)}>
-        <DialogTitle>¿Eliminar material?</DialogTitle>
-        <DialogContent>
-          Confirmas que deseas dar de baja:{" "}
-          <strong>{selectedMaterial?.title}</strong>? Esta acción impactará
-          directamente en la base de datos.
-        </DialogContent>
-        <DialogActions sx={{ p: 2 }}>
-          <Button onClick={() => setOpenModal(false)} color="inherit">
-            Cancelar
-          </Button>
-          <Button
-            onClick={handleConfirmDelete}
-            color="error"
-            variant="contained"
-          >
-            Confirmar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Snackbar
-        open={notification.open}
-        autoHideDuration={4000}
-        onClose={() => setNotification({ ...notification, open: false })}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          severity={notification.severity}
-          variant="filled"
-          sx={{ width: "100%" }}
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            mb: 3,
+          }}
         >
-          {notification.message}
-        </Alert>
-      </Snackbar>
-    </Container>
+          <FormControl variant="outlined" fullWidth>
+            <OutlinedInput
+              placeholder="Buscar por nombre, descripción o título de archivo..."
+              onChange={(e) => setInputBusqueda(e.target.value)}
+              disabled={loading}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSearch();
+                }
+              }}
+              fullWidth
+              value={inputBusqueda}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton onClick={handleCleanText} edge="end">
+                    <CloseIcon />
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+          </FormControl>
+          <IconButton onClick={handleSearch} disabled={loading}>
+            <SearchIcon />
+          </IconButton>
+        </Stack>
+
+        <CategoryFilter value={selectedCategory} onChange={setSelectedCategory} />
+
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", my: 10 }}>
+            <CircularProgress size={60} />
+          </Box>
+        ) : filteredMaterials.length > 0 ? (
+          <InfiniteScroll
+            dataLength={Math.min(visibleCount, filteredMaterials.length)}
+            next={loadMore}
+            hasMore={visibleCount < filteredMaterials.length}
+            loader={
+              <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+                <CircularProgress size={30} />
+              </Box>
+            }
+            style={{ overflow: "visible" }}
+          >
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              {filteredMaterials.slice(0, visibleCount).map((m: any) => (
+                <MaterialCard
+                  key={m.id}
+                  material={m}
+                  onDelete={() => handleDeleteClick(m)}
+                  onEditSuccess={() => {
+                    setNotification({
+                      open: true,
+                      message: "Cambios guardados correctamente",
+                      severity: "success",
+                    });
+                    fetchAllMaterials();
+                  }}
+                />
+              ))}
+            </Box>
+          </InfiniteScroll>
+        ) : selectedCategory ? (
+          <Typography align="center" color="text.secondary">
+            No hay materiales para la categoria {selectedCategoryLabel}. Probá con
+            otra categoria o subi nuevo material.
+          </Typography>
+        ) : (
+          <Box sx={{ textAlign: "center", py: 4 }}>
+            <Typography color="text.secondary" sx={{ mb: 2 }}>
+              {emptyMessage}
+            </Typography>
+            {emptyAction && (
+              <Button variant="contained" onClick={emptyAction.onClick}>
+                {emptyAction.label}
+              </Button>
+            )}
+          </Box>
+        )}
+
+        {/* Modal de Confirmación */}
+        <Dialog open={openModal} onClose={() => setOpenModal(false)}>
+          <DialogTitle>¿Eliminar material?</DialogTitle>
+          <DialogContent>
+            Confirmas que deseas dar de baja:{" "}
+            <strong>{selectedMaterial?.title}</strong>? Esta acción impactará
+            directamente en la base de datos.
+          </DialogContent>
+          <DialogActions sx={{ p: 2 }}>
+            <Button onClick={() => setOpenModal(false)} color="inherit">
+              Cancelar
+            </Button>
+            <Button
+              onClick={handleConfirmDelete}
+              color="error"
+              variant="contained"
+            >
+              Confirmar
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Snackbar
+          open={notification.open}
+          autoHideDuration={4000}
+          onClose={() => setNotification({ ...notification, open: false })}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert
+            severity={notification.severity}
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {notification.message}
+          </Alert>
+        </Snackbar>
+      </Container>
+    </Box>
   );
 };
 

@@ -35,9 +35,6 @@
   padding: 24px;
 }
 
-/* ── Agrega estos estilos al final de MaterialDetail.css ── */
-
-/* Sección principal de comentarios */
 .material-detail__comments {
   margin-top: 2rem;
   display: flex;
@@ -66,7 +63,6 @@
   vertical-align: middle;
 }
 
-/* Estado vacío */
 .material-detail__comments-empty {
   padding: 1.5rem;
   text-align: center;
@@ -74,14 +70,12 @@
   border-radius: 8px;
 }
 
-/* Lista */
 .material-detail__comments-list {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-/* Cada comentario */
 .material-detail__comment-item {
   padding: 0.875rem 1rem;
   border-radius: 8px !important;
@@ -131,7 +125,6 @@
   white-space: pre-wrap;
 }
 
-/* Formulario nuevo comentario */
 .material-detail__comment-form {
   display: flex;
   align-items: flex-start;

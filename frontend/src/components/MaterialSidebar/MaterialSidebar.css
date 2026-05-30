@@ -56,10 +56,27 @@
   user-select: none;
   padding: 2px 4px;
   border-radius: 4px;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .sidebar__reaction-btn:hover {
   background-color: rgba(0, 0, 0, 0.04);
+}
+
+.sidebar__reaction-btn_up {
+  color: #427b58;
+}
+
+.sidebar__reaction-btn_up:hover {
+  background-color: rgba(120, 180, 128, 0.201);
+}
+
+.sidebar__reaction-btn_dwn {
+  color: #cc2416;
+}
+
+.sidebar__reaction-btn_dwn:hover {
+  background-color: rgba(211, 47, 47, 0.08);
 }
 
 .sidebar__reaction-count {

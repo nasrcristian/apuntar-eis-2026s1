@@ -67,6 +67,8 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
         sx={{
           mb: 2,
           display: "flex",
+          bgcolor: "#ebddb2",
+          borderRadius: 3,
           flexDirection: "column",
           p: 1.5,
           transition: "0.2s",
@@ -75,12 +77,13 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
       >
         <Typography
           variant="caption"
-          sx={{ fontWeight: "bold", color: "text.secondary", ml: 1, mb: 1 }}
+          sx={{ fontWeight: "bold", ml: 1, mb: 1 }}
         >
           {material.category.toUpperCase()}
         </Typography>
 
         <Box sx={{ display: "flex", gap: 2 }}>
+          {/* Preview */}
           <Box
             onClick={() => navigate(`/material/${material.id}`)}
             sx={{
@@ -103,6 +106,7 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
             />
           </Box>
 
+          {/* Info del material */}
           <Box sx={{ flexGrow: 1 }}>
             <Typography
               variant="h6"
@@ -133,6 +137,7 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
             </Stack>
           </Box>
 
+          {/* Acciones */}
           <Box
             sx={{
               display: "flex",
@@ -145,7 +150,7 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
                 size="small"
                 onClick={handleToggleFavorite}
                 disabled={loadingFav}
-                color={isFavorite ? "error" : "default"}
+                sx={{ color: isFavorite ? "#9d0006" : "default" }}
                 aria-label="favorito"
               >
                 {isFavorite ? <Favorite /> : <FavoriteBorder />}
@@ -174,6 +179,7 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
           </Box>
         </Box>
 
+        {/* Footer */}
         <Box
           sx={{
             display: "flex",
@@ -186,6 +192,30 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
           <Typography variant="caption" color="text.secondary">
             por {material.ownerMail || "Usuario"} el {date}
           </Typography>
+
+          {/* <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <IconButton size="small" onClick={handleToggleLike}>
+                {vote === "like" ? (
+                  <ThumbUp fontSize="small" color="primary" />
+                ) : (
+                  <ThumbUpOutlined fontSize="small" />
+                )}
+              </IconButton>
+              <Typography variant="caption">{likesCount}</Typography>
+            </Box>
+
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <IconButton size="small" onClick={handleToggleDislike}>
+                {vote === "dislike" ? (
+                  <ThumbDown fontSize="small" color="error" />
+                ) : (
+                  <ThumbDownAltOutlined fontSize="small" />
+                )}
+              </IconButton>
+              <Typography variant="caption">{dislikesCount}</Typography>
+            </Box>
+          </Stack> */}
         </Box>
       </Card>
 
