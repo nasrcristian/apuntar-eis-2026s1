@@ -98,7 +98,7 @@ export default function FileDropzone({ files, onFilesChange }: Props) {
           textAlign: 'center',
           borderStyle: 'dashed',
           borderColor: isDragOver ? 'primary.main' : fileErrors.length ? 'error.main' : 'grey.400',
-          backgroundColor: isDragOver ? 'action.hover' : 'background.paper',
+          backgroundColor: isDragOver ? 'action.hover' : '#ebddb2',
           cursor: canAddMore ? 'pointer' : 'default',
           transition: 'border-color 0.2s, background-color 0.2s',
           '&:hover': canAddMore ? { borderColor: 'primary.main', backgroundColor: 'action.hover' } : {},
@@ -159,7 +159,7 @@ export default function FileDropzone({ files, onFilesChange }: Props) {
                   border: '1px solid',
                   borderColor: 'divider',
                   mb: 0.5,
-                  backgroundColor: 'background.paper',
+                  backgroundColor: '#ebddb2',
                 }}
                 secondaryAction={
                   <Tooltip title="Quitar archivo">

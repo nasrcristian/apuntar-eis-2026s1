@@ -66,7 +66,7 @@ export default function UploadPage() {
           </Typography>
         </Box>
 
-        <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
+        <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', bgcolor:'#ebddb2' }}>
           <CardContent sx={{ p: { xs: 2, sm: 4 } }}>
             <UploadForm
               key={submitCount}
