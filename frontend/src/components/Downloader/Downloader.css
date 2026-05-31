@@ -4,7 +4,8 @@
   justify-content: center;
   height: 100%;
   min-height: 400px;
-  background-color: #f5f5f5;
+  background-color: #ebddb2; /* antes #f5f5f5 */
+  border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 8px;
   flex-direction: column;
   gap: 8px;
@@ -17,7 +18,7 @@
 
 .pdf-preview__icon--empty {
   font-size: 48px;
-  color: #bdbdbd;
+  color: rgba(0, 0, 0, 0.35);
 }
 
 .pdf-preview__icon--file {
@@ -26,9 +27,9 @@
 }
 
 .pdf-preview__text {
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(0, 0, 0, 0.65);
 }
 
 .pdf-preview__filename {
-  color: rgba(0, 0, 0, 0.38);
+  color: rgba(0, 0, 0, 0.45);
 }

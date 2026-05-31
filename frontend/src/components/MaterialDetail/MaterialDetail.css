@@ -21,6 +21,17 @@
   min-height: 0;
 }
 
+/* Nuevo: panel principal (pdf + comentarios) con padding igual al sidebar */
+.material-detail__pdf-panel {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
 
 .material-detail__sidebar {
   width: 350px;
@@ -28,6 +39,8 @@
   overflow: auto;
   border-left: 1px solid rgba(0, 0, 0, 0.12);
   padding: 24px;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(2px);
 }
 
 .material-detail__comments {
