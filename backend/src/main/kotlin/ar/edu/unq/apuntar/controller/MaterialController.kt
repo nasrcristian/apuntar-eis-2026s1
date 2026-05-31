@@ -11,15 +11,20 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import kotlin.Long
 import ar.edu.unq.apuntar.dto.UpdateMaterialDto
-import org.springframework.security.core.Authentication
 import ar.edu.unq.apuntar.dto.material.FavoriteStatusDTO
+import org.springframework.security.core.Authentication
 import ar.edu.unq.apuntar.service.favorite.FavoriteService
+import ar.edu.unq.apuntar.storage.StorageProvider
+import org.springframework.core.io.UrlResource
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 
 @RestController
 @RequestMapping("/materiales")
 class MaterialController(
     private val materialService: MaterialService,
-    private val favoriteService: FavoriteService
+    private val favoriteService: FavoriteService,
+    private val storageProvider: StorageProvider
 ) {
     @PostMapping
     fun createMaterial(
@@ -131,6 +136,28 @@ class MaterialController(
         val favorites = favoriteService.getFavorites(authentication.name)
             .map { it.toDTO() }
         return ResponseEntity.ok(favorites)
+    }
+
+    @GetMapping("/{id}/archivos/{storedFileName}")
+    fun downloadFile(
+        @PathVariable id: Long,
+        @PathVariable storedFileName: String
+    ): ResponseEntity<UrlResource> {
+        val material = materialService.findById(id)
+        val fileMeta = material.fileMetadatas.find { it.storedFileName == storedFileName }
+            ?: return ResponseEntity.notFound().build()
+
+        val path = storageProvider.load(storedFileName)
+        val resource = UrlResource(path.toUri())
+
+        if (!resource.exists() || !resource.isReadable) {
+            return ResponseEntity.notFound().build()
+        }
+
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${fileMeta.originalFileName}\"")
+            .contentType(MediaType.parseMediaType(fileMeta.contentType))
+            .body(resource)
     }
 
     @GetMapping("/mis-publicaciones")

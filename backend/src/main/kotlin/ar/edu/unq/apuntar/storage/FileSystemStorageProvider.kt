@@ -33,5 +33,8 @@ class FileSystemStorageProvider(
         val target = storagePath.resolve(storedFileName)
         Files.deleteIfExists(target)
     }
-}
 
+    override fun load(storedFileName: String): Path {
+        return storagePath.resolve(storedFileName).normalize()
+    }
+}
