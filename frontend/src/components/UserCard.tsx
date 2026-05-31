@@ -8,7 +8,7 @@ export default function UserCard({ user }: { user: User }) {
 
 
   return (
-    <Card>
+    <Card sx={{bgcolor:'#ebddb2'}}>
       <CardContent>
         <Grid container spacing={2} sx={{ alignItems: 'center' }}>
           <Grid>

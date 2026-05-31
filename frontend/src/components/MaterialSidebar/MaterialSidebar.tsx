@@ -77,6 +77,7 @@ export default function MaterialSidebar({
     if (!currentUser.mail) {
       enqueueSnackbar("Debes iniciar sesion para valorar", {
         variant: "error",
+        autoHideDuration: 2000
       });
     } else if (userReaction === "LIKE") {
       setUserReaction(null);
@@ -95,6 +96,7 @@ export default function MaterialSidebar({
     if (!currentUser.mail) {
       enqueueSnackbar("Debes iniciar sesion para valorar", {
         variant: "error",
+        autoHideDuration: 2000
       });
     } else if (userReaction === "DISLIKE") {
       setUserReaction(null);

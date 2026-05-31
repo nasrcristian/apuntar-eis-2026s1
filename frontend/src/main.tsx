@@ -15,14 +15,14 @@ const theme = createTheme({
       primary: "#ab4516",
       secondary: "#ab4516",
     },
-  },
+  }
 });
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <SnackbarProvider
-        autoHideDuration={5000}
+        autoHideDuration={2000}
         preventDuplicate
         anchorOrigin={{
           vertical: "top",

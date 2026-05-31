@@ -56,7 +56,7 @@ export default function UploadForm({
     files.length > 0
 
   return (
-    <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 2 }}>
+    <Box component="form" onSubmit={onSubmit} noValidate sx={{ bgcolor:'#ebddb2',mt: 2 }}>
       <Stack spacing={3}>
         {success && (
           <Alert severity="success" onClose={onCloseSuccess}>
@@ -86,7 +86,7 @@ export default function UploadForm({
 
         <Divider />
 
-        <Box>
+        <Box sx={{bgcolor:'#ebddb2'}}>
           <Typography variant="subtitle2" gutterBottom color="text.secondary">
             Archivos
           </Typography>
