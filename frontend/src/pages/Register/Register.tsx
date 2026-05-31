@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { postRegister } from '../../service/api'
+import { useAuth } from '../../context/AuthContext'
+import { enqueueSnackbar } from 'notistack'
 import type { ApiErrorDto } from '../../types/dto'
 import './Register.css'
 
@@ -12,6 +14,7 @@ function Register() {
     const [passwordConfirmation, setPasswordConfirmation] = useState('')
     const [errors, setErrors] = useState<Record<string, string>>({})
     const navigate = useNavigate()
+    const { login } = useAuth()
 
     const validateEmail = (email: string) => {
         const regex = new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")
@@ -39,7 +42,7 @@ function Register() {
         return errs
     }
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
         const validationErrors = validate()
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors)
@@ -48,33 +51,49 @@ function Register() {
 
         setErrors({})
 
-        postRegister({ name, surname, mail, password })
-            .then((response) => {
-                console.log(response)
-                navigate('/')
+        try {
+            await postRegister({ name, surname, mail, password })
+            enqueueSnackbar('Cuenta creada exitosamente', { 
+                variant: 'success',
+                autoHideDuration: 3000,
+                anchorOrigin: { vertical: 'top', horizontal: 'center' }
             })
-            .catch((e) => {
-                if (e.response) {
-                    if (e.response.status === 409) {
-                        setErrors({ mail: 'El email ya está registrado' })
-                        return
-                    }
-                    if (e.response.status === 400) {
-                        const apiError = e.response.data as ApiErrorDto
-                        if (apiError.validationErrors && apiError.validationErrors.length > 0) {
-                            const serverErrors: Record<string, string> = {}
-                            apiError.validationErrors.forEach(ve => {
-                                serverErrors[ve.field] = ve.error
-                            })
-                            setErrors(serverErrors)
-                        } else {
-                            setErrors({ _form: apiError.message || 'Los datos ingresados no son válidos' })
-                        }
-                        return
-                    }
+
+            // Auto-login tras registro exitoso
+            const response = await fetch('http://localhost:8080/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mail, password }),
+            })
+            const data = await response.json()
+
+            if (response.ok) {
+                login(data.token, data.user)
+            }
+
+            navigate('/')
+        } catch (e: any) {
+            if (e.response) {
+                if (e.response.status === 409) {
+                    setErrors({ mail: 'El email ya está registrado' })
+                    return
                 }
-                setErrors({ _form: 'Error de conexión' })
-            })
+                if (e.response.status === 400) {
+                    const apiError = e.response.data as ApiErrorDto
+                    if (apiError.validationErrors && apiError.validationErrors.length > 0) {
+                        const serverErrors: Record<string, string> = {}
+                        apiError.validationErrors.forEach(ve => {
+                            serverErrors[ve.field] = ve.error
+                        })
+                        setErrors(serverErrors)
+                    } else {
+                        setErrors({ _form: apiError.message || 'Los datos ingresados no son válidos' })
+                    }
+                    return
+                }
+            }
+            setErrors({ _form: 'Error de conexión' })
+        }
     }
 
     return (
@@ -127,8 +146,8 @@ function Register() {
                         className={`register-input ${errors.password ? 'register-input-error' : ''}`}
                         value={password}
                         onChange={(e) => { clearError('password'); setPassword(e.target.value) }}
-                        onCopy={(e) => e.preventDefault}
-                        onCut={(e) => e.preventDefault}
+                        onCopy={(e) => e.preventDefault()}
+                        onCut={(e) => e.preventDefault()}
                     />
                     {errors.password && <p className="register-error-message register-field-error">{errors.password}</p>}
                 </div>
@@ -141,7 +160,7 @@ function Register() {
                         className={`register-input ${errors.passwordConfirmation ? 'register-input-error' : ''}`}
                         value={passwordConfirmation}
                         onChange={(e) => { clearError('passwordConfirmation'); setPasswordConfirmation(e.target.value) }}
-                        onPaste={(e) => e.preventDefault}
+                        onPaste={(e) => e.preventDefault()}
                     />
                     {errors.passwordConfirmation && <p className="register-error-message register-field-error">{errors.passwordConfirmation}</p>}
                 </div>

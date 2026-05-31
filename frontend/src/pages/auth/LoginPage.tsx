@@ -12,6 +12,7 @@ import {
   CircularProgress,
   Link,
 } from "@mui/material";
+import { enqueueSnackbar } from "notistack";
 import { useAuth } from "../../context/AuthContext";
 
 export default function LoginPage() {
@@ -47,6 +48,11 @@ export default function LoginPage() {
 
       if (response.ok) {
         login(data.token, data.user);
+        enqueueSnackbar('¡Bienvenido! Sesión iniciada correctamente', { 
+          variant: 'success',
+          autoHideDuration: 3000,
+          anchorOrigin: { vertical: 'top', horizontal: 'center' }
+        });
         navigate("/");
       } else {
         setError(data.error ?? "El usuario ingresado no existe");
