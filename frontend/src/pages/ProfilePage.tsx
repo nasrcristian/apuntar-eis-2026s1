@@ -39,7 +39,7 @@ export default function ProfilePage() {
         </Box>
       )}
 
-      <Stack spacing={2} sx={{ maxWidth: 360 }}>
+      <Stack direction={"row"} sx={{ justifyContent: 'space-evenly'}}>
         <Button
           variant="contained"
           size="large"
