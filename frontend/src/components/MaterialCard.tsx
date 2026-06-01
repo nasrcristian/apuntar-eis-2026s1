@@ -11,6 +11,7 @@ import type { MaterialDTO } from "../types/material";
 import EditMaterialModal from "./EditMaterialModal";
 import { getCurrentUserEmail } from '../service/auth';
 import { toggleFavorite, getFavoriteStatus } from '../service/api';
+import MaterialThumbnail from "./MaterialThumbnail/MaterialThumbnail";
 
 interface MaterialCardProps {
   material: MaterialDTO;
@@ -89,20 +90,18 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
             sx={{
               width: 130,
               height: 90,
-              bgcolor: "#f0f0f0",
               borderRadius: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
               cursor: "pointer",
               flexShrink: 0,
-              border: "1px solid #e0e0e0",
+              overflow: 'hidden',
             }}
           >
-            <img
-              src="https://via.placeholder.com/130x90?text=PDF"
-              alt="preview"
-              style={{ borderRadius: "4px" }}
+            <MaterialThumbnail
+              materialId={material.id}
+              files={material.files}
+              videos={material.videos}
+              width={130}
+              height={90}
             />
           </Box>
 
