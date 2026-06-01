@@ -13,23 +13,15 @@ export default function ForgotPasswordPage() {
   const [submitted, setSubmitted] = useState(false)
   const [resetToken, setResetToken] = useState<string | null>(null)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!mail.trim()) {
       setError('Ingresá tu correo')
       return
     }
     setError(null)
-    setLoading(true)
-    try {
-      const response = await postForgotPassword(mail)
-      setResetToken(response.data.token)
-      setSubmitted(true)
-    } catch {
-      setError('No pudimos procesar la solicitud')
-    } finally {
-      setLoading(false)
-    }
+    // TODO: implementar el envío real del mail. Por ahora solo mostramos el éxito.
+    setSubmitted(true)
   }
 
   return (
@@ -46,7 +38,7 @@ export default function ForgotPasswordPage() {
             Recuperar contraseña
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            Ingresa tu correo y te enviaremos instrucciones para crear una nueva contrsenia.
+            Ingresa tu correo y te enviaremos instrucciones para crear una nueva contrseña.
           </Typography>
         </Box>
 

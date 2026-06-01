@@ -17,13 +17,11 @@ export const categorias = [
   { value: 'apunte', label: 'Apunte' },
   { value: 'resumen', label: 'Resumen' },
   { value: 'modelo_examen', label: 'Modelo de examen' },
-  { value: 'video', label: 'Video' },
   { value: 'trabajo_practico', label: 'Trabajo práctico' },
   { value: 'cuadro_grafico', label: 'Cuadro o gráfico' },
+  { value: 'presentacion', label: 'Presentación' },
   { value: 'otro', label: 'Otro' },
 ]
-
-// export const categories = new Map<String, String>() TODO en algun momento para fixear un par de errores visuales :*
 
 export const ALLOWED_DOCUMENT_TYPES = [
   'application/pdf',

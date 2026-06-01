@@ -23,7 +23,7 @@ export default function Navbar() {
       <div className="navbar__left">
         <Link to="/" className="navbar__logo">
           <MenuBookIcon fontSize="small" />
-          <span className="navbar__logo-text">Apuntar</span>
+          <span className="navbar__logo-text">ApuntAR</span>
         </Link>
         <nav className="navbar__links">
           <NavigationButton title="Materiales" to="/library" />

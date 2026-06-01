@@ -60,7 +60,7 @@ export default function HomePage() {
             sx={{ letterSpacing: 5, fontFamily: 'Lilita One', fontWeight: 500 }}
             gutterBottom
           >
-            Bienvenido a ApuntAr
+            Bienvenido a ApuntAR
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ fontSize:20, letterSpacing: 1,fontFamily: 'Lilita One'}}>
             Compartí y descubrí material académico con tu comunidad

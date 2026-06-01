@@ -12,6 +12,8 @@ import EditMaterialModal from "./EditMaterialModal";
 import { getCurrentUserEmail } from '../service/auth';
 import { toggleFavorite, getFavoriteStatus } from '../service/api';
 import MaterialThumbnail from "./MaterialThumbnail/MaterialThumbnail";
+import { categorias } from "../constants/materialOptions"
+import { materias } from '../constants/materialOptions'
 
 interface MaterialCardProps {
   material: MaterialDTO;
@@ -62,9 +64,16 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
     onEditSuccess?.(updated);
   };
 
+  const categoryLabel =
+    categorias.find((c) => c.value === material.category)?.label ?? material.category
+
+  const subjectLabel =
+    materias.find((m) => m.value === material.subject)?.label ?? material.subject
+
   return (
     <>
       <Card
+        onClick={() => navigate(`/material/${material.id}`)}
         sx={{
           mb: 2,
           display: "flex",
@@ -72,6 +81,7 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
           borderRadius: 3,
           flexDirection: "column",
           p: 1.5,
+          cursor: "pointer",
           transition: "0.2s",
           "&:hover": { boxShadow: 4 },
         }}
@@ -80,18 +90,16 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
           variant="caption"
           sx={{ fontWeight: "bold", ml: 1, mb: 1 }}
         >
-          {material.category.toUpperCase()}
+          {categoryLabel}
         </Typography>
 
         <Box sx={{ display: "flex", gap: 2 }}>
           {/* Preview */}
           <Box
-            onClick={() => navigate(`/material/${material.id}`)}
             sx={{
               width: 130,
               height: 90,
               borderRadius: 1,
-              cursor: "pointer",
               flexShrink: 0,
               overflow: 'hidden',
             }}
@@ -109,7 +117,6 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
           <Box sx={{ flexGrow: 1 }}>
             <Typography
               variant="h6"
-              onClick={() => navigate(`/material/${material.id}`)}
               sx={{
                 cursor: "pointer",
                 fontWeight: "bold",
@@ -121,11 +128,10 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
             >
               {material.title}
             </Typography>
-            <Typography variant="body2" color="primary" sx={{ fontWeight: 500 }}>
-              {material.subject}
-            </Typography>
-
             <Stack spacing={0.2} sx={{ mt: 1 }}>
+              <Typography variant="caption" color="primary" sx={{ fontWeight: 500 }}>
+                <strong>Materia: </strong>{subjectLabel}
+              </Typography>
               <Typography variant="caption" color="text.secondary">
                 <strong>Descripción:</strong>{" "}
                 {material.description || "Sin descripción adicional"}
@@ -138,6 +144,7 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
 
           {/* Acciones */}
           <Box
+            onClick={(e) => e.stopPropagation()}
             sx={{
               display: "flex",
               flexDirection: "column",
@@ -189,7 +196,10 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
           }}
         >
           <Typography variant="caption" color="text.secondary">
-            por {material.ownerMail || "Usuario"} el {date}
+            <strong>Por:</strong> {material.ownerMail || "Usuario"}
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            <strong>Fecha de subida:</strong> {date}
           </Typography>
 
           {/* <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>

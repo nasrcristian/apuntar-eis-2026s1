@@ -10,54 +10,58 @@ export default function ProfilePage() {
   const { user, loading, error } = useUser()
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Typography variant="h4" sx={{ letterSpacing: 2, fontFamily: 'Lilita One', mb: 3}}>
-        Mi Perfil
-      </Typography>
-
+    <Container maxWidth="md" sx={{ py: { xs: 4, sm: 6 } }}>
       <Box sx={{ mb: 4 }}>
+        <Typography variant="h4" sx={{ letterSpacing: 2, fontFamily: 'Lilita One', color: 'primary.main', mb: 1 }}>
+          Mi Perfil
+        </Typography>
         <Typography variant="body1" color="text.secondary">
           Acá vas a poder ver y gestionar tu información.
         </Typography>
       </Box>
 
       {loading && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', my: 6 }}>
           <CircularProgress />
         </Box>
       )}
 
-      {error && (
-        <Box sx={{ mb: 2 }}>
-          <Alert severity="error">{error}</Alert>
-        </Box>
-      )}
+      {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
 
       {!loading && user && (
-        <Box sx={{ mb: 3 }}>
-          <UserCard user={user} />
-        </Box>
-      )}
+        <>
+          <Box sx={{ mb: 4 }}>
+            <UserCard user={user} />
+          </Box>
 
-      <Stack direction={"row"} sx={{ justifyContent: 'space-evenly'}}>
-        <Button
-          variant="contained"
-          size="large"
-          startIcon={<LibraryBooksIcon />}
-          onClick={() => navigate('/mis-publicaciones')}
-        >
-          Mis publicaciones
-        </Button>
-        <Button
-          variant="outlined"
-          size="large"
-          startIcon={<FavoriteIcon />}
-          color="error"
-          onClick={() => navigate('/favoritos')}
-        >
-          Favoritos
-        </Button>
-      </Stack>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ justifyContent: 'center' }}>
+            <Button
+              variant="contained" size="large" fullWidth
+              startIcon={<LibraryBooksIcon />}
+              onClick={() => navigate('/mis-publicaciones')}
+              sx={{
+                py: 1.75, borderRadius: 3, fontFamily: 'Lilita One', letterSpacing: 1,
+                textTransform: 'none', boxShadow: 2, maxWidth: { sm: 280 },
+                '&:hover': { boxShadow: 5 },
+              }}
+            >
+              Mis publicaciones
+            </Button>
+            <Button
+              variant="outlined" size="large" fullWidth color="error"
+              startIcon={<FavoriteIcon />}
+              onClick={() => navigate('/favoritos')}
+              sx={{
+                py: 1.75, borderRadius: 3, fontFamily: 'Lilita One', letterSpacing: 1,
+                textTransform: 'none', borderWidth: 2, maxWidth: { sm: 280 },
+                '&:hover': { borderWidth: 2, bgcolor: 'rgba(157,0,6,0.06)' },
+              }}
+            >
+              Favoritos
+            </Button>
+          </Stack>
+        </>
+      )}
     </Container>
   )
 }
