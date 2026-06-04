@@ -3,19 +3,9 @@ import { Box, Skeleton } from '@mui/material'
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import VideoFileIcon from '@mui/icons-material/VideoFile'
-import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist'
-// Import del worker para Vite
-// eslint-disable-next-line import/no-unresolved
-import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
+import { getDocument } from 'pdfjs-dist'
 import type { FileMetadataDTO, VideoMetadataDTO } from '../../types/material'
-
-GlobalWorkerOptions.workerSrc = pdfWorker
-
-const API_BASE = 'http://localhost:8080'
-
-function fileUrl(materialId: number, storedFileName: string) {
-  return `${API_BASE}/materiales/${materialId}/archivos/${storedFileName}`
-}
+import { fileUrl } from '../../utils/filePreview'
 
 interface MaterialThumbnailProps {
   materialId: number

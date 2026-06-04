@@ -4,14 +4,12 @@ import {
   Box, Card, CardContent, Typography, TextField, Button, Alert,
   Stack, CircularProgress, Link,
 } from '@mui/material'
-import { postForgotPassword } from '../../service/api'
-
 export default function ForgotPasswordPage() {
   const [mail, setMail] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [loading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
-  const [resetToken, setResetToken] = useState<string | null>(null)
+  const [resetToken] = useState<string | null>(null)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()

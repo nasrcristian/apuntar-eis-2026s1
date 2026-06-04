@@ -15,6 +15,7 @@ import SendIcon from "@mui/icons-material/Send";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import { useNavigate } from "react-router-dom";
 import Downloader from "../Downloader/Downloader";
+import MaterialPreview from "../MaterialPreview/MaterialPreview";
 import MaterialSidebar from "../MaterialSidebar/MaterialSidebar";
 import type {
   MaterialDTO,
@@ -24,6 +25,7 @@ import type {
   CurrentUser,
 } from "../../types/material";
 import { useMaterials } from "../../hooks/useMaterials";
+import { getPreviewKind } from "../../utils/filePreview";
 import "./MaterialDetail.css";
 import { enqueueSnackbar } from "notistack";
 
@@ -78,6 +80,20 @@ export default function MaterialDetail({
   const [error, setError] = useState("");
   const { saveComment, delComment } = useMaterials();
 
+  // Archivo seleccionado para previsualizar. Por defecto, el primero previsualizable
+  // (o el primero a secas, que caerá al fallback de "no es posible verlo").
+  const defaultFileName = (
+    material.files.find(
+      (f) => getPreviewKind(f.contentType) !== "unsupported"
+    ) ?? material.files[0]
+  )?.storedFileName;
+  const [activeFileName, setActiveFileName] = useState<string | undefined>(
+    defaultFileName
+  );
+  const activeFile = material.files.find(
+    (f) => f.storedFileName === activeFileName
+  );
+
   const handlePublish = async () => {
     if (!commentText.trim()) {
       setError("El comentario no puede estar vacío.");
@@ -127,7 +143,14 @@ export default function MaterialDetail({
 
       <Box className="material-detail__body">
         <Box className="material-detail__pdf-panel">
-          <Downloader files={material.files} videos={material.videos} materialId={material.id} />
+          <MaterialPreview materialId={material.id} file={activeFile} />
+          <Downloader
+            files={material.files}
+            videos={material.videos}
+            materialId={material.id}
+            selectedFileName={activeFileName}
+            onSelectFile={setActiveFileName}
+          />
 
           {/* ── Sección de comentarios ── */}
           <Box className="material-detail__comments">

@@ -1,8 +1,7 @@
 import { useCallback } from 'react'
 import { enqueueSnackbar } from 'notistack'
 import type { FileMetadataDTO, VideoMetadataDTO } from '../types/material'
-
-const API_BASE = 'http://localhost:8080'
+import { fileUrl } from '../utils/filePreview'
 
 function triggerBrowserDownload(url: string, filename: string) {
   const a = document.createElement('a')
@@ -16,7 +15,7 @@ function triggerBrowserDownload(url: string, filename: string) {
 
 export function useDownloader() {
   const downloadUrl = useCallback((materialId: number, storedFileName: string) => {
-    return `${API_BASE}/materiales/${materialId}/archivos/${storedFileName}`
+    return fileUrl(materialId, storedFileName)
   }, [])
 
   const formatSize = useCallback((bytes: number): string => {
@@ -42,7 +41,10 @@ export function useDownloader() {
         const allFiles = [
           ...files.map((f) => ({ storedFileName: f.storedFileName, originalFileName: f.originalFileName })),
           ...videos.map((v) => ({ storedFileName: v.storedFileName, originalFileName: v.originalFileName })),
-        ]
+        ].filter(
+          (item, i, arr) =>
+            arr.findIndex((x) => x.storedFileName === item.storedFileName) === i
+        )
 
         if (allFiles.length === 0) {
           enqueueSnackbar('No hay archivos para descargar', { variant: 'warning' })
@@ -55,7 +57,6 @@ export function useDownloader() {
           const { storedFileName, originalFileName } = allFiles[i]
           triggerBrowserDownload(downloadUrl(materialId, storedFileName), originalFileName)
           // delay corto para evitar que el browser ignore clicks programáticos consecutivos
-          // eslint-disable-next-line no-await-in-loop
           await new Promise((r) => setTimeout(r, 250))
         }
 
