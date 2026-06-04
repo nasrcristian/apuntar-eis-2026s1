@@ -21,7 +21,6 @@
   min-height: 0;
 }
 
-/* Nuevo: panel principal (pdf + comentarios) con padding igual al sidebar */
 .material-detail__pdf-panel {
   flex: 1;
   min-width: 0;
@@ -44,7 +43,6 @@
 }
 
 .material-detail__comments {
-  /* Quitamos el margin-top viejo para que no rompa la estructura con padding interno */
   margin-top: 0; 
   display: flex;
   flex-direction: column;
@@ -87,6 +85,7 @@
 .material-detail__comment-item {
   padding: 0.875rem 1rem;
   border-radius: 8px !important;
+  background-color: #ebddb2 !important;
 }
 
 .material-detail__comment-top {
@@ -145,6 +144,10 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.material-detail__comment-input-wrapper .MuiOutlinedInput-root {
+  background-color: #ebddb2;
 }
 
 .material-detail__comment-submit {

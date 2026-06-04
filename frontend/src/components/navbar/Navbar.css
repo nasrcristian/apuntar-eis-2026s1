@@ -27,6 +27,12 @@
   font-size: 1.25rem;
 }
 
+.navbar__logo-text {
+    font-size: 20px;
+    letter-spacing: 1px;
+    font-family: 'Lilita One', sans-serif;
+}
+
 .navbar__links {
   display: flex;
   align-items: center;

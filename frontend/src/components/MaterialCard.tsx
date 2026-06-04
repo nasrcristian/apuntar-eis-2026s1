@@ -78,6 +78,8 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
           mb: 2,
           display: "flex",
           bgcolor: "#ebddb2",
+          border: '1px solid',
+          borderColor: '#ab4516',
           borderRadius: 3,
           flexDirection: "column",
           p: 1.5,

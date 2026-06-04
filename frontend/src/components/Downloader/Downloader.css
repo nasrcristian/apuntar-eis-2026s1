@@ -4,7 +4,7 @@
   justify-content: center;
   height: 100%;
   min-height: 400px;
-  background-color: #ebddb2; /* antes #f5f5f5 */
+  background-color: #ebddb2;
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 8px;
   flex-direction: column;
@@ -12,7 +12,12 @@
 }
 
 .pdf-preview--has-file {
-  min-height: 600px;
+  height: auto;
+  min-height: 0;
+  justify-content: flex-start;
+  align-items: stretch;
+  flex-shrink: 0;
+  padding: 16px;
   gap: 16px;
 }
 
