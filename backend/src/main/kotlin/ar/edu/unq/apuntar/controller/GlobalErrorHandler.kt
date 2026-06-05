@@ -6,6 +6,7 @@ import ar.edu.unq.apuntar.dto.ValidationError
 import ar.edu.unq.apuntar.exception.InvalidMailException
 import ar.edu.unq.apuntar.exception.InvalidMaterialException
 import ar.edu.unq.apuntar.exception.MaterialNotFoundException
+import ar.edu.unq.apuntar.exception.UserNotFoundException
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -43,6 +44,10 @@ class GlobalErrorHandler {
 
     @ExceptionHandler(MaterialNotFoundException::class)
     fun handleMaterialNotFoundException(ex: MaterialNotFoundException): ResponseEntity<String> =
+        ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
+
+    @ExceptionHandler(UserNotFoundException::class)
+    fun handleUserNotFoundException(ex: UserNotFoundException): ResponseEntity<String> =
         ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
 
     @ExceptionHandler(UserAlreadyExistsException::class)

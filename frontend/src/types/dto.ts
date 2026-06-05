@@ -9,6 +9,7 @@ export interface UserDto {
   name: string;
   surname: string;
   mail: string;
+  description?: string;
 }
 
 export interface ValidationError {

@@ -6,4 +6,5 @@ import java.util.UUID
 interface UserService {
     fun register(user: User): User
     fun getUserByEmail(email: String): User?
+    fun updateDescription(email: String, description: String?): User
 }

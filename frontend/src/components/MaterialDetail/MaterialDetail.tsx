@@ -26,6 +26,7 @@ import type {
 } from "../../types/material";
 import { useMaterials } from "../../hooks/useMaterials";
 import { getPreviewKind } from "../../utils/filePreview";
+import { encodeMail } from "../../utils/mailToken";
 import "./MaterialDetail.css";
 import { enqueueSnackbar } from "notistack";
 
@@ -187,7 +188,12 @@ export default function MaterialDetail({
                     className="material-detail__comment-item"
                   >
                     <Box className="material-detail__comment-top">
-                      <Box className="material-detail__comment-author">
+                      <Box
+                        className="material-detail__comment-author"
+                        onClick={() =>
+                          navigate(`/usuario/${encodeMail(comment.userId)}`)
+                        }
+                      >
                         <Avatar className="material-detail__comment-avatar">
                           {getInitials(comment.authorName)}
                         </Avatar>

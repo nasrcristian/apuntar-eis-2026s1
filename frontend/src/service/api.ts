@@ -84,6 +84,18 @@ const del = <R>(
       throw handleErrorResponse(error);
     });
 
+const put = <T, R>(
+  url: string,
+  data: T,
+  config?: AxiosRequestConfig,
+): Promise<ResolvedResponse<R>> =>
+  axios
+    .put<R>(url, data, config)
+    .then((response) => handleResolvedResponse(response))
+    .catch((error) => {
+      throw handleErrorResponse(error);
+    });
+
 export const postRegister = (
   data: RegisterReqDto,
 ): Promise<ResolvedResponse<UserDto>> =>
@@ -228,4 +240,30 @@ export const getMyFavorites = (): Promise<ResolvedResponse<MaterialDTO[]>> => {
   return get<MaterialDTO[]>(`${urlApi}/materiales/favoritos`, {
     headers: { Authorization: `Bearer ${currentToken}` },
   });
+};
+
+// Perfil público de otro usuario (no requiere sesión).
+export const getUserProfile = (
+  mail: string,
+): Promise<ResolvedResponse<UserDto>> =>
+  get<UserDto>(`${urlApi}/user/perfil?mail=${encodeURIComponent(mail)}`);
+
+// Materiales subidos por un usuario (no requiere sesión).
+export const getMaterialsByOwner = (
+  mail: string,
+): Promise<ResolvedResponse<MaterialDTO[]>> =>
+  get<MaterialDTO[]>(
+    `${urlApi}/materiales/usuario?mail=${encodeURIComponent(mail)}`,
+  );
+
+// Actualiza el perfil del usuario logueado (por ahora, solo la descripción).
+export const updateMyProfile = (
+  description: string | null,
+): Promise<ResolvedResponse<UserDto>> => {
+  const currentToken = localStorage.getItem("jwt");
+  return put<{ description: string | null }, UserDto>(
+    `${urlApi}/user/me`,
+    { description },
+    { headers: { Authorization: `Bearer ${currentToken}` } },
+  );
 };
