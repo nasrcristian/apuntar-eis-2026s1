@@ -18,18 +18,26 @@ import {
 } from "../../constants/materialOptions";
 import type { Reaction, MaterialSidebarProps } from "../../types/material";
 import { useMaterials } from "../../hooks/useMaterials";
+import { useAuthorName } from "../../hooks/useAuthorName";
 import "./MaterialSidebar.css";
 import { enqueueSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
+import { encodeMail } from "../../utils/mailToken";
 
 interface FieldProps {
   icon: React.ReactNode;
   label: string;
   value: string;
+  onClick?: () => void;
 }
 
-function Field({ icon, label, value }: FieldProps) {
+function Field({ icon, label, value, onClick }: FieldProps) {
   return (
-    <Box className="sidebar__field">
+    <Box
+      className="sidebar__field"
+      onClick={onClick}
+      sx={onClick ? { cursor: "pointer", "&:hover": { opacity: 0.75 } } : undefined}
+    >
       <span className="sidebar__field-icon">{icon}</span>
       <Box>
         <Typography className="sidebar__field-label">{label}</Typography>
@@ -51,6 +59,8 @@ export default function MaterialSidebar({
     reactions.userReaction,
   );
   const { valueMaterial, unvalueMaterial } = useMaterials();
+  const navigate = useNavigate();
+  const authorName = useAuthorName(material.ownerMail);
 
   const subjectLabel =
     materias.find((m) => m.value === material.subject)?.label ??
@@ -122,7 +132,8 @@ export default function MaterialSidebar({
       <Field
         icon={<PersonIcon fontSize="small" />}
         label="Autor"
-        value={material.ownerMail}
+        value={authorName ?? material.ownerMail}
+        onClick={() => navigate(`/usuario/${encodeMail(material.ownerMail)}`)}
       />
 
       <Box className="sidebar__reactions">

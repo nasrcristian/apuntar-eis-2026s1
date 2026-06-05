@@ -166,4 +166,12 @@ class MaterialController(
             .sortedByDescending { it.createdAt }
             .map { it.toDTO() })
     }
+
+    @GetMapping("/usuario")
+    fun getByOwner(@RequestParam mail: String): ResponseEntity<List<MaterialDTO>> =
+        ResponseEntity.ok(
+            materialService.findByOwnerMail(mail)
+                .sortedByDescending { it.createdAt }
+                .map { it.toDTO() }
+        )
 }

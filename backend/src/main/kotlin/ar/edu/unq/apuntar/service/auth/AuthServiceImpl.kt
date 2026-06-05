@@ -1,7 +1,7 @@
 package ar.edu.unq.apuntar.service
 
 import ar.edu.unq.apuntar.dto.LoginResDto
-import ar.edu.unq.apuntar.dto.UserDto
+import ar.edu.unq.apuntar.dto.toDto
 import ar.edu.unq.apuntar.dto.auth.LoginReqDto
 import ar.edu.unq.apuntar.model.PasswordResetToken
 import ar.edu.unq.apuntar.persistence.dao.PasswordResetTokenDao
@@ -29,11 +29,7 @@ class AuthServiceImpl (
 
         return LoginResDto(
             token = jwtUtil.generateToken(user.mail),
-            user = UserDto(
-                mail = user.mail,
-                name = user.name,
-                surname = user.surname,
-            )
+            user = user.toDto()
         )
     }
 

@@ -23,7 +23,10 @@ class User(
     val mail: String,
 
     @Column(nullable = false)
-    var password: String
+    var password: String,
+
+    @Column(columnDefinition = "TEXT")
+    var description: String? = null
     ){
     init {
         if(!isValidMail(mail)){

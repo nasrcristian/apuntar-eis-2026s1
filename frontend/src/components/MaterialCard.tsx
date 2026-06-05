@@ -11,6 +11,7 @@ import type { MaterialDTO } from "../types/material";
 import EditMaterialModal from "./EditMaterialModal";
 import { getCurrentUserEmail } from '../service/auth';
 import { toggleFavorite, getFavoriteStatus } from '../service/api';
+import { useAuthorName } from '../hooks/useAuthorName';
 import MaterialThumbnail from "./MaterialThumbnail/MaterialThumbnail";
 import { categorias } from "../constants/materialOptions"
 import { materias } from '../constants/materialOptions'
@@ -26,6 +27,7 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
   const [isFavorite, setIsFav] = useState(false);
   const [loadingFav, setLoadingFav] = useState(false);
   const currentUserEmail = getCurrentUserEmail();
+  const authorName = useAuthorName(material.ownerMail);
   const isOwner = currentUserEmail === material.ownerMail;
   const isLoggedIn = !!currentUserEmail;
   const [editOpen, setEditOpen] = useState(false);
@@ -198,7 +200,7 @@ const MaterialCard = ({ material, onDelete, onEditSuccess }: MaterialCardProps) 
           }}
         >
           <Typography variant="caption" color="text.secondary">
-            <strong>Por:</strong> {material.ownerMail || "Usuario"}
+            <strong>Por:</strong> {authorName ?? material.ownerMail ?? "Usuario"}
           </Typography>
           <Typography variant="caption" color="text.secondary">
             <strong>Fecha de subida:</strong> {date}
