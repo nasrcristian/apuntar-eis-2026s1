@@ -63,7 +63,6 @@ class MaterialController(
 
     @GetMapping("/filtrado")
     fun getByName(
-        @RequestParam(name = "id", required = false) id: Long?,
         @RequestParam(name = "detalle") detalle: String
     ): ResponseEntity<List<MaterialDTO>> {
         return ResponseEntity.ok(materialService.findByName(detalle).map { it.toDTO() })

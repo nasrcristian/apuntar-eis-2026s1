@@ -19,12 +19,13 @@ import {
 } from "@mui/material";
 import MaterialCard from "../components/MaterialCard";
 import CategoryFilter from "../components/CategoryFilter/CategoryFilter";
+import SubjectFilter from "../components/SubjectFilter/SubjectFilter";
 import type { AlertColor } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import { useMaterials } from "../hooks/useMaterials";
 import { enqueueSnackbar } from "notistack";
-import { categorias } from "../constants/materialOptions";
+import { categorias, materias } from "../constants/materialOptions";
 import type { ResolvedResponse } from "../service/api";
 import type { MaterialDTO } from "../types/material";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -56,6 +57,7 @@ const MaterialListPage = ({
   const [selectedMaterial, setSelectedMaterial] = useState<any | null>(null);
   const [inputBusqueda, setInputBusqueda] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [notification, setNotification] = useState<NotificationState>({
     open: false,
@@ -63,9 +65,11 @@ const MaterialListPage = ({
     severity: "success",
   });
 
-  const filteredMaterials = selectedCategory
-    ? materials.filter((m: any) => m.category === selectedCategory)
-    : materials;
+  const filteredMaterials = materials.filter((m: any) => {
+    const matchesCategory = !selectedCategory || m.category === selectedCategory;
+    const matchesSubject = !selectedSubject || m.subject === selectedSubject;
+    return matchesCategory && matchesSubject;
+  });
 
   useEffect(() => {
     fetchAllMaterials();
@@ -73,7 +77,7 @@ const MaterialListPage = ({
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
-  }, [selectedCategory]);
+  }, [selectedCategory, selectedSubject]);
 
   const handleDeleteClick = (material: any) => {
     setSelectedMaterial(material);
@@ -117,6 +121,9 @@ const MaterialListPage = ({
 
   const selectedCategoryLabel =
     categorias.find((c) => c.value === selectedCategory)?.label ?? "";
+
+  const selectedSubjectLabel =
+    materias.find((m) => m.value === selectedSubject)?.label ?? "";
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#d5c4a1" }}>
@@ -162,7 +169,14 @@ const MaterialListPage = ({
           </IconButton>
         </Stack>
 
-        <CategoryFilter value={selectedCategory} onChange={setSelectedCategory} />
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={2}
+          sx={{ flexWrap: "wrap", mb: 3 }}
+        >
+          <SubjectFilter value={selectedSubject} onChange={setSelectedSubject} />
+          <CategoryFilter value={selectedCategory} onChange={setSelectedCategory} />
+        </Stack>
 
         {loading ? (
           <Box sx={{ display: "flex", justifyContent: "center", my: 10 }}>
@@ -202,6 +216,11 @@ const MaterialListPage = ({
           <Typography align="center" color="text.secondary">
             No hay materiales para la categoria {selectedCategoryLabel}. Probá con
             otra categoria o subi nuevo material.
+          </Typography>
+        ) : selectedSubject ? (
+          <Typography align="center" color="text.secondary">
+            No hay materiales para la materia {selectedSubjectLabel}. Probá con
+            otra materia o subi nuevo material.
           </Typography>
         ) : (
           <Box sx={{ textAlign: "center", py: 4 }}>

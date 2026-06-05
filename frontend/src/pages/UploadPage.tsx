@@ -59,7 +59,7 @@ export default function UploadPage() {
       <Box sx={{ width: '100%', maxWidth: 760 }}>
         <Box sx={{ mb: 3 }}>
           <Typography variant="h4" component="h1" sx={{ fontFamily: "Lilita One",letterSpacing: 2}} gutterBottom>
-            Subir material teórico
+            Subir material
           </Typography>
           <Typography variant="body1" color="text.secondary">
             Compartí apuntes, resúmenes y material académico con tu comunidad
