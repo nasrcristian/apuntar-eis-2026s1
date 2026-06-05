@@ -19,7 +19,7 @@ type AccordionKey = 'proposito' | 'comoFormar' | null
 
 export default function HomePage() {
   const [copied, setCopied] = useState(false)
-  const [openSection, setOpenSection] = useState<AccordionKey>(null)
+  const [openSection, setOpenSection] = useState<AccordionKey>('proposito')
 
   const handleCopyEmail = async () => {
     try {
@@ -51,7 +51,7 @@ export default function HomePage() {
       px: 2,
       overflowY: 'auto',
     }}>
-      <Box sx={{ width: '100%', maxWidth: 600 }}>
+      <Box sx={{ width: '100%', maxWidth: 1000 }}>
 
         <Box sx={{ mb: 3, textAlign: 'center' }}>
           <Typography
@@ -91,7 +91,7 @@ export default function HomePage() {
               onClick={() => toggleSection('proposito')}
               sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 500 }}
             >
-              El propósito de ApuntAR
+              Nuestro propósito
             </Button>
 
             <Button
@@ -107,7 +107,7 @@ export default function HomePage() {
               onClick={() => toggleSection('comoFormar')}
               sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 500 }}
             >
-              Cómo formar parte de ApuntAR
+              Cómo formar parte
             </Button>
           </Box>
 
@@ -228,13 +228,20 @@ export default function HomePage() {
             </Box>
           </Collapse>
         </Box>
-
+      <Box
+        sx={{
+            display: 'flex'
+          , justifyContent: 'center'
+        }}>
         <Box
           sx={{
             border: '1px solid',
             borderColor: 'divider',
-            borderRadius: 999,
-            p: 2,
+            maxWidth: "45%",
+            m: 0, 
+            borderRadius: 5,
+            px: 2,
+            py: 1,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -301,6 +308,7 @@ export default function HomePage() {
               </IconButton>
             </Tooltip>
           </Box>
+        </Box>
         </Box>
       </Box>
 
