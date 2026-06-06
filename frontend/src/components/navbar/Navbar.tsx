@@ -2,6 +2,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
 import { useAuth } from '../../context/AuthContext'
 import NavigationButton from './NavigationButton'
+import cabezaVami from '../../../assets/cabeza vami.png'
 import './Navbar.css'
 
 const PROTECTED_ROUTES = ['/create', '/profile']
@@ -22,11 +23,11 @@ export default function Navbar() {
     <header className="navbar">
       <div className="navbar__left">
         <Link to="/" className="navbar__logo">
-          <MenuBookIcon fontSize="small" />
+          <img src={cabezaVami} className='cabeza_vami'/>
           <span className="navbar__logo-text">ApuntAR</span>
         </Link>
         <nav className="navbar__links">
-          <NavigationButton title="Materiales" to="/library" />
+          <NavigationButton title="Materiales" to="/library"/>
           <NavigationButton
             title="Quiero Colaborar"
             to="/create"
@@ -35,6 +36,7 @@ export default function Navbar() {
                 ? undefined
                 : (e) => {
                     e.preventDefault()
+                    window.scrollTo(0, 0);
                     navigate('/login')
                   }
             }

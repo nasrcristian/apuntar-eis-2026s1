@@ -9,6 +9,8 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import EmailIcon from '@mui/icons-material/Email'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import Vamian from '../../assets/Vamian Dillalba final.png'
+import './HomePage.css'
 import { useState } from 'react'
 
 const SUPPORT_EMAIL = 'soporteApuntarAR@gmail.com'
@@ -39,6 +41,15 @@ export default function HomePage() {
   const toggleSection = (key: AccordionKey) => {
     setOpenSection(prev => (prev === key ? null : key))
   }
+
+  const [saltando, setSaltando] = useState(false);
+  const handleJumpscareVami = () => {
+    if (saltando) return;
+    setSaltando(true);
+    setTimeout(() => {
+      setSaltando(false);
+    }, 600); 
+  };
 
   return (
     <Box sx={{
@@ -301,6 +312,11 @@ export default function HomePage() {
               </IconButton>
             </Tooltip>
           </Box>
+        </Box>
+        <Box>
+          <img src={Vamian} alt="Vamian Dillalba, el Mesías" 
+          className={`image-box-container ${saltando ? 'Vamian-Jumpscare' : 'Vamian'}`} 
+          onClick={handleJumpscareVami}/>
         </Box>
       </Box>
 
