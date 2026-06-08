@@ -334,6 +334,7 @@ export default function HomePage() {
         message={`✓ Correo copiado: ${SUPPORT_EMAIL}`}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       />
+      </Box>
     </Box>
   )
 }
