@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { CssBaseline } from '@mui/material'
+import ScrollToTop from './components/navbar/scrollToTop'
 import './App.css'
 
 import UploadPage from './pages/UploadPage'
@@ -21,6 +22,7 @@ function App() {
   return (
     <>
       <CssBaseline />
+      <ScrollToTop />
       <Navbar />
       <Routes>
         <Route path="/library" element={<MaterialListPage />} />
