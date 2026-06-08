@@ -14,8 +14,8 @@ import './HomePage.css'
 import { useState } from 'react'
 
 const SUPPORT_EMAIL = 'soporteApuntarAR@gmail.com'
-const YOUTUBE_URL = 'https://www.youtube.com/@ApuntAR'
-const LINKEDIN_URL = 'https://www.linkedin.com/company/apuntar'
+const YOUTUBE_URL = 'https://www.youtube.com/@ApuntAR-c9w'
+const LINKEDIN_URL = 'https://www.linkedin.com/company/burger-king-argentina/'
 
 type AccordionKey = 'proposito' | 'comoFormar' | null
 
@@ -88,7 +88,7 @@ export default function HomePage() {
             bgcolor:'#ebddb2'
           }}
         >
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap', mb: 1}}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 10, flexWrap: 'wrap', mb: 1 }}>
             <Button
               variant={openSection === 'proposito' ? 'contained' : 'outlined'}
               endIcon={
@@ -100,7 +100,7 @@ export default function HomePage() {
                 />
               }
               onClick={() => toggleSection('proposito')}
-              sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 500 }}
+              sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 600, fontSize:20 }}
             >
               Nuestro propósito
             </Button>
@@ -116,7 +116,7 @@ export default function HomePage() {
                 />
               }
               onClick={() => toggleSection('comoFormar')}
-              sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 500 }}
+              sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 600, fontSize:20 }}
             >
               Cómo formar parte
             </Button>
@@ -250,7 +250,7 @@ export default function HomePage() {
             borderColor: 'divider',
             maxWidth: "45%",
             m: 0, 
-            borderRadius: 5,
+            borderRadius: 10,
             px: 2,
             py: 1,
             display: 'flex',
@@ -283,16 +283,6 @@ export default function HomePage() {
               </IconButton>
             </Tooltip>
 
-            <Tooltip title="LinkedIn de ApuntAR" arrow>
-              <IconButton
-                aria-label="LinkedIn de ApuntAR"
-                onClick={() => window.open(LINKEDIN_URL, '_blank', 'noopener,noreferrer')}
-                sx={{ color: '#0A66C2', '&:hover': { backgroundColor: 'rgba(10,102,194,0.08)' } }}
-              >
-                <LinkedInIcon fontSize="large" />
-              </IconButton>
-            </Tooltip>
-
             <Box sx={{ width: '1px', height: 24, backgroundColor: 'divider', mx: 0.5 }} />
 
             <Tooltip title={`Enviar correo a ${SUPPORT_EMAIL}`} arrow>
@@ -320,11 +310,6 @@ export default function HomePage() {
             </Tooltip>
           </Box>
         </Box>
-        <Box>
-          <img src={Vamian} alt="Vamian Dillalba, el Mesías" 
-          className={`image-box-container ${saltando ? 'Vamian-Jumpscare' : 'Vamian'}`} 
-          onClick={handleJumpscareVami}/>
-        </Box>
       </Box>
 
       <Snackbar
@@ -334,7 +319,17 @@ export default function HomePage() {
         message={`✓ Correo copiado: ${SUPPORT_EMAIL}`}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       />
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+          <img
+            src={Vamian}
+            alt="Vamian Dillalba, el Mesías"
+            className={`image-box-container ${saltando ? 'Vamian-Jumpscare' : 'Vamian'}`}
+            onClick={handleJumpscareVami}
+          />
+        </Box>
+        </Box>
       </Box>
-    </Box>
-  )
+
+    )
+
 }

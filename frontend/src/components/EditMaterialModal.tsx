@@ -75,8 +75,21 @@ export default function EditMaterialModal({ open, material, onClose, onSuccess }
     const archivosActuales = [...material.files, ...material.videos]
 
     return (
-        <Dialog open={open} onClose={loading ? undefined : onClose} maxWidth="md" fullWidth>
-          <DialogTitle>Editar publicación</DialogTitle>
+        <Dialog
+          open={open}
+          onClose={loading ? undefined : onClose}
+          maxWidth="md"
+          fullWidth
+          slotProps={{
+            paper: {
+              sx: {
+                bgcolor: '#ebddb2',
+                color: '#1f2937',
+              },
+            },
+          }}
+        >
+          <DialogTitle sx={{ color: '#ab4516', fontFamily: 'Lilita One' }}>Editar publicación</DialogTitle>
           <DialogContent dividers>
             <Box sx={{ pt: 1 }}>
               <Stack spacing={3}>
@@ -109,10 +122,11 @@ export default function EditMaterialModal({ open, material, onClose, onSuccess }
                       mb: 1,
                     }}
                   >
-                    <Typography variant="subtitle2" color="text.secondary">
+                    <Typography  sx={{color: '#ab4516'}}>
                       Archivos adjuntos
                     </Typography>
                     <FormControlLabel
+                      sx={{color:  '#ab4516'}}
                       control={
                         <Switch
                           checked={replaceFiles}
@@ -129,8 +143,8 @@ export default function EditMaterialModal({ open, material, onClose, onSuccess }
                   {replaceFiles ? (
                     <FileDropzone files={form.files} onFilesChange={(v) => update('files', v)} />
                   ) : (
-                    <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+                    <Box sx={{ p: 2, bgcolor: '#ebddb2', borderRadius: 1 }}>
+                      <Typography variant="caption" color="text.secondary" sx={{ color:'#ab4516' ,display: 'block', mb: 1 }}>
                         Se mantendrán los archivos actuales:
                       </Typography>
                       {archivosActuales.length === 0 ? (

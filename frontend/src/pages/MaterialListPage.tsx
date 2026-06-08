@@ -239,9 +239,9 @@ const MaterialListPage = ({
         <Dialog open={openModal} onClose={() => setOpenModal(false)}>
           <DialogTitle>¿Eliminar material?</DialogTitle>
           <DialogContent>
-            Confirmas que deseas dar de baja:{" "}
-            <strong>{selectedMaterial?.title}</strong>? Esta acción impactará
-            directamente en la base de datos.
+            Confirmas que deseas eliminar:{" "}
+            <strong>{selectedMaterial?.title}</strong>? 
+            La publicacion sera eliminada permanentemente!
           </DialogContent>
           <DialogActions sx={{ p: 2 }}>
             <Button onClick={() => setOpenModal(false)} color="inherit">
