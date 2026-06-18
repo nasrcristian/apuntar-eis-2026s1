@@ -1,0 +1,20 @@
+.nav-btn {
+  text-decoration: none;
+  color: inherit;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 4px;
+  transition: background-color 0.15s;
+}
+
+.nav-btn:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.nav-btn--active {
+  border-bottom: 2px solid #d65921;
+  padding-bottom: 6px;
+}

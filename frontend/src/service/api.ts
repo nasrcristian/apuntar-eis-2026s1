@@ -1,0 +1,269 @@
+import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
+import type {
+  MaterialDTO,
+  ReactionSummaryDTO,
+  ReactionDTO,
+  CommentDTO,
+  AddCommentDTO,
+} from "../types/material";
+import type {
+  RegisterReqDto,
+  UserDto,
+  ForgotPasswordReqDto,
+  ForgotPasswordResDto,
+  ResetPasswordReqDto,
+  ResetPasswordResDto,
+  ReactToMaterialDTO,
+
+  // MaterialFormData,
+  // MaterialUploadResDto,
+} from "../types/dto";
+const token = localStorage.getItem("jwt");
+
+const urlApi = "http://localhost:8080";
+
+export interface ResolvedResponse<T> {
+  headers: Record<string, string>;
+  status: number;
+  statusText: string;
+  data: T;
+}
+
+export interface ErrorResponse {
+  code: string;
+  message: string;
+  response: AxiosResponse | undefined;
+}
+
+const handleResolvedResponse = <T>(
+  response: AxiosResponse<T>,
+): ResolvedResponse<T> => {
+  return {
+    headers: response.headers as Record<string, string>,
+    status: response.status,
+    statusText: response.statusText,
+    data: response.data,
+  };
+};
+
+const handleErrorResponse = (error: {
+  code: string;
+  message: string;
+  response?: AxiosResponse;
+}): ErrorResponse => {
+  throw { code: error.code, message: error.message, response: error.response };
+};
+
+const post = <T, R>(url: string, data: T): Promise<ResolvedResponse<R>> =>
+  axios
+    .post<R>(url, data)
+    .then((response) => handleResolvedResponse(response))
+    .catch((error) => {
+      throw handleErrorResponse(error);
+    });
+
+const get = <R>(
+  url: string,
+  config?: AxiosRequestConfig,
+): Promise<ResolvedResponse<R>> =>
+  axios
+    .get<R>(url, config) // Axios recibe aquí los headers, interceptores o params
+    .then((response) => handleResolvedResponse(response))
+    .catch((error) => {
+      throw handleErrorResponse(error);
+    });
+
+const del = <R>(
+  url: string,
+  config: AxiosRequestConfig,
+): Promise<ResolvedResponse<R>> =>
+  axios
+    .delete<R>(url, config)
+    .then((response) => handleResolvedResponse(response))
+    .catch((error) => {
+      throw handleErrorResponse(error);
+    });
+
+const put = <T, R>(
+  url: string,
+  data: T,
+  config?: AxiosRequestConfig,
+): Promise<ResolvedResponse<R>> =>
+  axios
+    .put<R>(url, data, config)
+    .then((response) => handleResolvedResponse(response))
+    .catch((error) => {
+      throw handleErrorResponse(error);
+    });
+
+export const postRegister = (
+  data: RegisterReqDto,
+): Promise<ResolvedResponse<UserDto>> =>
+  post<RegisterReqDto, UserDto>(`${urlApi}/user`, data);
+
+export const getMaterial = (
+  id: String | number,
+): Promise<ResolvedResponse<MaterialDTO>> =>
+  get<MaterialDTO>(`${urlApi}/materiales/${id}`);
+
+export const postForgotPassword = (
+  mail: string,
+): Promise<ResolvedResponse<ForgotPasswordResDto>> =>
+  post<ForgotPasswordReqDto, ForgotPasswordResDto>(
+    `${urlApi}api/auth/forgot-password`,
+    { mail },
+  );
+
+export const postResetPassword = (
+  token: string,
+  newPassword: string,
+): Promise<ResolvedResponse<ResetPasswordResDto>> =>
+  post<ResetPasswordReqDto, ResetPasswordResDto>(
+    `${urlApi}api/auth/reset-password`,
+    { token, newPassword },
+  );
+
+export const getAllMaterials = (): Promise<ResolvedResponse<MaterialDTO[]>> =>
+  get<MaterialDTO[]>(`${urlApi}/materiales`);
+
+export const deleteMaterial = (
+  id: string | number,
+): Promise<ResolvedResponse<void>> =>
+  del<void>(`${urlApi}/materiales/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`, // Reemplaza 'token' por tu variable, store o localStorage
+    },                                  // Aca habria que volver a leer el token por caso borde que pueda ser null
+  });
+
+export const getMaterialFiltrado = (
+  detalle: string,
+): Promise<ResolvedResponse<MaterialDTO[]>> =>
+  get<MaterialDTO[]>(
+    `${urlApi}/materiales/filtrado?detalle=${encodeURIComponent(detalle)}`,
+  );
+
+export const getReactionSummary = (
+  materialId: number,
+): Promise<ResolvedResponse<ReactionSummaryDTO>> =>
+  get<ReactionSummaryDTO>(
+    `${urlApi}/materiales/${materialId}/reactions/summary`,
+  );
+
+export const reactToMaterial = (
+  materialId: number,
+  type: "LIKE" | "DISLIKE",
+): Promise<ResolvedResponse<ReactionDTO>> =>
+  post<ReactToMaterialDTO, ReactionDTO>(
+    `${urlApi}/materiales/${materialId}/reactions`,
+    { type },
+  );
+
+export const removeReaction = (
+  materialId: number,
+): Promise<ResolvedResponse<void>> =>
+  del<void>(`${urlApi}/materiales/${materialId}/reactions`, {
+    headers: {
+      Authorization: `Bearer ${token}`, // Reemplaza 'token' por tu variable, store o localStorage
+    },
+  });
+
+export const getComments = (
+  materialId: number,
+): Promise<ResolvedResponse<CommentDTO[]>> =>
+  get<CommentDTO[]>(`${urlApi}/materiales/${materialId}/comments`);
+
+export const addComment = (
+  materialId: number,
+  text: string,
+  authorName: string,
+): Promise<ResolvedResponse<CommentDTO>> =>
+  post<AddCommentDTO, CommentDTO>(
+    `${urlApi}/materiales/${materialId}/comments`,
+    { text, authorName },
+  );
+
+export const deleteComment = (
+  materialId: number,
+  commentId: string,
+): Promise<ResolvedResponse<void>> =>
+  del<void>(`${urlApi}/materiales/${materialId}/comments/${commentId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+// Terminar de factorizar esto
+// export const uploadMaterial = (form: MaterialFormData): Promise<ResolvedResponse<MaterialUploadResDto>> => post<MaterialFormData, MaterialUploadResDto>();
+
+export const getMyMaterials = (): Promise<ResolvedResponse<MaterialDTO[]>> => {
+    const currentToken = localStorage.getItem("jwt"); // lo vuelve a leer por un bug de caso borde
+    return get<MaterialDTO[]>(`${urlApi}/materiales/mis-publicaciones`, {
+        headers: {
+            Authorization: `Bearer ${currentToken}`,
+        },
+    });
+};
+
+export interface FavoriteStatusDTO {
+  materialId: number;
+  isFavorite: boolean;
+}
+
+export const toggleFavorite = (
+  materialId: number,
+): Promise<ResolvedResponse<FavoriteStatusDTO>> => {
+  const currentToken = localStorage.getItem("jwt");
+  return axios
+    .post<FavoriteStatusDTO>(
+      `${urlApi}/materiales/${materialId}/favoritos`,
+      null,
+      { headers: { Authorization: `Bearer ${currentToken}` } },
+    )
+    .then(handleResolvedResponse)
+    .catch((error) => {
+      throw handleErrorResponse(error);
+    });
+};
+
+export const getFavoriteStatus = (
+  materialId: number,
+): Promise<ResolvedResponse<FavoriteStatusDTO>> => {
+  const currentToken = localStorage.getItem("jwt");
+  return get<FavoriteStatusDTO>(
+    `${urlApi}/materiales/${materialId}/favoritos`,
+    { headers: { Authorization: `Bearer ${currentToken}` } },
+  );
+};
+
+export const getMyFavorites = (): Promise<ResolvedResponse<MaterialDTO[]>> => {
+  const currentToken = localStorage.getItem("jwt");
+  return get<MaterialDTO[]>(`${urlApi}/materiales/favoritos`, {
+    headers: { Authorization: `Bearer ${currentToken}` },
+  });
+};
+
+// Perfil público de otro usuario (no requiere sesión).
+export const getUserProfile = (
+  mail: string,
+): Promise<ResolvedResponse<UserDto>> =>
+  get<UserDto>(`${urlApi}/user/perfil?mail=${encodeURIComponent(mail)}`);
+
+// Materiales subidos por un usuario (no requiere sesión).
+export const getMaterialsByOwner = (
+  mail: string,
+): Promise<ResolvedResponse<MaterialDTO[]>> =>
+  get<MaterialDTO[]>(
+    `${urlApi}/materiales/usuario?mail=${encodeURIComponent(mail)}`,
+  );
+
+// Actualiza el perfil del usuario logueado (por ahora, solo la descripción).
+export const updateMyProfile = (
+  description: string | null,
+): Promise<ResolvedResponse<UserDto>> => {
+  const currentToken = localStorage.getItem("jwt");
+  return put<{ description: string | null }, UserDto>(
+    `${urlApi}/user/me`,
+    { description },
+    { headers: { Authorization: `Bearer ${currentToken}` } },
+  );
+};

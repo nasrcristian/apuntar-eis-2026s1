@@ -1,0 +1,96 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0; /* el padding lo maneja MaterialDetail panel */
+  color: #8d5d46;
+}
+
+.sidebar__field {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.sidebar__field-icon,
+.sidebar__reactions-icon,
+.sidebar__description-icon {
+  color: rgba(0, 0, 0, 0.55);
+  margin-top: 2px;
+}
+
+.sidebar__field-label,
+.sidebar__reactions-label,
+.sidebar__description-label {
+  color: rgba(0, 0, 0, 0.60);
+  display: block;
+  font-size: 0.75rem;
+}
+
+.sidebar__field-value {
+  font-size: 0.875rem;
+}
+
+.sidebar__reactions {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.sidebar__reactions-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.sidebar__reaction-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  user-select: none;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sidebar__reaction-btn:hover {
+  background-color: rgba(171, 69, 22, 0.08);
+}
+
+.sidebar__reaction-btn_up {
+  color: #427b58;
+}
+
+.sidebar__reaction-btn_up:hover {
+  background-color: rgba(120, 180, 128, 0.201);
+}
+
+.sidebar__reaction-btn_dwn {
+  color: #cc2416;
+}
+
+.sidebar__reaction-btn_dwn:hover {
+  background-color: rgba(211, 47, 47, 0.08);
+}
+
+.sidebar__reaction-count {
+  font-size: 0.875rem;
+}
+
+.sidebar__divider {
+  margin: 4px 0;
+}
+
+.sidebar__description {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.sidebar__description-text {
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+  flex: 1;
+  min-width: 0;
+}

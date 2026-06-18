@@ -1,0 +1,40 @@
+.pdf-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 400px;
+  background-color: #ebddb2;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pdf-preview--has-file {
+  height: auto;
+  min-height: 0;
+  justify-content: flex-start;
+  align-items: stretch;
+  flex-shrink: 0;
+  padding: 16px;
+  gap: 16px;
+}
+
+.pdf-preview__icon--empty {
+  font-size: 48px;
+  color: rgba(0, 0, 0, 0.35);
+}
+
+.pdf-preview__icon--file {
+  font-size: 64px;
+  color: #bdbdbd;
+}
+
+.pdf-preview__text {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.pdf-preview__filename {
+  color: rgba(0, 0, 0, 0.45);
+}

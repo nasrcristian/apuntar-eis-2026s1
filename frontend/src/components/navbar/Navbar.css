@@ -1,0 +1,61 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 65px;
+  background-color: #ebd9a2;
+  border-bottom: 3px solid #ab4516a2;
+}
+
+.cabeza_vami {
+  width: 40px;
+  height: 40px;
+}
+
+.navbar__left {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.navbar__logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #ab4516;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.navbar__logo-text {
+    font-size: 25px;
+    letter-spacing: 1px;
+    font-family: 'Lilita One', sans-serif;
+}
+
+.navbar__links {
+  display: flex;
+  align-items: center;
+  color: #ab4516;
+  font-family: 'Lilita One';
+  gap: 4px;
+}
+
+.navbar__links .nav-btn, 
+.navbar__right .nav-btn {
+  font-size: 1.2rem;
+  font-weight: 500;  
+}
+
+.navbar__right {
+  display: flex;
+  align-items: center;
+  color: #ab4516;
+  font-family: 'Lilita One';
+  gap: 4px;
+}

@@ -38,3 +38,7 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+# Archivos subidos localmente
+uploads/
+uploads-test/
